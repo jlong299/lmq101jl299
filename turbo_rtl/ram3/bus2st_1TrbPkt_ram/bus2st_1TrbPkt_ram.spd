@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simPackage>
+ <file
+   path="ram_2port_151/sim/bus2st_1TrbPkt_ram_ram_2port_151_f42wnoy.v"
+   type="VERILOG"
+   library="ram_2port_151" />
+ <file
+   path="sim/bus2st_1TrbPkt_ram.v"
+   type="VERILOG"
+   hasInlineConfiguration="true" />
+ <topLevel name="bus2st_1TrbPkt_ram" />
+ <deviceFamily name="arria10" />
+</simPackage>

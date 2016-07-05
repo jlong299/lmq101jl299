@@ -8,6 +8,11 @@
   </columns>
  </systemtable>
  <library expandedCategories="Library,Project" />
- <window width="1100" height="800" x="294" y="65" />
- <generation path="" block_symbol_file="0" />
+ <window width="1100" height="800" x="75" y="62" />
+ <generation
+   path=""
+   block_symbol_file="0"
+   greybox="0"
+   simulation="VERILOG"
+   mixed_lang_simulation="1" />
 </preferences>

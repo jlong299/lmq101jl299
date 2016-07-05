@@ -1,0 +1,76 @@
+Info: Starting: Create simulation model
+Info: qsys-generate /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0701/samples/afu/nlb_400/turbo_rtl/ram4/bus2st_1TrbPkt_ram.qsys --simulation=VERILOG --allow-mixed-language-simulation --output-directory=/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0701/samples/afu/nlb_400/turbo_rtl/ram4/bus2st_1TrbPkt_ram --family="Arria 10" --part=10AX115U3F45E2SGE3
+Progress: Loading ram4/bus2st_1TrbPkt_ram.qsys
+Progress: Reading input file
+Progress: Adding ram_2port_0 [ram_2port 15.1]
+Progress: Parameterizing module ram_2port_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+: bus2st_1TrbPkt_ram.ram_2port_0: Targeting device family: Arria 10.
+: bus2st_1TrbPkt_ram.ram_2port_0: 'q_a' output bus width will be ignored while using one read port and one write port mode.
+: bus2st_1TrbPkt_ram.ram_2port_0: Tab Output1 is unavailable while using 'Dual clock: use separate read and write clocks'.
+: bus2st_1TrbPkt_ram.ram_2port_0: Tab Output2 is unavailable while using one read port and one write port.
+Info: bus2st_1TrbPkt_ram: "Transforming system: bus2st_1TrbPkt_ram"
+Info: bus2st_1TrbPkt_ram: Running transform generation_view_transform
+Info: bus2st_1TrbPkt_ram: Running transform generation_view_transform took 0.000s
+Info: ram_2port_0: Running transform generation_view_transform
+Info: ram_2port_0: Running transform generation_view_transform took 0.000s
+Info: bus2st_1TrbPkt_ram: Running transform merlin_avalon_transform
+Info: bus2st_1TrbPkt_ram: Running transform merlin_avalon_transform took 0.066s
+Info: bus2st_1TrbPkt_ram: "Naming system components in system: bus2st_1TrbPkt_ram"
+Info: bus2st_1TrbPkt_ram: "Processing generation queue"
+Info: bus2st_1TrbPkt_ram: "Generating: bus2st_1TrbPkt_ram"
+Info: bus2st_1TrbPkt_ram: "Generating: bus2st_1TrbPkt_ram_ram_2port_151_a364sna"
+Info: bus2st_1TrbPkt_ram: Done "bus2st_1TrbPkt_ram" with 2 modules, 2 files
+Info: qsys-generate succeeded.
+Info: Finished: Create simulation model
+Info: Starting: Create Modelsim Project.
+Info: sim-script-gen --spd=/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0701/samples/afu/nlb_400/turbo_rtl/ram4/bus2st_1TrbPkt_ram/bus2st_1TrbPkt_ram.spd --output-directory=/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0701/samples/afu/nlb_400/turbo_rtl/ram4/bus2st_1TrbPkt_ram/sim/ --use-relative-paths=true
+Info: Doing: ip-make-simscript --spd=/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0701/samples/afu/nlb_400/turbo_rtl/ram4/bus2st_1TrbPkt_ram/bus2st_1TrbPkt_ram.spd --output-directory=/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0701/samples/afu/nlb_400/turbo_rtl/ram4/bus2st_1TrbPkt_ram/sim/ --use-relative-paths=true
+Info: Generating the following file(s) for MODELSIM simulator in /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0701/samples/afu/nlb_400/turbo_rtl/ram4/bus2st_1TrbPkt_ram/sim/ directory:
+Info: 	mentor/msim_setup.tcl
+Info: Generating the following file(s) for VCS simulator in /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0701/samples/afu/nlb_400/turbo_rtl/ram4/bus2st_1TrbPkt_ram/sim/ directory:
+Info: 	synopsys/vcs/vcs_setup.sh
+Info: Generating the following file(s) for VCSMX simulator in /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0701/samples/afu/nlb_400/turbo_rtl/ram4/bus2st_1TrbPkt_ram/sim/ directory:
+Info: 	synopsys/vcsmx/synopsys_sim.setup
+Info: 	synopsys/vcsmx/vcsmx_setup.sh
+Info: Generating the following file(s) for NCSIM simulator in /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0701/samples/afu/nlb_400/turbo_rtl/ram4/bus2st_1TrbPkt_ram/sim/ directory:
+Info: 	cadence/cds.lib
+Info: 	cadence/hdl.var
+Info: 	cadence/ncsim_setup.sh
+Info: 	1 .cds.lib files in cadence/cds_libs/ directory
+Info: Generating the following file(s) for RIVIERA simulator in /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0701/samples/afu/nlb_400/turbo_rtl/ram4/bus2st_1TrbPkt_ram/sim/ directory:
+Info: 	aldec/rivierapro_setup.tcl
+Info: For information on how to simulate your IP, see the explanatory comments in the simulator-specific subdirectories under /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0701/samples/afu/nlb_400/turbo_rtl/ram4/bus2st_1TrbPkt_ram/sim/.
+Info: Finished: Create Modelsim Project.
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: qsys-generate /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0701/samples/afu/nlb_400/turbo_rtl/ram4/bus2st_1TrbPkt_ram.qsys --synthesis=VERILOG --output-directory=/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0701/samples/afu/nlb_400/turbo_rtl/ram4/bus2st_1TrbPkt_ram --family="Arria 10" --part=10AX115U3F45E2SGE3
+Progress: Loading ram4/bus2st_1TrbPkt_ram.qsys
+Progress: Reading input file
+Progress: Adding ram_2port_0 [ram_2port 15.1]
+Progress: Parameterizing module ram_2port_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+: bus2st_1TrbPkt_ram.ram_2port_0: Targeting device family: Arria 10.
+: bus2st_1TrbPkt_ram.ram_2port_0: 'q_a' output bus width will be ignored while using one read port and one write port mode.
+: bus2st_1TrbPkt_ram.ram_2port_0: Tab Output1 is unavailable while using 'Dual clock: use separate read and write clocks'.
+: bus2st_1TrbPkt_ram.ram_2port_0: Tab Output2 is unavailable while using one read port and one write port.
+Info: bus2st_1TrbPkt_ram: "Transforming system: bus2st_1TrbPkt_ram"
+Info: bus2st_1TrbPkt_ram: Running transform generation_view_transform
+Info: bus2st_1TrbPkt_ram: Running transform generation_view_transform took 0.000s
+Info: ram_2port_0: Running transform generation_view_transform
+Info: ram_2port_0: Running transform generation_view_transform took 0.000s
+Info: bus2st_1TrbPkt_ram: Running transform merlin_avalon_transform
+Info: bus2st_1TrbPkt_ram: Running transform merlin_avalon_transform took 0.012s
+Info: bus2st_1TrbPkt_ram: "Naming system components in system: bus2st_1TrbPkt_ram"
+Info: bus2st_1TrbPkt_ram: "Processing generation queue"
+Info: bus2st_1TrbPkt_ram: "Generating: bus2st_1TrbPkt_ram"
+Info: bus2st_1TrbPkt_ram: "Generating: bus2st_1TrbPkt_ram_ram_2port_151_a364sna"
+Info: bus2st_1TrbPkt_ram: Done "bus2st_1TrbPkt_ram" with 2 modules, 2 files
+Info: qsys-generate succeeded.
+Info: Finished: Create HDL design files for synthesis

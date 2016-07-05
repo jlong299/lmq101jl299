@@ -69,6 +69,7 @@ end
 nlb_lpbk nlb_lpbk(
   .Clk_400             ( pClk ) ,
   .SoftReset           ( pck_cp2af_softReset_T1 ) ,
+  .uClk_usrDiv2        ( uClk_usrDiv2 ),
 
   .cp2af_sRxPort       ( pck_cp2af_sRx_T1 ) ,
   .af2cp_sTxPort       ( pck_af2cp_sTx ) 

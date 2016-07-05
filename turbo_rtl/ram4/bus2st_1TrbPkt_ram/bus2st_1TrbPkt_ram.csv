@@ -1,0 +1,18 @@
+# system info bus2st_1TrbPkt_ram on 2016.07.01.10:52:55
+system_info:
+name,value
+DEVICE,10AX115U3F45E2SGE3
+DEVICE_FAMILY,Arria 10
+GENERATION_ID,1467341574
+#
+#
+# Files generated for bus2st_1TrbPkt_ram on 2016.07.01.10:52:55
+files:
+filepath,kind,attributes,module,is_top
+sim/bus2st_1TrbPkt_ram.v,VERILOG,CONTAINS_INLINE_CONFIGURATION,bus2st_1TrbPkt_ram,true
+ram_2port_151/sim/bus2st_1TrbPkt_ram_ram_2port_151_a364sna.v,VERILOG,,bus2st_1TrbPkt_ram_ram_2port_151_a364sna,false
+#
+# Map from instance-path to kind of module
+instances:
+instancePath,module
+bus2st_1TrbPkt_ram.ram_2port_0,bus2st_1TrbPkt_ram_ram_2port_151_a364sna

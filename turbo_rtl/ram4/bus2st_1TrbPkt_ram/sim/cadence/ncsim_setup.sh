@@ -12,7 +12,7 @@
 # or its authorized distributors. Please refer to the applicable 
 # agreement for further details.
 
-# ACDS 15.1 193 linux 2016.06.30.11:19:59
+# ACDS 15.1 193 linux 2016.07.01.10:52:56
 
 # ----------------------------------------
 # ncsim - auto-generated simulation script
@@ -59,7 +59,7 @@
 # within the Quartus project, and generate a unified
 # script which supports all the Altera IP within the design.
 # ----------------------------------------
-# ACDS 15.1 193 linux 2016.06.30.11:19:59
+# ACDS 15.1 193 linux 2016.07.01.10:52:56
 # ----------------------------------------
 # initialize variables
 TOP_LEVEL_NAME="bus2st_1TrbPkt_ram"
@@ -131,7 +131,7 @@ fi
 # ----------------------------------------
 # compile design files in correct order
 if [ $SKIP_COM -eq 0 ]; then
-  ncvlog $USER_DEFINED_COMPILE_OPTIONS           "$QSYS_SIMDIR/../ram_2port_151/sim/bus2st_1TrbPkt_ram_ram_2port_151_f42wnoy.v" -work ram_2port_151 -cdslib ./cds_libs/ram_2port_151.cds.lib
+  ncvlog $USER_DEFINED_COMPILE_OPTIONS           "$QSYS_SIMDIR/../ram_2port_151/sim/bus2st_1TrbPkt_ram_ram_2port_151_a364sna.v" -work ram_2port_151 -cdslib ./cds_libs/ram_2port_151.cds.lib
   ncvlog -compcnfg $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/bus2st_1TrbPkt_ram.v"                                                                                                        
 fi
 

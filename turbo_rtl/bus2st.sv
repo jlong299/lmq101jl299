@@ -51,30 +51,41 @@ logic [6:0] 		bus_mem_wraddr;
 logic 				bus_mem_rden;
 logic [6:0] 		bus_mem_rdaddr;
 
-//start------------  1 turbo packet RAM -------------------------
-// half 0
-// ram for one Turbo Packet   (due to InputWidth = 256, so need 2 rams)
-bus2st_1TrbPkt_ram TrbPkt_ram_half0 (
-	.data 			(bus_data[BUS-1 : BUS-RAM_DIN]),	//input	[255:0]  	data;
+////start------------  1 turbo packet RAM -------------------------
+//// half 0
+//// ram for one Turbo Packet   (due to InputWidth = 256, so need 2 rams)
+//bus2st_1TrbPkt_ram TrbPkt_ram_half0 (
+//	.data 			(bus_data[BUS-1 : BUS-RAM_DIN]),	//input	[255:0]  	data;
+//	.rdaddress		(bus_mem_rdaddr),	//input	[6:0]  		rdaddress;
+//	.rdclock		(clk_st),	//input	  			rdclock;
+//	.rden 			(bus_mem_rden),
+//	.wraddress		(bus_mem_wraddr),	//input	[6:0]  		wraddress;
+//	.wrclock		(clk_400),	//input	  			wrclock;
+//	.wren			(bus_en),	//input	  			wren;
+//	.q				(bus_mem_out[2*RAM_DOUT-1 : RAM_DOUT]) 	//output [255:0]  	q;
+//	);
+//// half 1
+//// ram for one Turbo Packet   (due to InputWidth = 256, so need 2 rams)
+//bus2st_1TrbPkt_ram TrbPkt_ram_half1 (
+//	.data 			(bus_data[BUS-RAM_DIN-1 : BUS-2*RAM_DIN]),	//input	[255:0]  	data;
+//	.rdaddress		(bus_mem_rdaddr),	//input	[6:0]  		rdaddress;
+//	.rdclock		(clk_st),	//input	  			rdclock;
+//	.rden 			(bus_mem_rden),
+//	.wraddress		(bus_mem_wraddr),	//input	[6:0]  		wraddress;
+//	.wrclock		(clk_400),	//input	  			wrclock;
+//	.wren			(bus_en),	//input	  			wren;
+//	.q				(bus_mem_out[RAM_DOUT-1 : 0]) 	//output [255:0]  	q;
+//	);
+	
+	bus2st_1TrbPkt_ram TrbPkt_ram_half1 (
+	.data 			(bus_data[BUS-1 : BUS-2*RAM_DIN]),	//input	[255:0]  	data;
 	.rdaddress		(bus_mem_rdaddr),	//input	[6:0]  		rdaddress;
 	.rdclock		(clk_st),	//input	  			rdclock;
 	.rden 			(bus_mem_rden),
 	.wraddress		(bus_mem_wraddr),	//input	[6:0]  		wraddress;
 	.wrclock		(clk_400),	//input	  			wrclock;
 	.wren			(bus_en),	//input	  			wren;
-	.q				(bus_mem_out[2*RAM_DOUT-1 : RAM_DOUT]) 	//output [255:0]  	q;
-	);
-// half 1
-// ram for one Turbo Packet   (due to InputWidth = 256, so need 2 rams)
-bus2st_1TrbPkt_ram TrbPkt_ram_half1 (
-	.data 			(bus_data[BUS-RAM_DIN-1 : BUS-2*RAM_DIN]),	//input	[255:0]  	data;
-	.rdaddress		(bus_mem_rdaddr),	//input	[6:0]  		rdaddress;
-	.rdclock		(clk_st),	//input	  			rdclock;
-	.rden 			(bus_mem_rden),
-	.wraddress		(bus_mem_wraddr),	//input	[6:0]  		wraddress;
-	.wrclock		(clk_400),	//input	  			wrclock;
-	.wren			(bus_en),	//input	  			wren;
-	.q				(bus_mem_out[RAM_DOUT-1 : 0]) 	//output [255:0]  	q;
+	.q				(bus_mem_out[2*RAM_DOUT-1 : 0]) 	//output [255:0]  	q;
 	);
 		//------------------------
 		// (output reg mode)

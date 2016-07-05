@@ -12,10 +12,10 @@
 # or its authorized distributors. Please refer to the applicable 
 # agreement for further details.
 
-# ACDS 15.1 193 linux 2016.06.30.11:19:59
+# ACDS 15.1 193 linux 2016.07.01.10:52:56
 
 # ----------------------------------------
-# ncsim - auto-generated simulation script
+# vcsmx - auto-generated simulation script
 
 # ----------------------------------------
 # This script can be used to simulate the following IP:
@@ -25,26 +25,26 @@
 # and adapt it to your needs:
 # 
 # # Start of template
-# # If the copied and modified template file is "ncsim.sh", run it as:
-# #   ./ncsim.sh
+# # If the copied and modified template file is "vcsmx_sim.sh", run it as:
+# #   ./vcsmx_sim.sh
 # #
 # # Do the file copy, dev_com and com steps
-# source ncsim_setup.sh \
+# source vcsmx_setup.sh \
 # SKIP_ELAB=1 \
 # SKIP_SIM=1
 # 
 # # Compile the top level module
-# ncvlog -sv "$QSYS_SIMDIR/../top.sv"
+# vlogan +v2k +systemverilogext+.sv "$QSYS_SIMDIR/../top.sv"
 # 
 # # Do the elaboration and sim steps
 # # Override the top-level name
-# # Override the user-defined sim options, so the simulation
-# # runs forever (until $finish()).
-# source ncsim_setup.sh \
+# # Override the user-defined sim options, so the simulation runs 
+# # forever (until $finish()).
+# source vcsmx_setup.sh \
 # SKIP_FILE_COPY=1 \
 # SKIP_DEV_COM=1 \
 # SKIP_COM=1 \
-# TOP_LEVEL_NAME=top \
+# TOP_LEVEL_NAME="'-top top'" \
 # USER_DEFINED_SIM_OPTIONS=""
 # # End of template
 # ----------------------------------------
@@ -59,11 +59,11 @@
 # within the Quartus project, and generate a unified
 # script which supports all the Altera IP within the design.
 # ----------------------------------------
-# ACDS 15.1 193 linux 2016.06.30.11:19:59
+# ACDS 15.1 193 linux 2016.07.01.10:52:56
 # ----------------------------------------
 # initialize variables
 TOP_LEVEL_NAME="bus2st_1TrbPkt_ram"
-QSYS_SIMDIR="./../"
+QSYS_SIMDIR="./../../"
 QUARTUS_INSTALL_DIR="/home/user/altera_pro/15.1/quartus/"
 SKIP_FILE_COPY=0
 SKIP_DEV_COM=0
@@ -71,7 +71,7 @@ SKIP_COM=0
 SKIP_ELAB=0
 SKIP_SIM=0
 USER_DEFINED_ELAB_OPTIONS=""
-USER_DEFINED_SIM_OPTIONS="-input \"@run 100; exit\""
+USER_DEFINED_SIM_OPTIONS="+vcs+finish+100"
 
 # ----------------------------------------
 # overwrite variables - DO NOT MODIFY!
@@ -90,7 +90,7 @@ done
 # initialize simulation properties - DO NOT MODIFY!
 ELAB_OPTIONS=""
 SIM_OPTIONS=""
-if [[ `ncsim -version` != *"ncsim(64)"* ]]; then
+if [[ `vcs -platform` != *"amd64"* ]]; then
   :
 else
   :
@@ -115,34 +115,34 @@ mkdir -p ./libraries/twentynm_hip_ver/
 # ----------------------------------------
 # compile device library files
 if [ $SKIP_DEV_COM -eq 0 ]; then
-  ncvlog $USER_DEFINED_COMPILE_OPTIONS     "$QUARTUS_INSTALL_DIR/eda/sim_lib/altera_primitives.v"                  -work altera_ver       
-  ncvlog $USER_DEFINED_COMPILE_OPTIONS     "$QUARTUS_INSTALL_DIR/eda/sim_lib/220model.v"                           -work lpm_ver          
-  ncvlog $USER_DEFINED_COMPILE_OPTIONS     "$QUARTUS_INSTALL_DIR/eda/sim_lib/sgate.v"                              -work sgate_ver        
-  ncvlog $USER_DEFINED_COMPILE_OPTIONS     "$QUARTUS_INSTALL_DIR/eda/sim_lib/altera_mf.v"                          -work altera_mf_ver    
-  ncvlog -sv $USER_DEFINED_COMPILE_OPTIONS "$QUARTUS_INSTALL_DIR/eda/sim_lib/altera_lnsim.sv"                      -work altera_lnsim_ver 
-  ncvlog $USER_DEFINED_COMPILE_OPTIONS     "$QUARTUS_INSTALL_DIR/eda/sim_lib/twentynm_atoms.v"                     -work twentynm_ver     
-  ncvlog $USER_DEFINED_COMPILE_OPTIONS     "$QUARTUS_INSTALL_DIR/eda/sim_lib/cadence/twentynm_atoms_ncrypt.v"      -work twentynm_ver     
-  ncvlog $USER_DEFINED_COMPILE_OPTIONS     "$QUARTUS_INSTALL_DIR/eda/sim_lib/cadence/twentynm_hssi_atoms_ncrypt.v" -work twentynm_hssi_ver
-  ncvlog $USER_DEFINED_COMPILE_OPTIONS     "$QUARTUS_INSTALL_DIR/eda/sim_lib/twentynm_hssi_atoms.v"                -work twentynm_hssi_ver
-  ncvlog $USER_DEFINED_COMPILE_OPTIONS     "$QUARTUS_INSTALL_DIR/eda/sim_lib/cadence/twentynm_hip_atoms_ncrypt.v"  -work twentynm_hip_ver 
-  ncvlog $USER_DEFINED_COMPILE_OPTIONS     "$QUARTUS_INSTALL_DIR/eda/sim_lib/twentynm_hip_atoms.v"                 -work twentynm_hip_ver 
+  vlogan +v2k $USER_DEFINED_COMPILE_OPTIONS           "$QUARTUS_INSTALL_DIR/eda/sim_lib/altera_primitives.v"                   -work altera_ver       
+  vlogan +v2k $USER_DEFINED_COMPILE_OPTIONS           "$QUARTUS_INSTALL_DIR/eda/sim_lib/220model.v"                            -work lpm_ver          
+  vlogan +v2k $USER_DEFINED_COMPILE_OPTIONS           "$QUARTUS_INSTALL_DIR/eda/sim_lib/sgate.v"                               -work sgate_ver        
+  vlogan +v2k $USER_DEFINED_COMPILE_OPTIONS           "$QUARTUS_INSTALL_DIR/eda/sim_lib/altera_mf.v"                           -work altera_mf_ver    
+  vlogan +v2k -sverilog $USER_DEFINED_COMPILE_OPTIONS "$QUARTUS_INSTALL_DIR/eda/sim_lib/altera_lnsim.sv"                       -work altera_lnsim_ver 
+  vlogan +v2k $USER_DEFINED_COMPILE_OPTIONS           "$QUARTUS_INSTALL_DIR/eda/sim_lib/twentynm_atoms.v"                      -work twentynm_ver     
+  vlogan +v2k $USER_DEFINED_COMPILE_OPTIONS           "$QUARTUS_INSTALL_DIR/eda/sim_lib/synopsys/twentynm_atoms_ncrypt.v"      -work twentynm_ver     
+  vlogan +v2k $USER_DEFINED_COMPILE_OPTIONS           "$QUARTUS_INSTALL_DIR/eda/sim_lib/synopsys/twentynm_hssi_atoms_ncrypt.v" -work twentynm_hssi_ver
+  vlogan +v2k $USER_DEFINED_COMPILE_OPTIONS           "$QUARTUS_INSTALL_DIR/eda/sim_lib/twentynm_hssi_atoms.v"                 -work twentynm_hssi_ver
+  vlogan +v2k $USER_DEFINED_COMPILE_OPTIONS           "$QUARTUS_INSTALL_DIR/eda/sim_lib/synopsys/twentynm_hip_atoms_ncrypt.v"  -work twentynm_hip_ver 
+  vlogan +v2k $USER_DEFINED_COMPILE_OPTIONS           "$QUARTUS_INSTALL_DIR/eda/sim_lib/twentynm_hip_atoms.v"                  -work twentynm_hip_ver 
 fi
 
 # ----------------------------------------
 # compile design files in correct order
 if [ $SKIP_COM -eq 0 ]; then
-  ncvlog $USER_DEFINED_COMPILE_OPTIONS           "$QSYS_SIMDIR/../ram_2port_151/sim/bus2st_1TrbPkt_ram_ram_2port_151_f42wnoy.v" -work ram_2port_151 -cdslib ./cds_libs/ram_2port_151.cds.lib
-  ncvlog -compcnfg $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/bus2st_1TrbPkt_ram.v"                                                                                                        
+  vlogan +v2k $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/../ram_2port_151/sim/bus2st_1TrbPkt_ram_ram_2port_151_a364sna.v" -work ram_2port_151
+  vlogan +v2k $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/bus2st_1TrbPkt_ram.v"                                                               
 fi
 
 # ----------------------------------------
 # elaborate top level design
 if [ $SKIP_ELAB -eq 0 ]; then
-  ncelab -access +w+r+c -namemap_mixgen $ELAB_OPTIONS $USER_DEFINED_ELAB_OPTIONS $TOP_LEVEL_NAME
+  vcs -lca -t ps $ELAB_OPTIONS $USER_DEFINED_ELAB_OPTIONS $TOP_LEVEL_NAME
 fi
 
 # ----------------------------------------
 # simulate
 if [ $SKIP_SIM -eq 0 ]; then
-  eval ncsim -licqueue $SIM_OPTIONS $USER_DEFINED_SIM_OPTIONS $TOP_LEVEL_NAME
+  ./simv $SIM_OPTIONS $USER_DEFINED_SIM_OPTIONS
 fi

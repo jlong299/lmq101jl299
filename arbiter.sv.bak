@@ -92,7 +92,7 @@ module arbiter #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
 );
    
    input                   Clk_400;               //                      ccip_intf:            Clk_400
-   input    uClk_usrDiv2;
+   input    uClk_usrDiv2,
    
    output [ADDR_LMT-1:0]   ab2re_WrAddr;           // [ADDR_LMT-1:0]        app_cnt:           Writes are guaranteed to be accepted
    output [15:0]           ab2re_WrTID;            // [15:0]                app_cnt:           meta data
@@ -716,11 +716,11 @@ module arbiter #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
 `endif
      end
 
-    turbo_lpbk1 #(.PEND_THRESH(PEND_THRESH),
+    test_lpbk1 #(.PEND_THRESH(PEND_THRESH),
                  .ADDR_LMT   (ADDR_LMT),
                  .MDATA      (MDATA)
                  )
-    turbo_lpbk1(
+    test_lpbk1(
            Clk_400               ,        // in    std_logic;  -- Core clock
            uClk_usrDiv2,
     

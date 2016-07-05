@@ -251,7 +251,7 @@ module nlb_lpbk #(parameter TXHDR_WIDTH=61, RXHDR_WIDTH=18, DATA_WIDTH =512)
 
    input                        Clk_400;             //              in    std_logic;           Core clock. CCI interface is synchronous to this clock.
    input                        SoftReset;            //              in    std_logic;           CCI interface reset. The Accelerator IP must use this Reset. ACTIVE HIGH
-   input          uClk_usrDiv2;
+   input          uClk_usrDiv2,
 
    input  t_if_ccip_Rx          cp2af_sRxPort;
    output t_if_ccip_Tx          af2cp_sTxPort;

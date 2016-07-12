@@ -323,28 +323,29 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
         // If there is rsp valid to same entry in 2nd cycle --> MODIFY includes forwarded value.
         // If all RdRsp required for initiating a write is received, Updating Ready vector is overlapped with MODIFY + WRITE
 
-        if (ab2l1_RdRspValid)
-        begin
-          if (b2b_RdRsp)
-          begin
-            old_RdRsp_tracker                    <= (RdRsp_vector_bank[ab2l1_RdRsp_q[6:3]][ab2l1_RdRsp_q[2:0]][3:0]) | new_RdRsp_tracker_q;
-          end
+        // if (ab2l1_RdRspValid)
+        // begin
+        //   if (b2b_RdRsp)
+        //   begin
+        //     old_RdRsp_tracker                    <= (RdRsp_vector_bank[ab2l1_RdRsp_q[6:3]][ab2l1_RdRsp_q[2:0]][3:0]) | new_RdRsp_tracker_q;
+        //   end
 
-          // Response Received, Read current count from RdRsp vector
-          else
-          begin
-            old_RdRsp_tracker                    <= RdRsp_vector_bank[ab2l1_RdRsp[6:3]][ab2l1_RdRsp[2:0]][3:0];
-          end
-        end
+        //   // Response Received, Read current count from RdRsp vector
+        //   else
+        //   begin
+        //     old_RdRsp_tracker                    <= RdRsp_vector_bank[ab2l1_RdRsp[6:3]][ab2l1_RdRsp[2:0]][3:0];
+        //   end
+        // end
 
         // Update RdRsp vector
         if (ab2l1_RdRspValid_q)
         begin
-          RdRsp_vector_bank[ab2l1_RdRsp_q[6:3]][ab2l1_RdRsp_q[2:0]][3:0] <= new_RdRsp_tracker_q | old_RdRsp_tracker;
-          if ((new_RdRsp_tracker_q | old_RdRsp_tracker) == RdRsp_is_Ready)
-          begin
+          //RdRsp_vector_bank[ab2l1_RdRsp_q[6:3]][ab2l1_RdRsp_q[2:0]][3:0] <= new_RdRsp_tracker_q | old_RdRsp_tracker;
+          RdRsp_vector_bank[ab2l1_RdRsp_q[6:3]][ab2l1_RdRsp_q[2:0]][3:0] <= 4'b0001;
+          //if ((new_RdRsp_tracker_q | old_RdRsp_tracker) == RdRsp_is_Ready)
+          //begin
             RdRsp_vector_bank_Ready[ab2l1_RdRsp_q[6:3]][ab2l1_RdRsp_q[2:0]]    <= 1;
-          end
+          //end
         end
       end
 
@@ -416,18 +417,18 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
 
       1'h1:
         begin
-          if (|wrCLnum[1:0])
-          begin
-          // Read remaining CLs of 're2xy_multiCL_len' memWrite requests from RAM
-          write_fsm                        <= 1'h1;
-          CL_ID                            <= CL_ID + 1'b1;
-          memrd_addr                       <= {WrReq_tid_mCL[6:0], CL_ID};
-          ram_rdValid                      <= 1;
-          wrsop                            <= 0;
-          wrCLnum                          <= wrCLnum - 1'b1;
-          end
+          // if (|wrCLnum[1:0])
+          // begin
+          // // Read remaining CLs of 're2xy_multiCL_len' memWrite requests from RAM
+          // write_fsm                        <= 1'h1;
+          // CL_ID                            <= CL_ID + 1'b1;
+          // memrd_addr                       <= {WrReq_tid_mCL[6:0], CL_ID};
+          // ram_rdValid                      <= 1;
+          // wrsop                            <= 0;
+          // wrCLnum                          <= wrCLnum - 1'b1;
+          // end
 
-          else
+          // else
           begin
           // Goto next set of multiCL requests
           // One cycle bubble between each set of multi CL writes.

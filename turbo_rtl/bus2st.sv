@@ -10,7 +10,7 @@
 //  When one turbo packet operation finishes,  set bus_ready=1  which indicates
 //  the next several (NUM_BUS_PER_TURBO_PKT) bus data can come in.  
 //
-//  We need NUM_BUS_PER_TURBO_PKT buses to consist of one turbo packet.
+//  We need NUM_BUS_PER_TURBO_PKT buses to form one turbo packet.
 //
 //  When st_ready from TurboDecoder ==1,  st_data can go out.
 

@@ -32,7 +32,7 @@ module st2bus #(parameter
 	input					st_sop,
 	input					st_eop,
 	//input					st_error, 
-	output 					st_ready,
+	output 	reg			st_ready,
 
 	input 					clk_bus,   // 400MHz clk
 	input 					bus_ready,

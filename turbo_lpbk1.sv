@@ -518,9 +518,9 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
         ram_rdValid                            <= 0;
         wrsop                                  <= 1;
         wrCLnum                                <= 0;
-        l12ab_WrEn                             <= 0;
-        l12ab_WrSop                            <= 1;
-        l12ab_WrLen                            <= 0;
+        //l12ab_WrEn                             <= 0;
+        //l12ab_WrSop                            <= 1;
+        //l12ab_WrLen                            <= 0;
         Num_Write_req                          <= 20'h1;
         Num_Write_rsp                          <= 0;
       end
@@ -609,7 +609,7 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
               else
                   cnt_mdata_pend <= 8'h0;
             end
-            2'h3
+            2'h3:
             begin
               if (cnt_mdata_pend >= 8'h24)
                 cnt_mdata_pend <= cnt_mdata_pend - 8'h24;
@@ -657,7 +657,6 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
               Num_Read_req                       <= 20'h1;
               l12ab_RdLen                        <= 0;
               l12ab_RdSop                        <= 1;
-              bus2st_mem_rd_finish               <= 0;
               bus2st_mem_rd_finish_q             <= 0;
               cnt_mdata_pend                     <= 0;
               mode_mdata_pend                     <= 2'h0;
@@ -727,7 +726,7 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
 always@(posedge uClk_usrDiv2)
 begin
   trb_sink_blk_size <= 13'd1024;
-  trb_source_ready <= 1'b1;
+  //trb_source_ready <= 1'b1;
   trb_sink_error <= 2'b00;
   trb_sink_max_iter <= 5'd8;
   trb_sel_crc24a <= 1'b0;
@@ -767,25 +766,25 @@ st2bus #(
     .NUM_ST_PER_BUS (64), //  (ST_PER_BUS / ST)
     .ST_PER_TURBO_PKT (128),   // 1024/ST
     .NUM_BUS_PER_TURBO_PKT (2), // ( ST_PER_TURBO_PKT / NUM_ST_PER_BUS )
-    .ST (8)
+    .ST (8),
     .FROM_BUS2ST_NUM_BUS (25)   // !! NUM_BUS_PER_TURBO_PKT of bus2st.sv
   )
   st2bus_inst
   (
-  rst_n       (test_Resetb),    //input    // clk_bus Asynchronous reset active low
+  .rst_n       (test_Resetb),    //input    // clk_bus Asynchronous reset active low
 
-  clk_st      (uClk_usrDiv2),   // input               // clk turbo decoder
-  st_data     (trb_source_data_s),       // input [ST-1:0]      
-  st_valid    (trb_source_valid),        // input               
-  st_sop      (trb_source_sop),          // input               
-  st_eop      (trb_source_eop),          // input               
+  .clk_st      (uClk_usrDiv2),   // input               // clk turbo decoder
+  .st_data     (trb_source_data_s),       // input [ST-1:0]      
+  .st_valid    (trb_source_valid),        // input               
+  .st_sop      (trb_source_sop),          // input               
+  .st_eop      (trb_source_eop),          // input               
   //st_error    ,            // //input              
-  st_ready    (trb_source_ready),        // output              
+  .st_ready    (trb_source_ready),        // output              
 
-  clk_bus     (Clk_400),         // input                    // 400MHz clk
-  bus_ready   (1'b1),            // input                   
-  bus_data    (l12ab_WrDin), // output  reg [ST_PER_BUS-1:0]   
-  bus_en      (l12ab_WrEn) // output  reg             
+  .clk_bus     (Clk_400),         // input                    // 400MHz clk
+  .bus_ready   (1'b1),            // input                   
+  .bus_data    (l12ab_WrDin), // output  reg [ST_PER_BUS-1:0]   
+  .bus_en      (l12ab_WrEn) // output  reg             
 
   //data2FlowCtrl   (st2bus_out_data2FlowCtrl)  // output            // to Flow Ctrl FIFO  (FROM_BUS2ST_NUM_BUS '1')
 
@@ -797,12 +796,12 @@ st2bus #(
     begin
       l12ab_WrAddr <= 0;
       l12ab_WrTID <= 0;
-      l12ab_RdSop <= 0;
+      l12ab_WrSop <= 0;
       l12ab_WrLen <= 0;
     end
     else
     begin
-      l12ab_RdSop <= 1'b1;
+      l12ab_WrSop <= 1'b1;
       l12ab_WrLen <= 2'b00;
       if (l12ab_WrEn)
       begin

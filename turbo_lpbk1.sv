@@ -234,6 +234,10 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
     logic [4:0]       cnt_gap_turbo_go;
     logic             gap_turbo_go;
     logic             bus2st_ready;
+    reg               bus2st_mem_rd_finish;
+    reg               bus2st_mem_rd_finish_q;
+    reg [7:0]         cnt_mdata_pend;
+    reg [1:0]         mode_mdata_pend;
 
     // Timing fix: Registering WrRsp inputs - Adds 1 additional cycle bw last WrRsp to completion
     always@(posedge Clk_400)
@@ -389,10 +393,10 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
         Wr_go_q                                                  <= Wr_go;
         write_fsm_q                                              <= write_fsm;
         WrReq_tid_q                                              <= WrReq_tid;
-        if (Wr_go_q & !write_fsm_q)
-        begin
-          rd_mdata_pend[{WrReq_tid_q[6:3],WrReq_tid_q[2:0]}]     <= 1'b0;
-        end
+        // if (Wr_go_q & !write_fsm_q)
+        // begin
+        //   rd_mdata_pend[{WrReq_tid_q[6:3],WrReq_tid_q[2:0]}]     <= 1'b0;
+        // end
 
       end
 
@@ -462,13 +466,13 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
 
       wrreq_mem_out_q                          <= wrreq_mem_out;
 
-      // send Multi CL Write Requests
-      l12ab_WrEn                               <= (ram_rdValid_qqq == 1'b1);
-      l12ab_WrAddr                             <= wrreq_mem_out_q[21:2] + wrreq_mem_out_q[1:0] ;
-      l12ab_WrDin                              <= wrreq_mem_out_q[533:22];
-      l12ab_WrTID[15:0]                        <= wrreq_mem_out_q[17:2];
-      l12ab_WrSop                              <= wrsop_qqq;
-      l12ab_WrLen                              <= wrCLnum_qqq;
+      // // send Multi CL Write Requests
+      // l12ab_WrEn                               <= (ram_rdValid_qqq == 1'b1);
+      // l12ab_WrAddr                             <= wrreq_mem_out_q[21:2] + wrreq_mem_out_q[1:0] ;
+      // l12ab_WrDin                              <= wrreq_mem_out_q[533:22];
+      // l12ab_WrTID[15:0]                        <= wrreq_mem_out_q[17:2];
+      // l12ab_WrSop                              <= wrsop_qqq;
+      // l12ab_WrLen                              <= wrCLnum_qqq;
 
       // Track Num Write requests
       if (l12ab_WrEn)
@@ -487,11 +491,11 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
         Num_Write_rsp                          <= Num_Write_rsp + 1'b1;
       end
 
-      // Meta data locked when RdSent
-      if(l12ab_RdEn && ab2l1_RdSent)
-      begin
-        rd_mdata_pend[rd_mdata]                <= 1'b1;
-      end
+      // // Meta data locked when RdSent
+      // if(l12ab_RdEn && ab2l1_RdSent)
+      // begin
+      //   rd_mdata_pend[rd_mdata]                <= 1'b1;
+      // end
 
       if (!test_Resetb)
       begin
@@ -561,14 +565,68 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
             begin
               rd_mdata_next                      <= rd_mdata + 2'h2;
               rd_mdata                           <= rd_mdata_next;
-              rd_mdata_avail                     <= !rd_mdata_pend[rd_mdata_next];
+              //rd_mdata_avail                     <= !rd_mdata_pend[rd_mdata_next];
             end
-
             else
             begin
-              rd_mdata_avail                     <= !rd_mdata_pend[rd_mdata];
+              //rd_mdata_avail                     <= !rd_mdata_pend[rd_mdata];
               rd_mdata_next                      <= rd_mdata + 1'h1;
             end
+
+
+            //start -------- cnt_mdata_pend   substitute  rd_mdata_pend[] -----
+            bus2st_mem_rd_finish_q <= bus2st_mem_rd_finish;
+
+            if(l12ab_RdEn && ab2l1_RdSent)
+            begin
+              if (bus2st_mem_rd_finish & (!bus2st_mem_rd_finish_q))
+              begin
+                mode_mdata_pend <= 2'h3;
+              end
+              else
+                mode_mdata_pend <= 2'h1;
+            end
+            else if (bus2st_mem_rd_finish & (!bus2st_mem_rd_finish_q))
+              mode_mdata_pend <= 2'h2;
+            else
+              mode_mdata_pend <= 2'h0;
+
+
+            case(mode_mdata_pend)
+            2'h0:
+            begin
+              cnt_mdata_pend <= cnt_mdata_pend;
+            end
+            2'h1:
+            begin
+              cnt_mdata_pend <= cnt_mdata_pend + 8'h1;
+            end
+            2'h2:
+            begin
+              if (cnt_mdata_pend >= 8'h25)
+                  cnt_mdata_pend <= cnt_mdata_pend - 8'h25;
+              else
+                  cnt_mdata_pend <= 8'h0;
+            end
+            2'h3
+            begin
+              if (cnt_mdata_pend >= 8'h24)
+                cnt_mdata_pend <= cnt_mdata_pend - 8'h24;
+              else
+                cnt_mdata_pend <= 8'h0;
+            end
+            default:
+            begin
+              cnt_mdata_pend <= cnt_mdata_pend;
+            end
+            endcase
+
+            if (cnt_mdata_pend[6:5] == 2'b11)
+              rd_mdata_avail <= 1'b1;
+            else
+              rd_mdata_avail <= 1'b0;
+            //end -------- cnt_mdata_pend   substitute  rd_mdata_pend[] -----
+
 
             // TODO:
             if(read_fsm==2'h2 && Num_Write_rsp==re2xy_NumLines)
@@ -598,6 +656,10 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
               Num_Read_req                       <= 20'h1;
               l12ab_RdLen                        <= 0;
               l12ab_RdSop                        <= 1;
+              bus2st_mem_rd_finish               <= 0;
+              bus2st_mem_rd_finish_q             <= 0;
+              cnt_mdata_pend                     <= 0;
+              mode_mdata_pend                     <= 2'h0;
             end
     end
 
@@ -655,7 +717,9 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
    .st_valid    (st_valid),
    .st_sop      (st_sop),
    .st_eop      (st_eop),
-   .st_error    (st_error)
+   .st_error    (st_error),
+
+   .mem_rd_complt_clk_bus  (bus2st_mem_rd_finish)
 
   );
 
@@ -720,9 +784,9 @@ st2bus #(
   clk_bus     (Clk_400),         // input                    // 400MHz clk
   bus_ready   (1'b1),            // input                   
   bus_data    (st2bus_out_data), // output  reg [ST_PER_BUS-1:0]   
-  bus_en      (st2bus_out_valid), // output  reg             
+  bus_en      (st2bus_out_valid) // output  reg             
 
-  data2FlowCtrl   (st2bus_out_data2FlowCtrl)  // output            // to Flow Ctrl FIFO  (FROM_BUS2ST_NUM_BUS '1')
+  //data2FlowCtrl   (st2bus_out_data2FlowCtrl)  // output            // to Flow Ctrl FIFO  (FROM_BUS2ST_NUM_BUS '1')
 
   );
 

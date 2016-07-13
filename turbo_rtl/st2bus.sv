@@ -37,9 +37,9 @@ module st2bus #(parameter
 	input 					clk_bus,   // 400MHz clk
 	input 					bus_ready,
 	output 	reg [ST_PER_BUS-1:0] 	bus_data,
-	output	reg				bus_en,
+	output	reg				bus_en
 
-	output 					data2FlowCtrl   // to Flow Ctrl FIFO  (FROM_BUS2ST_NUM_BUS '1')
+	// output 					data2FlowCtrl   // to Flow Ctrl FIFO  (FROM_BUS2ST_NUM_BUS '1')
 	);
 
 // localparam RAM_DIN 		= 256;
@@ -164,7 +164,7 @@ begin
 		bus_out_finish <= 0;
 		cnt_bus_fsm_2 <= 0;
 		cnt_bus_fsm <= 0;
-		data2FlowCtrl <= 0;
+		// data2FlowCtrl <= 0;
 	end
 	else
 	begin
@@ -178,7 +178,7 @@ begin
 			bus_out_finish <= 0;
 			cnt_bus_fsm <= 0;
 			cnt_bus_fsm_2 <= 0;
-			data2FlowCtrl <= 0;
+			// data2FlowCtrl <= 0;
 		end
 		2'h1:
 		begin
@@ -201,7 +201,7 @@ begin
 				end
 			end
 			bus_out_finish <= 0;
-			data2FlowCtrl <= 0;
+			// data2FlowCtrl <= 0;
 		end
 		2'h2:
 		begin
@@ -210,12 +210,12 @@ begin
 			begin
 				cnt_bus_fsm_2 <= 0;
 				bus_fsm <= 2'h0;
-				data2FlowCtrl <= 0;
+				// data2FlowCtrl <= 0;
 			end
 			else
 			begin
 				cnt_bus_fsm_2 <= cnt_bus_fsm_2 + 8'h1;
-				data2FlowCtrl <= 1'b1;  // signaltap
+				// data2FlowCtrl <= 1'b1;  // signaltap
 			end
 			bus_out_finish <= 1'b1;
 		end
@@ -226,7 +226,7 @@ begin
 			bus_out_finish <= 0;
 			cnt_bus_fsm_2 <= 0;
 			cnt_bus_fsm <= 0;
-			data2FlowCtrl <= 0;
+			// data2FlowCtrl <= 0;
 		end 
 		endcase
 		//end----------- FSM     bus -----------------

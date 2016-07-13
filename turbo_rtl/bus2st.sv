@@ -38,7 +38,9 @@ module bus2st #(parameter
 	output	reg				st_valid,
 	output	reg				st_sop,
 	output	reg				st_eop,
-	output	reg				st_error
+	output	reg				st_error,
+
+	output	reg				mem_rd_complt_clk_bus
 	
 );
 
@@ -96,7 +98,7 @@ logic [6:0] 		bus_mem_rdaddr;
 
 
 //start-----------   clk_st --> clk_bus  ----------------
-logic mem_rd_complt_clk_bus, mem_rd_complt_r1, mem_rd_complt_r0, mem_rd_complt_clk_st;
+logic  mem_rd_complt_r1, mem_rd_complt_r0, mem_rd_complt_clk_st;
 always@(posedge clk_bus)
 begin
 	mem_rd_complt_clk_bus <= mem_rd_complt_r1;

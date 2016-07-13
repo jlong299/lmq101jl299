@@ -36,7 +36,7 @@ module st2bus #(parameter
 
 	input 					clk_bus,   // 400MHz clk
 	input 					bus_ready,
-	output 	reg [BUS-1:0] 	bus_data,
+	output 	reg [ST_PER_BUS-1:0] 	bus_data,
 	output	reg				bus_en,
 
 	output 					data2FlowCtrl   // to Flow Ctrl FIFO  (FROM_BUS2ST_NUM_BUS '1')

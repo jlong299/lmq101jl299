@@ -692,6 +692,41 @@ end
   .source_data_s   (trb_source_data_s  )    //       .source_data_s
 );
 
+reg [511:0] st2bus_out_data;
+reg         st2bus_out_valid;
+reg         st2bus_out_data2FlowCtrl;
+
+st2bus #(
+    .BUS (534),
+    .ST_PER_BUS (512),
+    .NUM_ST_PER_BUS (64), //  (ST_PER_BUS / ST)
+    .ST_PER_TURBO_PKT (128),   // 1024/ST
+    .NUM_BUS_PER_TURBO_PKT (2), // ( ST_PER_TURBO_PKT / NUM_ST_PER_BUS )
+    .ST (8)
+    .FROM_BUS2ST_NUM_BUS (25)   // !! NUM_BUS_PER_TURBO_PKT of bus2st.sv
+  )
+  st2bus_inst
+  (
+  rst_n       (test_Resetb),    //input    // clk_bus Asynchronous reset active low
+
+  clk_st      (uClk_usrDiv2),   // input               // clk turbo decoder
+  st_data     (trb_source_data_s),       // input [ST-1:0]      
+  st_valid    (trb_source_valid),        // input               
+  st_sop      (trb_source_sop),          // input               
+  st_eop      (trb_source_eop),          // input               
+  //st_error    ,            // //input              
+  st_ready    (trb_source_ready),        // output              
+
+  clk_bus     (Clk_400),         // input                    // 400MHz clk
+  bus_ready   (1'b1),            // input                   
+  bus_data    (st2bus_out_data), // output  reg [ST_PER_BUS-1:0]   
+  bus_en      (st2bus_out_valid), // output  reg             
+
+  data2FlowCtrl   (st2bus_out_data2FlowCtrl)  // output            // to Flow Ctrl FIFO  (FROM_BUS2ST_NUM_BUS '1')
+
+  );
+
+
    // synthesis translate_off
    logic numCL_error = 0;
    always @(posedge Clk_400)

@@ -644,7 +644,7 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
   inst_bus2st
   (
    .rst_n       (test_Resetb),
-   .clk_400     (Clk_400),
+   .clk_bus     (Clk_400),
    .bus_data    (wrreq_mem_out_q),
    .bus_en      (ram_rdValid_qqq),
    .bus_ready   (bus2st_ready),

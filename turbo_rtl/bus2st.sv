@@ -24,9 +24,9 @@ module bus2st #(parameter
 
 	)
 	(
-	input 					rst_n,  // clk_400 Asynchronous reset active low
+	input 					rst_n,  // clk_bus Asynchronous reset active low
 	
-	input 					clk_400,    // Clock 400MHz
+	input 					clk_bus,    // Clock 400MHz
 	input [BUS-1:0]			bus_data,
 	input					bus_en,
 	output	reg				bus_ready,
@@ -60,7 +60,7 @@ logic [6:0] 		bus_mem_rdaddr;
 //	.rdclock		(clk_st),	//input	  			rdclock;
 //	.rden 			(bus_mem_rden),
 //	.wraddress		(bus_mem_wraddr),	//input	[6:0]  		wraddress;
-//	.wrclock		(clk_400),	//input	  			wrclock;
+//	.wrclock		(clk_bus),	//input	  			wrclock;
 //	.wren			(bus_en),	//input	  			wren;
 //	.q				(bus_mem_out[2*RAM_DOUT-1 : RAM_DOUT]) 	//output [255:0]  	q;
 //	);
@@ -72,7 +72,7 @@ logic [6:0] 		bus_mem_rdaddr;
 //	.rdclock		(clk_st),	//input	  			rdclock;
 //	.rden 			(bus_mem_rden),
 //	.wraddress		(bus_mem_wraddr),	//input	[6:0]  		wraddress;
-//	.wrclock		(clk_400),	//input	  			wrclock;
+//	.wrclock		(clk_bus),	//input	  			wrclock;
 //	.wren			(bus_en),	//input	  			wren;
 //	.q				(bus_mem_out[RAM_DOUT-1 : 0]) 	//output [255:0]  	q;
 //	);
@@ -83,7 +83,7 @@ logic [6:0] 		bus_mem_rdaddr;
 	.rdclock		(clk_st),	//input	  			rdclock;
 	.rden 			(bus_mem_rden),
 	.wraddress		(bus_mem_wraddr),	//input	[6:0]  		wraddress;
-	.wrclock		(clk_400),	//input	  			wrclock;
+	.wrclock		(clk_bus),	//input	  			wrclock;
 	.wren			(bus_en),	//input	  			wren;
 	.q				(bus_mem_out[2*RAM_DOUT-1 : 0]) 	//output [255:0]  	q;
 	);
@@ -95,18 +95,18 @@ logic [6:0] 		bus_mem_rdaddr;
 //end------------  1 turbo packet RAM -------------------------
 
 
-//start-----------   clk_st --> clk_400  ----------------
-logic mem_rd_complt_clk_400, mem_rd_complt_r1, mem_rd_complt_r0, mem_rd_complt_clk_st;
-always@(posedge clk_400)
+//start-----------   clk_st --> clk_bus  ----------------
+logic mem_rd_complt_clk_bus, mem_rd_complt_r1, mem_rd_complt_r0, mem_rd_complt_clk_st;
+always@(posedge clk_bus)
 begin
-	mem_rd_complt_clk_400 <= mem_rd_complt_r1;
+	mem_rd_complt_clk_bus <= mem_rd_complt_r1;
 	mem_rd_complt_r1 <= mem_rd_complt_r0;
 	mem_rd_complt_r0 <= mem_rd_complt_clk_st;
 end
-//end-----------   clk_st --> clk_400  ----------------
+//end-----------   clk_st --> clk_bus  ----------------
 
 
-//start-------------  bus logic ( clk_400 domain)------------
+//start-------------  bus logic ( clk_bus domain)------------
 logic bus_fsm;
 logic [7:0] cnt_bus_fsm;
 logic 	mem_full_trigger;
@@ -116,7 +116,7 @@ begin
 	bus_ready <= (bus_fsm == 1'h0) && (cnt_bus_fsm != NUM_BUS_PER_TURBO_PKT);
 end
 
-always@(posedge clk_400)
+always@(posedge clk_bus)
 begin
 //start--------------  FSM  --------------------
 if (!rst_n)
@@ -150,7 +150,7 @@ begin
 	end
 	1'h1:
 	begin
-		if ( mem_rd_complt_clk_400 ) 
+		if ( mem_rd_complt_clk_bus ) 
 			bus_fsm <= 1'h0;
 		bus_mem_wraddr <= 0;
 		cnt_bus_fsm <= 0;
@@ -178,10 +178,10 @@ end
 	// bus_ready    :  		1 	1 	1 	0
 	//-----------------------------------
 
-//end-------------  bus logic ( clk_400 domain)------------
+//end-------------  bus logic ( clk_bus domain)------------
 
 
-//start-----------   clk_400 --> clk_st  ----------------
+//start-----------   clk_bus --> clk_st  ----------------
 logic mem_full_trig_clk_st, mem_full_trig_r1, mem_full_trig_r0;
 always@(posedge clk_st)
 begin
@@ -197,7 +197,7 @@ begin
 	rst_n_st_r1 <= rst_n_st_r0;
 	rst_n_st_r0 <= rst_n;
 end
-//end-----------   clk_400 --> clk_st  ----------------
+//end-----------   clk_bus --> clk_st  ----------------
 
 
 //start---------  mem out logic (clk_st domain) ----------

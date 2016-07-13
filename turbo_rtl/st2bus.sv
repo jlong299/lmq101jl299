@@ -69,7 +69,7 @@ reg  [1:0]		st_fsm;
 reg  [7:0]			cnt_st_valid;
 reg  [ST_PER_BUS-1 : 0] 	bus_reg0, bus_reg1;
 reg 			st_in_finish;
-always@(posedge clk-st)
+always@(posedge clk_st)
 begin
 	if (!rst_n_st)
 	begin

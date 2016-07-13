@@ -474,6 +474,7 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
       // l12ab_WrSop                              <= wrsop_qqq;
       // l12ab_WrLen                              <= wrCLnum_qqq;
 
+
       // Track Num Write requests
       if (l12ab_WrEn)
       begin
@@ -783,12 +784,33 @@ st2bus #(
 
   clk_bus     (Clk_400),         // input                    // 400MHz clk
   bus_ready   (1'b1),            // input                   
-  bus_data    (st2bus_out_data), // output  reg [ST_PER_BUS-1:0]   
-  bus_en      (st2bus_out_valid) // output  reg             
+  bus_data    (l12ab_WrDin), // output  reg [ST_PER_BUS-1:0]   
+  bus_en      (l12ab_WrEn) // output  reg             
 
   //data2FlowCtrl   (st2bus_out_data2FlowCtrl)  // output            // to Flow Ctrl FIFO  (FROM_BUS2ST_NUM_BUS '1')
 
   );
+
+  always@(posedge Clk_400)
+  begin
+    if (!test_Resetb)
+    begin
+      l12ab_WrAddr <= 0;
+      l12ab_WrTID <= 0;
+      l12ab_RdSop <= 0;
+      l12ab_WrLen <= 0;
+    end
+    else
+    begin
+      l12ab_RdSop <= 1'b1;
+      l12ab_WrLen <= 2'b00;
+      if (l12ab_WrEn)
+      begin
+        l12ab_WrAddr <= l12ab_WrAddr + 20'h1;
+        l12ab_WrTID  <= l12ab_WrTID + 16'h1;
+      end
+    end
+  end
 
 
    // synthesis translate_off

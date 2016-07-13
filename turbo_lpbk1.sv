@@ -623,9 +623,9 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
             endcase
 
             if (cnt_mdata_pend[6:5] == 2'b11)
-              rd_mdata_avail <= 1'b1;
-            else
               rd_mdata_avail <= 1'b0;
+            else
+              rd_mdata_avail <= 1'b1;
             //end -------- cnt_mdata_pend   substitute  rd_mdata_pend[] -----
 
 

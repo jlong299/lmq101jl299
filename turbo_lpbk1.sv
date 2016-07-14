@@ -768,7 +768,7 @@ begin
   end
   else
   begin
-    if (trb_source_valid)
+    if (start_cnt)
     begin
       cnt_trb_dly_L <= cnt_trb_dly_L + 16'd1;
       if (cnt_trb_dly_L == 16'hffff)

@@ -756,6 +756,33 @@ end
   .source_data_s   (trb_source_data_s  )    //       .source_data_s
 );
 
+reg [15:0]      cnt_trb_dly_L, cnt_trb_dly_H, cnt_trb_src_eop;
+
+always@(posedge uClk_usrDiv2)
+begin
+  if (!test_Resetb)
+  begin
+    cnt_trb_dly_L <= 0;
+    cnt_trb_dly_H <= 0;
+    cnt_trb_src_eop <= 0;
+  end
+  else
+  begin
+    if (trb_source_valid)
+    begin
+      cnt_trb_dly_L <= cnt_trb_dly_L + 16'd1;
+      if (cnt_trb_dly_L == 16'hffff)
+      begin
+        cnt_trb_dly_H <= cnt_trb_dly_H + 16'd1;
+      end
+    end
+
+    if (trb_source_eop)
+      cnt_trb_src_eop <= cnt_trb_src_eop + 16'd1;
+  end
+end
+
+
 reg [511:0] st2bus_out_data;
 reg         st2bus_out_valid;
 reg         st2bus_out_data2FlowCtrl;

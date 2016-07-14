@@ -88,7 +88,7 @@ begin
 		begin 
 			if (st_valid)
 			begin
-				cnt_st_valid <= (NUM_ST_PER_BUS-1) ? 0 : (cnt_st_valid + 8'd1);
+				cnt_st_valid <= (cnt_st_valid == NUM_ST_PER_BUS-1) ? 0 : (cnt_st_valid + 8'd1);
 				
 				bus_reg0[ST_PER_BUS-1 : ST_PER_BUS-ST] <= st_data;
 				bus_reg0[ST_PER_BUS-ST-1 : 0] <= bus_reg0[ST_PER_BUS-1 : ST];
@@ -103,7 +103,7 @@ begin
 		begin 
 			if (st_valid)
 			begin
-				cnt_st_valid <= (NUM_ST_PER_BUS-1) ? 0 : (cnt_st_valid + 8'd1);
+				cnt_st_valid <= (cnt_st_valid == NUM_ST_PER_BUS-1) ? 0 : (cnt_st_valid + 8'd1);
 				
 				bus_reg1[ST_PER_BUS-1 : ST_PER_BUS-ST] <= st_data;
 				bus_reg1[ST_PER_BUS-ST-1 : 0] <= bus_reg1[ST_PER_BUS-1 : ST];
@@ -184,7 +184,7 @@ begin
 		begin
 			if (bus_ready)
 			begin
-				cnt_bus_fsm <= 2'h2 ? 0 : (cnt_bus_fsm + 2'h1);
+				cnt_bus_fsm <= (cnt_bus_fsm == 2'h2) ? 0 : (cnt_bus_fsm + 2'h1);
 				if (cnt_bus_fsm == 2'h2)
 				begin
 					bus_fsm <= 2'h2;

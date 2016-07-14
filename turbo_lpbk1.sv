@@ -756,7 +756,10 @@ end
   .source_data_s   (trb_source_data_s  )    //       .source_data_s
 );
 
-reg [15:0]      cnt_trb_dly_L, cnt_trb_dly_H, cnt_trb_src_eop;
+reg [15:0]      cnt_trb_dly_L /* synthesis keep */;
+reg [15:0]      cnt_trb_dly_H /* synthesis keep */;
+reg [15:0]      cnt_trb_src_eop /* synthesis keep */;
+reg start_cnt;
 
 always@(posedge uClk_usrDiv2)
 begin
@@ -765,9 +768,15 @@ begin
     cnt_trb_dly_L <= 0;
     cnt_trb_dly_H <= 0;
     cnt_trb_src_eop <= 0;
+    start_cnt <= 0;
   end
   else
   begin
+    if (st_sop)
+      start_cnt <= 1'b1;
+    else
+      start_cnt <= start_cnt;
+
     if (start_cnt)
     begin
       cnt_trb_dly_L <= cnt_trb_dly_L + 16'd1;

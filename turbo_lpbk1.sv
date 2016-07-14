@@ -600,21 +600,21 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
             end
             2'h1:
             begin
-              cnt_mdata_pend <= cnt_mdata_pend + 8'h1;
+              cnt_mdata_pend <= cnt_mdata_pend + 8'd1;
             end
             2'h2:
             begin
-              if (cnt_mdata_pend >= 8'h25)
-                  cnt_mdata_pend <= cnt_mdata_pend - 8'h25;
+              if (cnt_mdata_pend >= 8'd25)
+                  cnt_mdata_pend <= cnt_mdata_pend - 8'd25;
               else
-                  cnt_mdata_pend <= 8'h0;
+                  cnt_mdata_pend <= 8'd0;
             end
             2'h3:
             begin
-              if (cnt_mdata_pend >= 8'h24)
-                cnt_mdata_pend <= cnt_mdata_pend - 8'h24;
+              if (cnt_mdata_pend >= 8'd24)
+                cnt_mdata_pend <= cnt_mdata_pend - 8'd24;
               else
-                cnt_mdata_pend <= 8'h0;
+                cnt_mdata_pend <= 8'd0;
             end
             default:
             begin

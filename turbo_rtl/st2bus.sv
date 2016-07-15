@@ -206,15 +206,15 @@ begin
 		2'h2:
 		begin
 			bus_en <= 0;
-			if (cnt_bus_fsm_2 == 8'h25)
+			if (cnt_bus_fsm_2 == 8'd25)
 			begin
 				cnt_bus_fsm_2 <= 0;
-				bus_fsm <= 2'h0;
+				bus_fsm <= 2'd0;
 				// data2FlowCtrl <= 0;
 			end
 			else
 			begin
-				cnt_bus_fsm_2 <= cnt_bus_fsm_2 + 8'h1;
+				cnt_bus_fsm_2 <= cnt_bus_fsm_2 + 8'd1;
 				// data2FlowCtrl <= 1'b1;  // signaltap
 			end
 			bus_out_finish <= 1'b1;

@@ -694,6 +694,7 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
   logic   [12:0]  trb_source_blk_size;
   logic   [7:0] trb_source_data_s /* synthesis keep */ ;
   
+  reg     st_out_ready;
 
   bus2st #(
     .BUS (534),
@@ -712,7 +713,7 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
    .bus_ready   (bus2st_ready),
 
    .clk_st      (uClk_usrDiv2),
-   .st_ready    (trb_sink_ready),
+   .st_ready    (st_out_ready),
    .st_data     (st_data),
    .st_valid    (st_valid),
    .st_sop      (st_sop),
@@ -722,6 +723,18 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
    .mem_rd_complt_clk_bus  (bus2st_mem_rd_finish)
 
   );
+
+  ready_adjust inst_ready_adjust
+  (
+    .rst_n      (test_Resetb),
+    .clk        (uClk_usrDiv2),
+
+    .ready_in   (trb_sink_ready),
+    .sink_eop   (st_eop),
+    .source_eop (trb_source_eop),
+
+    .ready_out  (st_out_ready)
+    );
 
 always@(posedge uClk_usrDiv2)
 begin

@@ -152,7 +152,7 @@ end
 
 
 //start---------   bus out  ( Only for 1024 turbo len case ) ----------------
-reg  		bus_fsm;
+reg [1:0] 		bus_fsm;
 reg [7:0]	cnt_bus_fsm_2;
 reg [1:0]	cnt_bus_fsm;
 always@(posedge clk_bus)
@@ -233,5 +233,7 @@ begin
 	end
 end
 //end---------   bus out  ( Only for 1024 turbo len case ) ----------------
+
+
 
 endmodule

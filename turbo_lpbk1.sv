@@ -808,6 +808,7 @@ end
 reg [511:0] st2bus_out_data;
 reg         st2bus_out_valid;
 reg         st2bus_out_data2FlowCtrl;
+reg         ready_out_st2bus;
 
 st2bus #(
     .BUS (534),
@@ -828,7 +829,7 @@ st2bus #(
   .st_sop      (trb_source_sop),          // input               
   .st_eop      (trb_source_eop),          // input               
   //st_error    ,            // //input              
-  .st_ready    (trb_source_ready),        // output              
+  .st_ready    (ready_out_st2bus),        // output              
 
   .clk_bus     (Clk_400),         // input                    // 400MHz clk
   .bus_ready   (1'b1),            // input                   
@@ -838,6 +839,27 @@ st2bus #(
   //data2FlowCtrl   (st2bus_out_data2FlowCtrl)  // output            // to Flow Ctrl FIFO  (FROM_BUS2ST_NUM_BUS '1')
 
   );
+
+  reg [7:0]  cnst_rom_q;
+  cnst_rom
+  cnst_rom_inst
+  (
+    .address    (8'h00),
+    .clock      (uClk_usrDiv2),
+    .q          (cnst_rom_q)
+    );
+
+  always@(posedge uClk_usrDiv2)
+  begin
+    if (cnst_rom_q[0] == 1'b0)
+    begin
+      trb_source_ready <= ready_out_st2bus;
+    end
+    else
+    begin
+      trb_source_ready <= 1'b1;
+    end
+  end
 
   always@(posedge Clk_400)
   begin

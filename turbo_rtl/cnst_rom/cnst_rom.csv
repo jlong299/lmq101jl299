@@ -1,0 +1,18 @@
+# system info cnst_rom on 2016.07.15.17:18:10
+system_info:
+name,value
+DEVICE,10AX115U3F45E2SGE3
+DEVICE_FAMILY,Arria 10
+GENERATION_ID,1468574290
+#
+#
+# Files generated for cnst_rom on 2016.07.15.17:18:10
+files:
+filepath,kind,attributes,module,is_top
+sim/cnst_rom.v,VERILOG,CONTAINS_INLINE_CONFIGURATION,cnst_rom,true
+rom_1port_151/sim/cnst_rom_rom_1port_151_5e6juei.v,VERILOG,,cnst_rom_rom_1port_151_5e6juei,false
+#
+# Map from instance-path to kind of module
+instances:
+instancePath,module
+cnst_rom.rom_1port_0,cnst_rom_rom_1port_151_5e6juei

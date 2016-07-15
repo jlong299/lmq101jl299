@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simPackage>
+ <file
+   path="rom_1port_151/sim/cnst_rom_rom_1port_151_5e6juei.v"
+   type="VERILOG"
+   library="rom_1port_151" />
+ <file path="sim/cnst_rom.v" type="VERILOG" hasInlineConfiguration="true" />
+ <topLevel name="cnst_rom" />
+ <deviceFamily name="arria10" />
+</simPackage>

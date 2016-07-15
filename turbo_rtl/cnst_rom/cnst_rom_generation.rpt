@@ -1,0 +1,72 @@
+Info: Starting: Create simulation model
+Info: qsys-generate /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom.qsys --simulation=VERILOG --output-directory=/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom --family="Arria 10" --part=10AX115U3F45E2SGE3
+Progress: Loading turbo_rtl/cnst_rom.qsys
+Progress: Reading input file
+Progress: Adding rom_1port_0 [rom_1port 15.1]
+Progress: Parameterizing module rom_1port_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+: cnst_rom.rom_1port_0: Targeting device family: Arria 10.
+: cnst_rom.rom_1port_0: The initial content file can only conforms to PORT_A's dimensions for ROM:1-PORT.
+Info: cnst_rom: "Transforming system: cnst_rom"
+Info: cnst_rom: Running transform generation_view_transform
+Info: cnst_rom: Running transform generation_view_transform took 0.000s
+Info: rom_1port_0: Running transform generation_view_transform
+Info: rom_1port_0: Running transform generation_view_transform took 0.000s
+Info: cnst_rom: Running transform merlin_avalon_transform
+Info: cnst_rom: Running transform merlin_avalon_transform took 0.008s
+Info: cnst_rom: "Naming system components in system: cnst_rom"
+Info: cnst_rom: "Processing generation queue"
+Info: cnst_rom: "Generating: cnst_rom"
+Info: cnst_rom: "Generating: cnst_rom_rom_1port_151_5e6juei"
+Info: cnst_rom: Done "cnst_rom" with 2 modules, 2 files
+Info: qsys-generate succeeded.
+Info: Finished: Create simulation model
+Info: Starting: Create Modelsim Project.
+Info: sim-script-gen --spd=/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom/cnst_rom.spd --output-directory=/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom/sim/ --use-relative-paths=true
+Info: Doing: ip-make-simscript --spd=/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom/cnst_rom.spd --output-directory=/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom/sim/ --use-relative-paths=true
+Info: Generating the following file(s) for MODELSIM simulator in /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom/sim/ directory:
+Info: 	mentor/msim_setup.tcl
+Info: Generating the following file(s) for VCS simulator in /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom/sim/ directory:
+Info: 	synopsys/vcs/vcs_setup.sh
+Info: Generating the following file(s) for VCSMX simulator in /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom/sim/ directory:
+Info: 	synopsys/vcsmx/synopsys_sim.setup
+Info: 	synopsys/vcsmx/vcsmx_setup.sh
+Info: Generating the following file(s) for NCSIM simulator in /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom/sim/ directory:
+Info: 	cadence/cds.lib
+Info: 	cadence/hdl.var
+Info: 	cadence/ncsim_setup.sh
+Info: 	1 .cds.lib files in cadence/cds_libs/ directory
+Info: Generating the following file(s) for RIVIERA simulator in /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom/sim/ directory:
+Info: 	aldec/rivierapro_setup.tcl
+Info: For information on how to simulate your IP, see the explanatory comments in the simulator-specific subdirectories under /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom/sim/.
+Info: Finished: Create Modelsim Project.
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: qsys-generate /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom.qsys --synthesis=VERILOG --output-directory=/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom --family="Arria 10" --part=10AX115U3F45E2SGE3
+Progress: Loading turbo_rtl/cnst_rom.qsys
+Progress: Reading input file
+Progress: Adding rom_1port_0 [rom_1port 15.1]
+Progress: Parameterizing module rom_1port_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+: cnst_rom.rom_1port_0: Targeting device family: Arria 10.
+: cnst_rom.rom_1port_0: The initial content file can only conforms to PORT_A's dimensions for ROM:1-PORT.
+Info: cnst_rom: "Transforming system: cnst_rom"
+Info: cnst_rom: Running transform generation_view_transform
+Info: cnst_rom: Running transform generation_view_transform took 0.000s
+Info: rom_1port_0: Running transform generation_view_transform
+Info: rom_1port_0: Running transform generation_view_transform took 0.000s
+Info: cnst_rom: Running transform merlin_avalon_transform
+Info: cnst_rom: Running transform merlin_avalon_transform took 0.012s
+Info: cnst_rom: "Naming system components in system: cnst_rom"
+Info: cnst_rom: "Processing generation queue"
+Info: cnst_rom: "Generating: cnst_rom"
+Info: cnst_rom: "Generating: cnst_rom_rom_1port_151_5e6juei"
+Info: cnst_rom: Done "cnst_rom" with 2 modules, 2 files
+Info: qsys-generate succeeded.
+Info: Finished: Create HDL design files for synthesis

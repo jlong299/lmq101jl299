@@ -1,0 +1,8 @@
+	component cnst_rom is
+		port (
+			address : in  std_logic                    := 'X'; -- address
+			clock   : in  std_logic                    := 'X'; -- clk
+			q       : out std_logic_vector(7 downto 0)         -- dataout
+		);
+	end component cnst_rom;
+

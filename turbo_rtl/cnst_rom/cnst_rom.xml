@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deploy
+ date="2016.07.15.17:18:11"
+ outputDirectory="/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom/">
+ <perimeter>
+  <parameter
+     name="AUTO_GENERATION_ID"
+     type="Integer"
+     defaultValue="0"
+     onHdl="0"
+     affectsHdl="1" />
+  <parameter
+     name="AUTO_UNIQUE_ID"
+     type="String"
+     defaultValue=""
+     onHdl="0"
+     affectsHdl="1" />
+  <parameter
+     name="AUTO_DEVICE_FAMILY"
+     type="String"
+     defaultValue="Arria 10"
+     onHdl="0"
+     affectsHdl="1" />
+  <parameter
+     name="AUTO_DEVICE"
+     type="String"
+     defaultValue="10AX115U3F45E2SGE3"
+     onHdl="0"
+     affectsHdl="1" />
+  <parameter
+     name="AUTO_DEVICE_SPEEDGRADE"
+     type="String"
+     defaultValue="2"
+     onHdl="0"
+     affectsHdl="1" />
+  <interface name="rom_input" kind="conduit" start="0">
+   <property name="associatedClock" value="" />
+   <property name="associatedReset" value="" />
+   <port name="address" direction="input" role="address" width="1" />
+   <port name="clock" direction="input" role="clk" width="1" />
+  </interface>
+  <interface name="rom_output" kind="conduit" start="0">
+   <property name="associatedClock" value="" />
+   <property name="associatedReset" value="" />
+   <port name="q" direction="output" role="dataout" width="8" />
+  </interface>
+ </perimeter>
+ <entity kind="cnst_rom" version="1.0" name="cnst_rom">
+  <parameter name="AUTO_GENERATION_ID" value="1468574291" />
+  <parameter name="AUTO_DEVICE" value="10AX115U3F45E2SGE3" />
+  <parameter name="AUTO_DEVICE_FAMILY" value="Arria 10" />
+  <parameter name="AUTO_UNIQUE_ID" value="" />
+  <parameter name="AUTO_DEVICE_SPEEDGRADE" value="2" />
+  <generatedFiles>
+   <file
+       path="/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom/synth/cnst_rom.v"
+       attributes="CONTAINS_INLINE_CONFIGURATION" />
+  </generatedFiles>
+  <childGeneratedFiles>
+   <file
+       path="/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom/synth/cnst_rom.v"
+       attributes="CONTAINS_INLINE_CONFIGURATION" />
+  </childGeneratedFiles>
+  <sourceFiles>
+   <file
+       path="/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom.qsys" />
+  </sourceFiles>
+  <childSourceFiles>
+   <file
+       path="/home/user/altera_pro/15.1/ip/altera/megafunctions/rom_1port/rom_1_port_hw.tcl" />
+  </childSourceFiles>
+  <messages>
+   <message level="Info" culprit="cnst_rom">"Generating: cnst_rom"</message>
+   <message level="Info" culprit="cnst_rom">"Generating: cnst_rom_rom_1port_151_5e6juei"</message>
+  </messages>
+ </entity>
+ <entity kind="rom_1port" version="15.1" name="cnst_rom_rom_1port_151_5e6juei">
+  <parameter
+     name="GUI_MIFfilename"
+     value="/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom/test.mif" />
+  <parameter name="GUI_CLOCK_ENABLE_INPUT_A" value="false" />
+  <parameter name="GUI_NUMWORDS_A" value="1" />
+  <parameter name="DEVICE_FAMILY" value="Arria 10" />
+  <parameter name="GUI_RegAddr" value="true" />
+  <parameter name="GUI_RAM_BLOCK_TYPE" value="Auto" />
+  <parameter name="GUI_SingleClock" value="0" />
+  <parameter name="GUI_JTAG_ENABLED" value="true" />
+  <parameter name="GUI_INIT_TO_SIM_X" value="false" />
+  <parameter name="GUI_AclrAddr" value="false" />
+  <parameter name="GUI_AclrOutput" value="false" />
+  <parameter name="GUI_INIT_FILE_LAYOUT" value="PORT_A" />
+  <parameter name="GUI_MAXIMUM_DEPTH" value="0" />
+  <parameter name="GUI_WIDTHAD_A" value="1" />
+  <parameter name="GUI_ADDRESSSTALL_A" value="false" />
+  <parameter name="GUI_FILE_REFERENCE" value="0" />
+  <parameter name="GUI_RegOutput" value="true" />
+  <parameter name="GUI_CLOCK_ENABLE_OUTPUT_A" value="false" />
+  <parameter name="GUI_SclrOutput" value="false" />
+  <parameter name="GUI_rden" value="false" />
+  <parameter name="GUI_MODULE_NAME" value="altera_syncram" />
+  <parameter name="GUI_BlankMemory" value="1" />
+  <parameter name="GUI_JTAG_ID" value="cnst0" />
+  <parameter name="GUI_WIDTH_A" value="8" />
+  <generatedFiles>
+   <file
+       path="/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom/rom_1port_151/synth/cnst_rom_rom_1port_151_5e6juei.v"
+       attributes="" />
+  </generatedFiles>
+  <childGeneratedFiles>
+   <file
+       path="/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0714/samples/afu/nlb_400/turbo_rtl/cnst_rom/rom_1port_151/synth/cnst_rom_rom_1port_151_5e6juei.v"
+       attributes="" />
+  </childGeneratedFiles>
+  <sourceFiles>
+   <file
+       path="/home/user/altera_pro/15.1/ip/altera/megafunctions/rom_1port/rom_1_port_hw.tcl" />
+  </sourceFiles>
+  <childSourceFiles/>
+  <instantiator instantiator="cnst_rom" as="rom_1port_0" />
+  <messages>
+   <message level="Info" culprit="cnst_rom">"Generating: cnst_rom_rom_1port_151_5e6juei"</message>
+  </messages>
+ </entity>
+</deploy>

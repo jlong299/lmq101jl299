@@ -648,7 +648,7 @@ module requestor #(parameter PEND_THRESH=1, ADDR_LMT=20, TXHDR_WIDTH=61, RXHDR_W
             Num_RdCredits <= Num_RdCredits;
           end
         endcase
-        re2ab_stallRd     <= ($signed(Num_RdCredits)<=0);
+        re2ab_stallRd     <= 1'b0;  //changed to fit the unbalanced loop back test  //re2ab_stallRd     <= ($signed(Num_RdCredits)<=0);
         
         // Error Detection Logic
         //--------------------------

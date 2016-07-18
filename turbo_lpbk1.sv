@@ -829,7 +829,7 @@ st2bus #(
   .st_sop      (trb_source_sop),          // input               
   .st_eop      (trb_source_eop),          // input               
   //st_error    ,            // //input              
-  .st_ready    (ready_out_st2bus),        // output              
+  .st_ready    (trb_source_ready),        // output              
 
   .clk_bus     (Clk_400),         // input                    // 400MHz clk
   .bus_ready   (1'b1),            // input                   
@@ -840,27 +840,7 @@ st2bus #(
 
   );
 
-  reg [7:0]  cnst_rom_q;
-  cnst_rom
-  cnst_rom_inst
-  (
-    .address    (8'h00),
-    .clock      (uClk_usrDiv2),
-    .q          (cnst_rom_q)
-    );
-
-  always@(posedge uClk_usrDiv2)
-  begin
-    if (cnst_rom_q[0] == 1'b0)
-    begin
-      trb_source_ready <= ready_out_st2bus;
-    end
-    else
-    begin
-      trb_source_ready <= 1'b1;
-    end
-  end
-
+  
   always@(posedge Clk_400)
   begin
     if (!test_Resetb)

@@ -724,17 +724,20 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
 
   );
 
-  ready_adjust inst_ready_adjust
-  (
-    .rst_n      (test_Resetb),
-    .clk        (uClk_usrDiv2),
 
-    .ready_in   (trb_sink_ready),
-    .sink_eop   (st_eop),
-    .source_eop (trb_source_eop),
+//start------------ Turbo Decoder ------------------
 
-    .ready_out  (st_out_ready)
-    );
+ready_adjust inst_ready_adjust
+(
+  .rst_n      (test_Resetb),
+  .clk        (uClk_usrDiv2),
+
+  .ready_in   (trb_sink_ready),
+  .sink_eop   (st_eop),
+  .source_eop (trb_source_eop),
+
+  .ready_out  (st_out_ready)
+  );
 
 always@(posedge uClk_usrDiv2)
 begin
@@ -745,7 +748,7 @@ begin
   trb_sel_crc24a <= 1'b0;
 end
 
-  turbo_d0 turbo_d0_inst (
+turbo_d0 turbo_d0_inst (
   .clk             (uClk_usrDiv2),             //    clk.clk
   .reset_n         (test_Resetb        ),   //    rst.reset_n
   .sink_valid      (st_valid     ),   //   sink.sink_valid
@@ -768,41 +771,41 @@ end
   .source_blk_size (trb_source_blk_size),   //       .source_blk_size
   .source_data_s   (trb_source_data_s  )    //       .source_data_s
 );
+//end------------ Turbo Decoder ------------------
 
+
+//start-----------  counter for signaltap ---------------------
 reg [15:0]      cnt_trb_dly_L /* synthesis keep */;
+reg [15:0]      cnt_trb_dly_M /* synthesis keep */;
 reg [15:0]      cnt_trb_dly_H /* synthesis keep */;
-reg [15:0]      cnt_trb_src_eop /* synthesis keep */;
-reg start_cnt;
+reg [19:0]      cnt_trb_src_eop /* synthesis keep */;
 
+counter_trb_sigtap counter_trb_sigtap_inst
+(
+  .rst_n  (test_Resetb),
+  .clk    (uClk_usrDiv2),
+
+  .sop    (st_sop),  // counter start
+
+  .cnt_L  (cnt_trb_dly_L),
+  .cnt_M  (cnt_trb_dly_M),
+  .cnt_H  (cnt_trb_dly_H)
+  );
+
+// for signaltap 
 always@(posedge uClk_usrDiv2)
 begin
   if (!test_Resetb)
   begin
-    cnt_trb_dly_L <= 0;
-    cnt_trb_dly_H <= 0;
     cnt_trb_src_eop <= 0;
-    start_cnt <= 0;
   end
   else
   begin
-    if (st_sop)
-      start_cnt <= 1'b1;
-    else
-      start_cnt <= start_cnt;
-
-    if (start_cnt)
-    begin
-      cnt_trb_dly_L <= cnt_trb_dly_L + 16'd1;
-      if (cnt_trb_dly_L == 16'hffff)
-      begin
-        cnt_trb_dly_H <= cnt_trb_dly_H + 16'd1;
-      end
-    end
-
     if (trb_source_eop)
-      cnt_trb_src_eop <= cnt_trb_src_eop + 16'd1;
+      cnt_trb_src_eop <= cnt_trb_src_eop + 19'd1;
   end
 end
+//end-----------  counter for signaltap ---------------------
 
 
 reg [511:0] st2bus_out_data;

@@ -147,7 +147,7 @@ endgenerate
 trb_out_mux #( .NUM_TURBO (NUM_TURBO) )
 trb_out_mux_inst
 (
-	.rst_n 			(rst_n_clk_st //!!! to be connected
+	.rst_n 			(rst_n_clk_st), //!!! to be connected
 	.clk 			(clk_st),
 
 	.st_data_in 	(trb_source_data_s),

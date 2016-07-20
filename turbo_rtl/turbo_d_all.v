@@ -108,7 +108,15 @@ generate
 for (i=0; i<NUM_TURBO; i=i+1)
 begin: test
 
-	bus2st_turbo bus2st_turbo_inst (
+	bus2st_turbo bus2st_turbo_inst #(
+    .BUS (534),
+    .ST_PER_BUS (512),
+    .NUM_ST_PER_BUS (42), //  (ST_PER_BUS / ST)
+    .ST_PER_TURBO_PKT (1028),   // 1024+4
+    .NUM_BUS_PER_TURBO_PKT (25),
+    .ST (12)
+  	)
+	(
 	  .rst_n            (rst_n),             
 	  .clk_bus         	(clk_bus),
 	  .bus_data			(bus_data),
@@ -158,17 +166,3 @@ trb_out_mux_inst
 
 
 endmodule
-
-wire [0:0] trb_sel_crc24a;
-wire [4:0] trb_sink_max_iter;
-wire [12:0] trb_sink_blk_size;
-wire [1:0] trb_sink_error;
-
-always@(posedge clk)
-begin
-  trb_sink_blk_size <= 13'd1024;
-  //trb_source_ready <= 1'b1;
-  trb_sink_error <= 2'b00;
-  trb_sink_max_iter <= 5'd8;
-  trb_sel_crc24a <= 1'b0;
-end

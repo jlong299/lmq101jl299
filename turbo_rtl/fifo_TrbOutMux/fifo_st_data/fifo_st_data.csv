@@ -1,0 +1,18 @@
+# system info fifo_st_data on 2016.07.20.15:43:46
+system_info:
+name,value
+DEVICE,10AX115U3F45E2SGE3
+DEVICE_FAMILY,Arria 10
+GENERATION_ID,1469000625
+#
+#
+# Files generated for fifo_st_data on 2016.07.20.15:43:46
+files:
+filepath,kind,attributes,module,is_top
+sim/fifo_st_data.v,VERILOG,CONTAINS_INLINE_CONFIGURATION,fifo_st_data,true
+fifo_151/sim/fifo_st_data_fifo_151_xtsoi5y.v,VERILOG,,fifo_st_data_fifo_151_xtsoi5y,false
+#
+# Map from instance-path to kind of module
+instances:
+instancePath,module
+fifo_st_data.fifo_0,fifo_st_data_fifo_151_xtsoi5y

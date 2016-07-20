@@ -13,7 +13,8 @@
 //                            ---> bus2st --> turbo -->
 //
 //----------------------------------------------------------------------------------------
-
+// !!!
+// Only work when fix turbo length = 1024
 
 module turbo_d_all #(parameter 
 	BUS=534,

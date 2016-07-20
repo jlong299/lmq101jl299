@@ -1,0 +1,74 @@
+Info: Starting: Create simulation model
+Info: qsys-generate /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0720/samples/afu/nlb_400/turbo_rtl/fifo_TrbOutMux/fifo_st_data.qsys --simulation=VERILOG --allow-mixed-language-simulation --output-directory=/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0720/samples/afu/nlb_400/turbo_rtl/fifo_TrbOutMux/fifo_st_data --family="Arria 10" --part=10AX115U3F45E2SGE3
+Progress: Loading fifo_TrbOutMux/fifo_st_data.qsys
+Progress: Reading input file
+Progress: Adding fifo_0 [fifo 15.1]
+Progress: Parameterizing module fifo_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+: fifo_st_data.fifo_0: Targeting device family: Arria 10.
+: fifo_st_data.fifo_0: Tab: 'DCFIFO 1' is unavailable while using Single-Clock FIFO.
+: fifo_st_data.fifo_0: Tab: 'DCFIFO 2' is unavailable while using Single-Clock FIFO.
+Info: fifo_st_data: "Transforming system: fifo_st_data"
+Info: fifo_st_data: Running transform generation_view_transform
+Info: fifo_st_data: Running transform generation_view_transform took 0.000s
+Info: fifo_0: Running transform generation_view_transform
+Info: fifo_0: Running transform generation_view_transform took 0.000s
+Info: fifo_st_data: Running transform merlin_avalon_transform
+Info: fifo_st_data: Running transform merlin_avalon_transform took 0.032s
+Info: fifo_st_data: "Naming system components in system: fifo_st_data"
+Info: fifo_st_data: "Processing generation queue"
+Info: fifo_st_data: "Generating: fifo_st_data"
+Info: fifo_st_data: "Generating: fifo_st_data_fifo_151_xtsoi5y"
+Info: fifo_st_data: Done "fifo_st_data" with 2 modules, 2 files
+Info: qsys-generate succeeded.
+Info: Finished: Create simulation model
+Info: Starting: Create Modelsim Project.
+Info: sim-script-gen --spd=/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0720/samples/afu/nlb_400/turbo_rtl/fifo_TrbOutMux/fifo_st_data/fifo_st_data.spd --output-directory=/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0720/samples/afu/nlb_400/turbo_rtl/fifo_TrbOutMux/fifo_st_data/sim/ --use-relative-paths=true
+Info: Doing: ip-make-simscript --spd=/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0720/samples/afu/nlb_400/turbo_rtl/fifo_TrbOutMux/fifo_st_data/fifo_st_data.spd --output-directory=/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0720/samples/afu/nlb_400/turbo_rtl/fifo_TrbOutMux/fifo_st_data/sim/ --use-relative-paths=true
+Info: Generating the following file(s) for MODELSIM simulator in /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0720/samples/afu/nlb_400/turbo_rtl/fifo_TrbOutMux/fifo_st_data/sim/ directory:
+Info: 	mentor/msim_setup.tcl
+Info: Generating the following file(s) for VCS simulator in /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0720/samples/afu/nlb_400/turbo_rtl/fifo_TrbOutMux/fifo_st_data/sim/ directory:
+Info: 	synopsys/vcs/vcs_setup.sh
+Info: Generating the following file(s) for VCSMX simulator in /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0720/samples/afu/nlb_400/turbo_rtl/fifo_TrbOutMux/fifo_st_data/sim/ directory:
+Info: 	synopsys/vcsmx/synopsys_sim.setup
+Info: 	synopsys/vcsmx/vcsmx_setup.sh
+Info: Generating the following file(s) for NCSIM simulator in /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0720/samples/afu/nlb_400/turbo_rtl/fifo_TrbOutMux/fifo_st_data/sim/ directory:
+Info: 	cadence/cds.lib
+Info: 	cadence/hdl.var
+Info: 	cadence/ncsim_setup.sh
+Info: 	1 .cds.lib files in cadence/cds_libs/ directory
+Info: Generating the following file(s) for RIVIERA simulator in /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0720/samples/afu/nlb_400/turbo_rtl/fifo_TrbOutMux/fifo_st_data/sim/ directory:
+Info: 	aldec/rivierapro_setup.tcl
+Info: For information on how to simulate your IP, see the explanatory comments in the simulator-specific subdirectories under /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0720/samples/afu/nlb_400/turbo_rtl/fifo_TrbOutMux/fifo_st_data/sim/.
+Info: Finished: Create Modelsim Project.
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: qsys-generate /home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0720/samples/afu/nlb_400/turbo_rtl/fifo_TrbOutMux/fifo_st_data.qsys --synthesis=VERILOG --output-directory=/home/user/work/pj101/1605/SR-5.0.2-Beta/Base/turbo/HW/bdw_pr_pkg_0720/samples/afu/nlb_400/turbo_rtl/fifo_TrbOutMux/fifo_st_data --family="Arria 10" --part=10AX115U3F45E2SGE3
+Progress: Loading fifo_TrbOutMux/fifo_st_data.qsys
+Progress: Reading input file
+Progress: Adding fifo_0 [fifo 15.1]
+Progress: Parameterizing module fifo_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+: fifo_st_data.fifo_0: Targeting device family: Arria 10.
+: fifo_st_data.fifo_0: Tab: 'DCFIFO 1' is unavailable while using Single-Clock FIFO.
+: fifo_st_data.fifo_0: Tab: 'DCFIFO 2' is unavailable while using Single-Clock FIFO.
+Info: fifo_st_data: "Transforming system: fifo_st_data"
+Info: fifo_st_data: Running transform generation_view_transform
+Info: fifo_st_data: Running transform generation_view_transform took 0.000s
+Info: fifo_0: Running transform generation_view_transform
+Info: fifo_0: Running transform generation_view_transform took 0.000s
+Info: fifo_st_data: Running transform merlin_avalon_transform
+Info: fifo_st_data: Running transform merlin_avalon_transform took 0.008s
+Info: fifo_st_data: "Naming system components in system: fifo_st_data"
+Info: fifo_st_data: "Processing generation queue"
+Info: fifo_st_data: "Generating: fifo_st_data"
+Info: fifo_st_data: "Generating: fifo_st_data_fifo_151_xtsoi5y"
+Info: fifo_st_data: Done "fifo_st_data" with 2 modules, 2 files
+Info: qsys-generate succeeded.
+Info: Finished: Create HDL design files for synthesis

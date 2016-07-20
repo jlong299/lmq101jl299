@@ -696,82 +696,104 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
   
   reg     st_out_ready;
 
-  bus2st #(
+  turbo_d_all #( 
     .BUS (534),
-    .ST_PER_BUS (512),
-    .NUM_ST_PER_BUS (42), //  (ST_PER_BUS / ST)
-    .ST_PER_TURBO_PKT (1028),   // 1024+4
-    .NUM_BUS_PER_TURBO_PKT (25),
-    .ST (12)
-  )
-  inst_bus2st
+    .ST (8) 
+    )
+  turbo_d_all_inst
   (
-   .rst_n       (test_Resetb),
-   .clk_bus     (Clk_400),
-   .bus_data    (wrreq_mem_out_q),
-   .bus_en      (ram_rdValid_qqq),
-   .bus_ready   (bus2st_ready),
+    .rst_n      (test_Resetb),  
+    
+    .clk_bus    (Clk_400),   
+    .bus_data   (wrreq_mem_out_q),
+    .bus_en     (ram_rdValid_qq),
+    .bus_ready  (bus2st_ready),
 
-   .clk_st      (uClk_usrDiv2),
-   .st_ready    (st_out_ready),
-   .st_data     (st_data),
-   .st_valid    (st_valid),
-   .st_sop      (st_sop),
-   .st_eop      (st_eop),
-   .st_error    (st_error),
-
-   .mem_rd_complt_clk_bus  (bus2st_mem_rd_finish)
+    .clk_st     (uClk_usrDiv2),
+    .st_ready   (trb_source_ready),
+    .st_data    (trb_source_data_s),
+    .st_valid   (trb_source_valid),
+    .st_sop     (trb_source_sop),
+    .st_eop     (trb_source_eop)
 
   );
 
+//   bus2st #(
+//     .BUS (534),
+//     .ST_PER_BUS (512),
+//     .NUM_ST_PER_BUS (42), //  (ST_PER_BUS / ST)
+//     .ST_PER_TURBO_PKT (1028),   // 1024+4
+//     .NUM_BUS_PER_TURBO_PKT (25),
+//     .ST (12)
+//   )
+//   inst_bus2st
+//   (
+//    .rst_n       (test_Resetb),
+//    .clk_bus     (Clk_400),
+//    .bus_data    (wrreq_mem_out_q),
+//    .bus_en      (ram_rdValid_qqq),
+//    .bus_ready   (bus2st_ready),
 
-//start------------ Turbo Decoder ------------------
+//    .clk_st      (uClk_usrDiv2),
+//    .st_ready    (st_out_ready),
+//    .st_data     (st_data),
+//    .st_valid    (st_valid),
+//    .st_sop      (st_sop),
+//    .st_eop      (st_eop),
+//    .st_error    (st_error),
 
-ready_adjust inst_ready_adjust
-(
-  .rst_n      (test_Resetb),
-  .clk        (uClk_usrDiv2),
+//    .mem_rd_complt_clk_bus  (bus2st_mem_rd_finish)
 
-  .ready_in   (trb_sink_ready),
-  .sink_eop   (st_eop),
-  .source_eop (trb_source_eop),
+//   );
 
-  .ready_out  (st_out_ready)
-  );
 
-always@(posedge uClk_usrDiv2)
-begin
-  trb_sink_blk_size <= 13'd1024;
-  //trb_source_ready <= 1'b1;
-  trb_sink_error <= 2'b00;
-  trb_sink_max_iter <= 5'd8;
-  trb_sel_crc24a <= 1'b0;
-end
+// //start------------ Turbo Decoder ------------------
 
-turbo_d0 turbo_d0_inst (
-  .clk             (uClk_usrDiv2),             //    clk.clk
-  .reset_n         (test_Resetb        ),   //    rst.reset_n
-  .sink_valid      (st_valid     ),   //   sink.sink_valid
-  .sink_ready      (trb_sink_ready     ),   //       .sink_ready
-  .sink_error      (trb_sink_error     ),   //       .sink_error
-  .sink_sop        (st_sop       ),   //       .sink_sop
-  .sink_eop        (st_eop       ),   //       .sink_eop
-  .sel_crc24a      (trb_sel_crc24a     ),   //       .sel_crc24a
-  .sink_max_iter   (trb_sink_max_iter  ),   //       .sink_max_iter
-  .sink_blk_size   (trb_sink_blk_size  ),   //       .sink_blk_size
-  .sink_data       (st_data      ),   //       .sink_data
-  .source_valid    (trb_source_valid   ),   // source.source_valid
-  .source_ready    (trb_source_ready   ),   //       .source_ready
-  .source_error    (trb_source_error   ),   //       .source_error
-  .source_sop      (trb_source_sop     ),   //       .source_sop
-  .source_eop      (trb_source_eop     ),   //       .source_eop
-  .crc_pass        (trb_crc_pass       ),   //       .crc_pass
-  .crc_type        (trb_crc_type       ),   //       .crc_type
-  .source_iter     (trb_source_iter    ),   //       .source_iter
-  .source_blk_size (trb_source_blk_size),   //       .source_blk_size
-  .source_data_s   (trb_source_data_s  )    //       .source_data_s
-);
-//end------------ Turbo Decoder ------------------
+// ready_adjust inst_ready_adjust
+// (
+//   .rst_n      (test_Resetb),
+//   .clk        (uClk_usrDiv2),
+
+//   .ready_in   (trb_sink_ready),
+//   .sink_eop   (st_eop),
+//   .source_eop (trb_source_eop),
+
+//   .ready_out  (st_out_ready)
+//   );
+
+// always@(posedge uClk_usrDiv2)
+// begin
+//   trb_sink_blk_size <= 13'd1024;
+//   //trb_source_ready <= 1'b1;
+//   trb_sink_error <= 2'b00;
+//   trb_sink_max_iter <= 5'd8;
+//   trb_sel_crc24a <= 1'b0;
+// end
+
+// turbo_d0 turbo_d0_inst (
+//   .clk             (uClk_usrDiv2),             //    clk.clk
+//   .reset_n         (test_Resetb        ),   //    rst.reset_n
+//   .sink_valid      (st_valid     ),   //   sink.sink_valid
+//   .sink_ready      (trb_sink_ready     ),   //       .sink_ready
+//   .sink_error      (trb_sink_error     ),   //       .sink_error
+//   .sink_sop        (st_sop       ),   //       .sink_sop
+//   .sink_eop        (st_eop       ),   //       .sink_eop
+//   .sel_crc24a      (trb_sel_crc24a     ),   //       .sel_crc24a
+//   .sink_max_iter   (trb_sink_max_iter  ),   //       .sink_max_iter
+//   .sink_blk_size   (trb_sink_blk_size  ),   //       .sink_blk_size
+//   .sink_data       (st_data      ),   //       .sink_data
+//   .source_valid    (trb_source_valid   ),   // source.source_valid
+//   .source_ready    (trb_source_ready   ),   //       .source_ready
+//   .source_error    (trb_source_error   ),   //       .source_error
+//   .source_sop      (trb_source_sop     ),   //       .source_sop
+//   .source_eop      (trb_source_eop     ),   //       .source_eop
+//   .crc_pass        (trb_crc_pass       ),   //       .crc_pass
+//   .crc_type        (trb_crc_type       ),   //       .crc_type
+//   .source_iter     (trb_source_iter    ),   //       .source_iter
+//   .source_blk_size (trb_source_blk_size),   //       .source_blk_size
+//   .source_data_s   (trb_source_data_s  )    //       .source_data_s
+// );
+// //end------------ Turbo Decoder ------------------
 
 
 //start-----------  counter for signaltap ---------------------

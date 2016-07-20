@@ -40,6 +40,7 @@ module turbo_d_all #(parameter
 
 
 localparam NUM_TURBO = 2;
+localparam NUM_BUS_PER_TURBO_PKT=25;
 
 reg [3:0] 		bus2st_rdy_fsm;
 reg [NUM_TURBO-1 : 0] 	bus_en_r, bus_ready_r;			

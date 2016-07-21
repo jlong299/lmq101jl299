@@ -43,9 +43,7 @@ module bus2st_turbo #(parameter
 	//output  [0:0]  			crc_type,        //       .crc_type
 	//output  [4:0]  			source_iter,     //       .source_iter
 	//output  [12:0] 			source_blk_size, //       .source_blk_size
-	output  [7:0]  			source_data_s,    //       .source_data_s
-
-	output reg 				bus2st_mem_rd_finish;;;;//!!!!!!!!
+	output  [7:0]  			source_data_s    //       .source_data_s
 	
 );
 
@@ -66,7 +64,7 @@ reg       st_eop  ;
 reg    	  st_out_ready;
 
 wire [1:0]    trb_sink_error;
-wire     trb_sink_ready;
+wire        trb_sink_ready;
 wire [0:0] trb_sel_crc24a;
 wire [4:0] trb_sink_max_iter;
 wire [12:0]  trb_sink_blk_size;
@@ -101,7 +99,7 @@ wire   [7:0] trb_source_data_s /* synthesis keep */ ;
    .st_eop      (st_eop),
    .st_error    (),
 
-   .mem_rd_complt_clk_bus  (bus2st_mem_rd_finish)
+   .mem_rd_complt_clk_bus  ()
 
   );
 

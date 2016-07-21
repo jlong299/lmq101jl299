@@ -234,8 +234,8 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
     logic [4:0]       cnt_gap_turbo_go;
     logic             gap_turbo_go;
     logic             bus2st_ready;
-    reg               bus2st_mem_rd_finish;
-    reg               bus2st_mem_rd_finish_q;
+    //reg               bus2st_mem_rd_finish;
+    //reg               bus2st_mem_rd_finish_q;
     reg [7:0]         cnt_mdata_pend;
     reg [1:0]         mode_mdata_pend;
 
@@ -576,18 +576,17 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
 
 
             //start -------- cnt_mdata_pend   substitute  rd_mdata_pend[] -----
-            bus2st_mem_rd_finish_q <= bus2st_mem_rd_finish;
 
             if(l12ab_RdEn && ab2l1_RdSent)
             begin
-              if (bus2st_mem_rd_finish & (!bus2st_mem_rd_finish_q))
+              if (ram_rdValid_qqq)
               begin
                 mode_mdata_pend <= 2'h3;
               end
               else
                 mode_mdata_pend <= 2'h1;
             end
-            else if (bus2st_mem_rd_finish & (!bus2st_mem_rd_finish_q))
+            else if (ram_rdValid_qqq)
               mode_mdata_pend <= 2'h2;
             else
               mode_mdata_pend <= 2'h0;
@@ -604,17 +603,15 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
             end
             2'h2:
             begin
-              if (cnt_mdata_pend >= 8'd25)
-                  cnt_mdata_pend <= cnt_mdata_pend - 8'd25;
+              cnt_mdata_pend <= cnt_mdata_pend;
+              if (cnt_mdata_pend >= 8'd1)
+                  cnt_mdata_pend <= cnt_mdata_pend - 8'd1;
               else
                   cnt_mdata_pend <= 8'd0;
             end
             2'h3:
             begin
-              if (cnt_mdata_pend >= 8'd24)
-                cnt_mdata_pend <= cnt_mdata_pend - 8'd24;
-              else
-                cnt_mdata_pend <= 8'd0;
+              cnt_mdata_pend <= cnt_mdata_pend;
             end
             default:
             begin
@@ -622,7 +619,7 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
             end
             endcase
 
-            if (cnt_mdata_pend[6:5] == 2'b11)
+            if (cnt_mdata_pend[6:3] == 4'b1111)
               rd_mdata_avail <= 1'b0;
             else
               rd_mdata_avail <= 1'b1;
@@ -657,7 +654,7 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
               Num_Read_req                       <= 20'h1;
               l12ab_RdLen                        <= 0;
               l12ab_RdSop                        <= 1;
-              bus2st_mem_rd_finish_q             <= 0;
+              //bus2st_mem_rd_finish_q             <= 0;
               cnt_mdata_pend                     <= 0;
               mode_mdata_pend                     <= 2'h0;
             end
@@ -717,83 +714,6 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
     .st_eop     (trb_source_eop)
 
   );
-
-//   bus2st #(
-//     .BUS (534),
-//     .ST_PER_BUS (512),
-//     .NUM_ST_PER_BUS (42), //  (ST_PER_BUS / ST)
-//     .ST_PER_TURBO_PKT (1028),   // 1024+4
-//     .NUM_BUS_PER_TURBO_PKT (25),
-//     .ST (12)
-//   )
-//   inst_bus2st
-//   (
-//    .rst_n       (test_Resetb),
-//    .clk_bus     (Clk_400),
-//    .bus_data    (wrreq_mem_out_q),
-//    .bus_en      (ram_rdValid_qqq),
-//    .bus_ready   (bus2st_ready),
-
-//    .clk_st      (uClk_usrDiv2),
-//    .st_ready    (st_out_ready),
-//    .st_data     (st_data),
-//    .st_valid    (st_valid),
-//    .st_sop      (st_sop),
-//    .st_eop      (st_eop),
-//    .st_error    (st_error),
-
-//    .mem_rd_complt_clk_bus  (bus2st_mem_rd_finish)
-
-//   );
-
-
-// //start------------ Turbo Decoder ------------------
-
-// ready_adjust inst_ready_adjust
-// (
-//   .rst_n      (test_Resetb),
-//   .clk        (uClk_usrDiv2),
-
-//   .ready_in   (trb_sink_ready),
-//   .sink_eop   (st_eop),
-//   .source_eop (trb_source_eop),
-
-//   .ready_out  (st_out_ready)
-//   );
-
-// always@(posedge uClk_usrDiv2)
-// begin
-//   trb_sink_blk_size <= 13'd1024;
-//   //trb_source_ready <= 1'b1;
-//   trb_sink_error <= 2'b00;
-//   trb_sink_max_iter <= 5'd8;
-//   trb_sel_crc24a <= 1'b0;
-// end
-
-// turbo_d0 turbo_d0_inst (
-//   .clk             (uClk_usrDiv2),             //    clk.clk
-//   .reset_n         (test_Resetb        ),   //    rst.reset_n
-//   .sink_valid      (st_valid     ),   //   sink.sink_valid
-//   .sink_ready      (trb_sink_ready     ),   //       .sink_ready
-//   .sink_error      (trb_sink_error     ),   //       .sink_error
-//   .sink_sop        (st_sop       ),   //       .sink_sop
-//   .sink_eop        (st_eop       ),   //       .sink_eop
-//   .sel_crc24a      (trb_sel_crc24a     ),   //       .sel_crc24a
-//   .sink_max_iter   (trb_sink_max_iter  ),   //       .sink_max_iter
-//   .sink_blk_size   (trb_sink_blk_size  ),   //       .sink_blk_size
-//   .sink_data       (st_data      ),   //       .sink_data
-//   .source_valid    (trb_source_valid   ),   // source.source_valid
-//   .source_ready    (trb_source_ready   ),   //       .source_ready
-//   .source_error    (trb_source_error   ),   //       .source_error
-//   .source_sop      (trb_source_sop     ),   //       .source_sop
-//   .source_eop      (trb_source_eop     ),   //       .source_eop
-//   .crc_pass        (trb_crc_pass       ),   //       .crc_pass
-//   .crc_type        (trb_crc_type       ),   //       .crc_type
-//   .source_iter     (trb_source_iter    ),   //       .source_iter
-//   .source_blk_size (trb_source_blk_size),   //       .source_blk_size
-//   .source_data_s   (trb_source_data_s  )    //       .source_data_s
-// );
-// //end------------ Turbo Decoder ------------------
 
 
 //start-----------  counter for signaltap ---------------------

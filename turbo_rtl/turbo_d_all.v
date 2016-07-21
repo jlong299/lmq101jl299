@@ -39,7 +39,7 @@ module turbo_d_all #(parameter
 );
 
 
-localparam NUM_TURBO = 2;
+localparam NUM_TURBO = 1;
 localparam NUM_BUS_PER_TURBO_PKT=25;
 
 reg [3:0] 		bus2st_rdy_fsm;
@@ -102,6 +102,7 @@ reg [NUM_TURBO-1 : 0]		trb_source_ready;
 reg [NUM_TURBO-1 : 0]		trb_source_sop;
 reg [NUM_TURBO-1 : 0]		trb_source_eop;
 reg [7:0] 		trb_source_data_s [NUM_TURBO-1 :0] ;
+reg  		rst_n_clk_st;
 
 genvar i;
 generate 
@@ -129,13 +130,13 @@ begin: test
 	  
 	  .source_valid    (trb_source_valid[i]   ),   // source.source_valid
 	  .source_ready    (trb_source_ready[i]   ),   //       .source_ready
-	  .source_error    (   ),   //       .source_error
+	  //.source_error    (   ),   //       .source_error
 	  .source_sop      (trb_source_sop[i]     ),   //       .source_sop
 	  .source_eop      (trb_source_eop[i]     ),   //       .source_eop
-	  .crc_pass        (    ),   //       .crc_pass
-	  .crc_type        (    ),   //       .crc_type
-	  .source_iter     (    ),   //       .source_iter
-	  .source_blk_size (	),   //       .source_blk_size
+	  //.crc_pass        (    ),   //       .crc_pass
+	  //.crc_type        (    ),   //       .crc_type
+	  //.source_iter     (    ),   //       .source_iter
+	  //.source_blk_size (	),   //       .source_blk_size
 	  .source_data_s   (trb_source_data_s[i]  )    //       .source_data_s
 	);
 end

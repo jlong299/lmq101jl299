@@ -106,7 +106,7 @@ begin: gen_test
 			if ( (st_out_fsm == i) && (num_frame_in_fifo[i] != 0) && st_ready_in )
 			begin
 				cnt_rden[i] <= ( cnt_rden[i] == ST_LEN ) ? 0 : cnt_rden[i] + 11'd1;
-				rden[i] <= 1'b1;//( cnt_rden[i] != 11'd0 );
+				rden[i] <= ( cnt_rden[i] != 11'd0 );
 			end
 			else
 			begin
@@ -171,11 +171,16 @@ begin
 								( cnt_rden[1] == ST_LEN ) ;
 	end
 end
-		
+
+reg st_out_fsm_q;
+always@(posedge clk)		
+begin
+	st_out_fsm_q <= st_out_fsm;
+end
 
 always@(*)
 begin
-	case (st_out_fsm)
+	case (st_out_fsm_q)
 	4'd0:
 	begin
 		st_data_out <= st_data_q[0];

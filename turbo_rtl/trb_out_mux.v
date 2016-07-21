@@ -172,7 +172,7 @@ begin
 	end
 end
 
-reg st_out_fsm_q;
+reg [3:0] st_out_fsm_q;
 always@(posedge clk)		
 begin
 	st_out_fsm_q <= st_out_fsm;

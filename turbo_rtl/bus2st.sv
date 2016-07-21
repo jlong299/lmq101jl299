@@ -354,8 +354,22 @@ begin
 end
 end
 
-
-
 //end---------  st out logic ----------------------
+
+reg [7:0] cnt_st_sop /* synthesis keep */;
+always@(posedge clk_st)
+begin
+	if (!rst_n_st)
+		cnt_st_sop <= 0;
+	else
+	begin
+		if (st_sop)
+			cnt_st_sop <= (cnt_st_sop == 8'hff) ? 0 : cnt_st_sop + 8'h1;
+		else
+			cnt_st_sop <= cnt_st_sop;
+	end
+end
+
+
 
 endmodule

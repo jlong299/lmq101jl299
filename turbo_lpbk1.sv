@@ -722,12 +722,13 @@ reg [15:0]      cnt_trb_dly_M /* synthesis keep */;
 reg [15:0]      cnt_trb_dly_H /* synthesis keep */;
 reg [19:0]      cnt_trb_src_eop /* synthesis keep */;
 
-counter_trb_sigtap counter_trb_sigtap_inst
+counter_trb_sigtap #(.WIDTH (16) )
+counter_trb_sigtap_inst
 (
   .rst_n  (test_Resetb),
   .clk    (uClk_usrDiv2),
 
-  .sop    (st_sop),  // counter start
+  .sop    (trb_source_sop),  // counter start
 
   .cnt_L  (cnt_trb_dly_L),
   .cnt_M  (cnt_trb_dly_M),

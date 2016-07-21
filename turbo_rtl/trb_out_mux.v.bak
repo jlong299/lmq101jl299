@@ -43,8 +43,8 @@ module trb_out_mux #(parameter
 localparam ST_LEN = 128; // turbo_length/8
 reg 		read_one_frame_done;
 reg [5 : 0]  		num_frame_in_fifo [NUM_TURBO-1 : 0] ;
-reg [10 : 0] 		cnt_rden [NUM_TURBO-1 : 0] ;
-reg [NUM_TURBO-1 : 0]				rden;
+reg [10 : 0] 		cnt_rden;
+reg 				rden;
 
 reg	[7:0]					st_data_q [NUM_TURBO-1 : 0] ;
 reg	[NUM_TURBO-1 : 0] 		st_valid_q;
@@ -52,8 +52,6 @@ reg	[NUM_TURBO-1 : 0] 		st_sop_q;
 reg	[NUM_TURBO-1 : 0] 		st_eop_q;
 
 reg	[NUM_TURBO-1 : 0] 		empty;
-
-reg 	[3:0] 	st_out_fsm;
 
 
 genvar i;
@@ -79,9 +77,9 @@ begin: gen_test
 	begin
 		if (!rst_n)
 		begin
-			num_frame_in_fifo[i] <= 0;
-			cnt_rden[i] <= 0;
-			rden[i] <= 0;
+			num_frame_in_fifo <= 0;
+			cnt_rden <= 0;
+			rden <= 0;
 		end
 		else
 		begin
@@ -106,7 +104,7 @@ begin: gen_test
 			if ( (st_out_fsm == i) && (num_frame_in_fifo[i] != 0) && st_ready_in )
 			begin
 				cnt_rden[i] <= ( cnt_rden[i] == ST_LEN ) ? 0 : cnt_rden[i] + 11'd1;
-				rden[i] <= 1'b1;//( cnt_rden[i] != 11'd0 );
+				rden[i] <= ( cnt_rden[i] != 11'd0 );
 			end
 			else
 			begin
@@ -121,16 +119,16 @@ begin: gen_test
 	begin
 		if (!rst_n)
 		begin
-			st_valid_q[i] <= 0;
-			st_sop_q[i] <= 0;
-			st_eop_q[i] <= 0;
-			err_fifo_state[i] <= 0;
+			st_valid_q <= 0;
+			st_sop_q <= 0;
+			st_eop_q <= 0;
+			err_fifo_state <= 0;
 		end
 		else
 		begin
 			st_valid_q[i] <= rden[i];
 			st_sop_q[i] <= rden[i] & (!st_valid_q[i]) ;
-			st_eop_q[i] <= (cnt_rden[i] == 11'd0) && (rden[i] == 1'b1) ;
+			st_eop_q[i] <= (cnt_rden[i] == 11'd0) && (rden[i] = 1'b1) ;
 			err_fifo_state[i] <= empty[i] & rden[i];
 		end
 	end

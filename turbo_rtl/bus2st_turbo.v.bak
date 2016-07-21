@@ -30,7 +30,7 @@ module bus2st_turbo #(parameter
 	input					bus_en,
 	output					bus_ready,
 
-	//output  reg 			rst_n_out, 	// output , rst of clk_st domain		
+	output  reg 			rst_n_out, 	// output , rst of clk_st domain		
 
 	input					clk_st,  // clk turbo decoder
 
@@ -46,6 +46,15 @@ module bus2st_turbo #(parameter
 	output  [7:0]  			source_data_s    //       .source_data_s
 	
 );
+
+
+reg  rst_n_q, rst_n_qq;
+always@(posedge clk_st)
+begin
+	rst_n_out <= rst_n_qq;
+	rst_n_qq <= rst_n_q;
+	rst_n_q <= rst_n;
+end
 
 
 reg [12-1:0]  st_data  ;
@@ -141,5 +150,3 @@ turbo_d0 turbo_d0_inst (
   .source_data_s   (source_data_s  )    //       .source_data_s
 );
 //end------------ Turbo Decoder ------------------
-
-endmodule

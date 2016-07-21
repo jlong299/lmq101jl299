@@ -39,7 +39,7 @@ module turbo_d_all #(parameter
 );
 
 
-localparam NUM_TURBO = 2;
+localparam NUM_TURBO = 1;
 localparam NUM_BUS_PER_TURBO_PKT=25;
 
 reg [3:0] 		bus2st_rdy_fsm;
@@ -104,21 +104,12 @@ reg [NUM_TURBO-1 : 0]		trb_source_eop;
 reg [7:0] 		trb_source_data_s [NUM_TURBO-1 :0] ;
 reg  		rst_n_clk_st;
 
-
-reg  rst_n_q, rst_n_qq;
-always@(posedge clk_st)
-begin
-	rst_n_clk_st <= rst_n_qq;
-	rst_n_qq <= rst_n_q;
-	rst_n_q <= rst_n;
-end
-
 genvar i;
 generate 
 for (i=0; i<NUM_TURBO; i=i+1)
 begin: test
 
-	bus2st_turbo  #(
+	bus2st_turbo bus2st_turbo_inst #(
     .BUS (534),
     .ST_PER_BUS (512),
     .NUM_ST_PER_BUS (42), //  (ST_PER_BUS / ST)
@@ -126,14 +117,14 @@ begin: test
     .NUM_BUS_PER_TURBO_PKT (25),
     .ST (12)
   	)
-	bus2st_turbo_inst(
+	(
 	  .rst_n            (rst_n),             
 	  .clk_bus         	(clk_bus),
 	  .bus_data			(bus_data),
 	  .bus_en 			(bus_en_r[i]),
 	  .bus_ready 		(bus_ready_r[i]),
 
-	  //.rst_n_out 		(rst_n_clk_st), // output , rst of clk_st domain
+	  .rst_n_out 		(rst_n_clk_st), // output , rst of clk_st domain
 
 	  .clk_st 			(clk_st),
 	  

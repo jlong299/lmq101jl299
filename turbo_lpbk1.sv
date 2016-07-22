@@ -723,7 +723,10 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
       cnt_bus_en <= 0;
     else
     begin
-      cnt_bus_en <= cnt_bus_en + 16'd1;
+      if (ram_rdValid_qq)
+        cnt_bus_en <= cnt_bus_en + 16'd1;
+      else
+        cnt_bus_en <= cnt_bus_en;
     end
   end
 

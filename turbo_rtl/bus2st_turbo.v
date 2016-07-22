@@ -104,7 +104,7 @@ ready_adjust inst_ready_adjust
 
   .ready_in   (trb_sink_ready),
   .sink_eop   (st_eop),
-  .source_eop (trb_source_eop),
+  .source_eop (source_eop),
 
   .ready_out  (st_out_ready)
   );

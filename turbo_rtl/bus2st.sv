@@ -248,7 +248,7 @@ begin
 	end
 	2'h2:
 	begin
-		cnt_memout_fsm <= (cnt_memout_fsm==NUM_ST_PER_BUS-1) ? 0 : cnt_memout_fsm+11'h1;
+		cnt_memout_fsm <= (cnt_memout_fsm==NUM_ST_PER_BUS-1) ? 11'd0 : cnt_memout_fsm+11'd1;
 		if ( cnt_memout_fsm == NUM_ST_PER_BUS-1)
 		begin
 			bus_mem_rdaddr <= bus_mem_rdaddr + 7'h1;
@@ -270,7 +270,7 @@ begin
 	2'h3:
 	begin
 		mem_rd_complt_clk_st <= 1'b1;
-		cnt_memout_fsm_3 <= (cnt_memout_fsm_3 == 4'h7) ?  0 : cnt_memout_fsm_3+4'h1;
+		cnt_memout_fsm_3 <= (cnt_memout_fsm_3 == 4'h7) ?  4'd0 : cnt_memout_fsm_3+4'd1;
 		if ( cnt_memout_fsm_3 == 4'h7)
 		begin
 			memout_fsm <= 2'h0;
@@ -364,7 +364,7 @@ begin
 	else
 	begin
 		if (st_sop)
-			cnt_st_sop <= (cnt_st_sop == 8'hff) ? 0 : cnt_st_sop + 8'h1;
+			cnt_st_sop <= (cnt_st_sop == 8'hff) ? 8'd0 : cnt_st_sop + 8'd1;
 		else
 			cnt_st_sop <= cnt_st_sop;
 	end

@@ -105,7 +105,7 @@ begin: gen_test
 			// Set rden length = ST_lEN
 			if ( (st_out_fsm == i) && (num_frame_in_fifo[i] != 0) && st_ready_in )
 			begin
-				cnt_rden[i] <= ( cnt_rden[i] == ST_LEN ) ? 0 : cnt_rden[i] + 11'd1;
+				cnt_rden[i] <= ( cnt_rden[i] == ST_LEN ) ? 11'd0 : cnt_rden[i] + 11'd1;
 				rden[i] <= ( cnt_rden[i] != 11'd0 );
 			end
 			else
@@ -149,7 +149,7 @@ begin
 	else
 	begin
 		if ( read_one_frame_done )
-			st_out_fsm <= (st_out_fsm == NUM_TURBO-1) ? 0 : st_out_fsm + 4'd1;
+			st_out_fsm <= (st_out_fsm == NUM_TURBO-1) ? 4'd0 : st_out_fsm + 4'd1;
 		else
 			st_out_fsm <= st_out_fsm;
 	end

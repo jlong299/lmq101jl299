@@ -82,12 +82,12 @@ begin
 		//---------------------------------------------
 
 		if (  cnt_bus_en == NUM_BUS_PER_TURBO_PKT-1  && bus_en == 1'b1 )
-			bus2st_rdy_fsm <= ( bus2st_rdy_fsm == NUM_TURBO-1) ? 0 : bus2st_rdy_fsm + 4'd1;
+			bus2st_rdy_fsm <= ( bus2st_rdy_fsm == NUM_TURBO-1) ? 4'd0 : bus2st_rdy_fsm + 4'd1;
 		else
 			bus2st_rdy_fsm <= bus2st_rdy_fsm;
 
 		if (bus_en)
-			cnt_bus_en <= (cnt_bus_en == NUM_BUS_PER_TURBO_PKT-1) ? 0 : cnt_bus_en + 9'd1;
+			cnt_bus_en <= (cnt_bus_en == NUM_BUS_PER_TURBO_PKT-1) ? 9'd0 : cnt_bus_en + 9'd1;
 		else
 			cnt_bus_en <= cnt_bus_en;
 	end

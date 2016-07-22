@@ -715,6 +715,18 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
 
   );
 
+  //-------- counter for signaltap --------------
+  reg [15 : 0] cnt_bus_en /* synthesis keep */ ;
+  always@(posedge Clk_400)
+  begin
+    if (!test_Resetb)
+      cnt_bus_en <= 0;
+    else
+    begin
+      cnt_bus_en <= cnt_bus_en + 16'd1;
+    end
+  end
+
 
 //start-----------  counter for signaltap ---------------------
 reg [15:0]      cnt_trb_dly_L /* synthesis keep */;

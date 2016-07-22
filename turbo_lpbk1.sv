@@ -801,6 +801,21 @@ st2bus #(
 
   );
 
+  //-------- counter for signaltap --------------
+  reg [15 : 0] cnt_l12ab_WrEn /* synthesis keep */ ;
+  always@(posedge Clk_400)
+  begin
+    if (!test_Resetb)
+      cnt_l12ab_WrEn <= 0;
+    else
+    begin
+      if (l12ab_WrEn)
+        cnt_l12ab_WrEn <= cnt_l12ab_WrEn + 16'd1;
+      else
+        cnt_l12ab_WrEn <= cnt_l12ab_WrEn;
+    end
+  end
+
   
   always@(posedge Clk_400)
   begin

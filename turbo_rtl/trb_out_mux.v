@@ -168,7 +168,14 @@ begin
 	else
 	begin
 		read_one_frame_done <= 	( cnt_rden[0] == ST_LEN ) |
-								( cnt_rden[1] == ST_LEN ) ;
+								( cnt_rden[1] == ST_LEN ) |
+								( cnt_rden[2] == ST_LEN ) |
+								( cnt_rden[3] == ST_LEN ) |
+								( cnt_rden[4] == ST_LEN ) |
+								( cnt_rden[5] == ST_LEN ) |
+								( cnt_rden[6] == ST_LEN ) |
+								( cnt_rden[7] == ST_LEN ) 
+								;
 	end
 end
 
@@ -194,6 +201,48 @@ begin
 		st_valid_out <= st_valid_q[1];
 		st_sop_out <= st_sop_q[1];
 		st_eop_out <= st_eop_q[1];
+	end
+	4'd2:
+	begin
+		st_data_out <= st_data_q[2];
+		st_valid_out <= st_valid_q[2];
+		st_sop_out <= st_sop_q[2];
+		st_eop_out <= st_eop_q[2];
+	end
+	4'd3:
+	begin
+		st_data_out <= st_data_q[3];
+		st_valid_out <= st_valid_q[3];
+		st_sop_out <= st_sop_q[3];
+		st_eop_out <= st_eop_q[3];
+	end
+	4'd4:
+	begin
+		st_data_out <= st_data_q[4];
+		st_valid_out <= st_valid_q[4];
+		st_sop_out <= st_sop_q[4];
+		st_eop_out <= st_eop_q[4];
+	end
+	4'd5:
+	begin
+		st_data_out <= st_data_q[5];
+		st_valid_out <= st_valid_q[5];
+		st_sop_out <= st_sop_q[5];
+		st_eop_out <= st_eop_q[5];
+	end
+	4'd6:
+	begin
+		st_data_out <= st_data_q[6];
+		st_valid_out <= st_valid_q[6];
+		st_sop_out <= st_sop_q[6];
+		st_eop_out <= st_eop_q[6];
+	end
+	4'd7:
+	begin
+		st_data_out <= st_data_q[7];
+		st_valid_out <= st_valid_q[7];
+		st_sop_out <= st_sop_q[7];
+		st_eop_out <= st_eop_q[7];
 	end
 	default:
 	begin

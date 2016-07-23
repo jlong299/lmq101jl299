@@ -39,7 +39,7 @@ module turbo_d_all #(parameter
 );
 
 
-localparam NUM_TURBO = 8;
+localparam NUM_TURBO = 16;
 localparam NUM_BUS_PER_TURBO_PKT=25;
 
 reg [3:0] 		bus2st_rdy_fsm;
@@ -83,6 +83,22 @@ begin
 			bus_ready <= bus_ready_r[6];
 		4'd7:
 			bus_ready <= bus_ready_r[7];
+		4'd8:
+			bus_ready <= bus_ready_r[8];
+		4'd9:
+			bus_ready <= bus_ready_r[9];
+		4'd10:
+			bus_ready <= bus_ready_r[10];
+		4'd11:
+			bus_ready <= bus_ready_r[11];
+		4'd12:
+			bus_ready <= bus_ready_r[12];
+		4'd13:
+			bus_ready <= bus_ready_r[13];
+		4'd14:
+			bus_ready <= bus_ready_r[14];
+		4'd15:
+			bus_ready <= bus_ready_r[15];
 		default:
 			bus_ready <= 0;
 		endcase
@@ -95,6 +111,14 @@ begin
 		bus_en_r[5] <= (bus2st_rdy_fsm == 4'd5) ? bus_en : 1'b0;
 		bus_en_r[6] <= (bus2st_rdy_fsm == 4'd6) ? bus_en : 1'b0;
 		bus_en_r[7] <= (bus2st_rdy_fsm == 4'd7) ? bus_en : 1'b0;
+		bus_en_r[8] <= (bus2st_rdy_fsm == 4'd8) ? bus_en : 1'b0;
+		bus_en_r[9] <= (bus2st_rdy_fsm == 4'd9) ? bus_en : 1'b0;
+		bus_en_r[10] <= (bus2st_rdy_fsm == 4'd10) ? bus_en : 1'b0;
+		bus_en_r[11] <= (bus2st_rdy_fsm == 4'd11) ? bus_en : 1'b0;
+		bus_en_r[12] <= (bus2st_rdy_fsm == 4'd12) ? bus_en : 1'b0;
+		bus_en_r[13] <= (bus2st_rdy_fsm == 4'd13) ? bus_en : 1'b0;
+		bus_en_r[14] <= (bus2st_rdy_fsm == 4'd14) ? bus_en : 1'b0;
+		bus_en_r[15] <= (bus2st_rdy_fsm == 4'd15) ? bus_en : 1'b0;
 		//---------------------------------------------
 		//end----- Rewrite if NUM_TURBO change --------
 		//---------------------------------------------

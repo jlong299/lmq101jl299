@@ -174,7 +174,15 @@ begin
 								( cnt_rden[4] == ST_LEN ) |
 								( cnt_rden[5] == ST_LEN ) |
 								( cnt_rden[6] == ST_LEN ) |
-								( cnt_rden[7] == ST_LEN ) 
+								( cnt_rden[7] == ST_LEN ) |
+								( cnt_rden[8] == ST_LEN ) |
+								( cnt_rden[9] == ST_LEN ) |
+								( cnt_rden[10] == ST_LEN ) |
+								( cnt_rden[11] == ST_LEN ) |
+								( cnt_rden[12] == ST_LEN ) |
+								( cnt_rden[13] == ST_LEN ) |
+								( cnt_rden[14] == ST_LEN ) |
+								( cnt_rden[15] == ST_LEN ) 
 								;
 	end
 end
@@ -243,6 +251,62 @@ begin
 		st_valid_out <= st_valid_q[7];
 		st_sop_out <= st_sop_q[7];
 		st_eop_out <= st_eop_q[7];
+	end
+	4'd8:
+	begin
+		st_data_out <= st_data_q[8];
+		st_valid_out <= st_valid_q[8];
+		st_sop_out <= st_sop_q[8];
+		st_eop_out <= st_eop_q[8];
+	end
+	4'd9:
+	begin
+		st_data_out <= st_data_q[9];
+		st_valid_out <= st_valid_q[9];
+		st_sop_out <= st_sop_q[9];
+		st_eop_out <= st_eop_q[9];
+	end
+	4'd10:
+	begin
+		st_data_out <= st_data_q[10];
+		st_valid_out <= st_valid_q[10];
+		st_sop_out <= st_sop_q[10];
+		st_eop_out <= st_eop_q[10];
+	end
+	4'd11:
+	begin
+		st_data_out <= st_data_q[11];
+		st_valid_out <= st_valid_q[11];
+		st_sop_out <= st_sop_q[11];
+		st_eop_out <= st_eop_q[11];
+	end
+	4'd12:
+	begin
+		st_data_out <= st_data_q[12];
+		st_valid_out <= st_valid_q[12];
+		st_sop_out <= st_sop_q[12];
+		st_eop_out <= st_eop_q[12];
+	end
+	4'd13:
+	begin
+		st_data_out <= st_data_q[13];
+		st_valid_out <= st_valid_q[13];
+		st_sop_out <= st_sop_q[13];
+		st_eop_out <= st_eop_q[13];
+	end
+	4'd14:
+	begin
+		st_data_out <= st_data_q[14];
+		st_valid_out <= st_valid_q[14];
+		st_sop_out <= st_sop_q[14];
+		st_eop_out <= st_eop_q[14];
+	end
+	4'd15:
+	begin
+		st_data_out <= st_data_q[15];
+		st_valid_out <= st_valid_q[15];
+		st_sop_out <= st_sop_q[15];
+		st_eop_out <= st_eop_q[15];
 	end
 	default:
 	begin

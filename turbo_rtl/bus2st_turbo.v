@@ -116,10 +116,18 @@ ready_adjust inst_ready_adjust
   assign trb_sink_max_iter = 5'd8;
   assign trb_sel_crc24a = 1'b0;
 
+reg rst_n_clk_st, rst_n_q, rst_n_qq, rst_n_qqq;
+always@(posedge clk_st)
+begin
+  rst_n_clk_st <= rst_n_qqq;
+  rst_n_qqq <= rst_n_qq;
+  rst_n_qq <= rst_n_q;
+  rst_n_q <= rst_n;
+end
 
 turbo_d0 turbo_d0_inst (
   .clk             (clk_st),             //    clk.clk
-  .reset_n         (rst_n        ),   //    rst.reset_n
+  .reset_n         (rst_n_clk_st        ),   //    rst.reset_n
   .sink_valid      (st_valid     ),   //   sink.sink_valid
   .sink_ready      (trb_sink_ready     ),   //       .sink_ready
   .sink_error      (trb_sink_error     ),   //       .sink_error

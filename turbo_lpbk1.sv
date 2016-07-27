@@ -362,14 +362,14 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
         end
         else
         begin
-          if (cnt_gap_turbo_go==5'h10)
+          if (cnt_gap_turbo_go==5'd7)
           begin
             cnt_gap_turbo_go <= 0;
             gap_turbo_go <= 1'b1;
           end
           else
           begin
-            cnt_gap_turbo_go <= cnt_gap_turbo_go + 5'h1;
+            cnt_gap_turbo_go <= cnt_gap_turbo_go + 5'd1;
             gap_turbo_go <= 0;
           end
         end

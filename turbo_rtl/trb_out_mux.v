@@ -55,6 +55,8 @@ reg	[NUM_TURBO-1 : 0] 		empty;
 
 reg 	[3:0] 	st_out_fsm;
 
+reg	[1:0]					cnt_rden_wait [NUM_TURBO-1 : 0] ;
+
 
 genvar i;
 generate 
@@ -82,6 +84,7 @@ begin: gen_test
 			num_frame_in_fifo[i] <= 0;
 			cnt_rden[i] <= 0;
 			rden[i] <= 0;
+			cnt_rden_wait[i] <= 0;
 		end
 		else
 		begin
@@ -103,16 +106,36 @@ begin: gen_test
 				num_frame_in_fifo[i] <= num_frame_in_fifo[i];
 
 			// Set rden length = ST_lEN
-			if ( (st_out_fsm == i) && (num_frame_in_fifo[i] != 0) && st_ready_in )
-			begin
-				cnt_rden[i] <= ( cnt_rden[i] == ST_LEN ) ? 11'd0 : cnt_rden[i] + 11'd1;
-				rden[i] <= ( cnt_rden[i] != 11'd0 );
-			end
-			else
+			// cnt_rden_wait[i] :  disable rden for several clks after st_out_fsm = i, in order to kill a bug
+			if (cnt_rden_wait[i] != 2'd3)
 			begin
 				cnt_rden[i] <= 0;
 				rden[i] <= 0;
 			end
+			else
+			begin
+				if ( (st_out_fsm == i) && (num_frame_in_fifo[i] != 0) && st_ready_in )
+				begin
+					cnt_rden[i] <= ( cnt_rden[i] == ST_LEN ) ? 11'd0 : cnt_rden[i] + 11'd1;
+					rden[i] <= ( cnt_rden[i] != 11'd0 );
+				end
+				else
+				begin
+					cnt_rden[i] <= 0;
+					rden[i] <= 0;
+				end
+			end
+
+			if (st_out_fsm == i)
+			begin
+				if ( cnt_rden_wait[i] != 2'd3)
+					cnt_rden_wait[i] <= cnt_rden_wait[i] + 2'd1;
+				else
+					cnt_rden_wait[i] <= 2'd3;
+			end
+			else
+				cnt_rden_wait[i] <= 2'd0;
+
 		end
 	end
 

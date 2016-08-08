@@ -53,6 +53,7 @@ reg [BUS-1:0] 	bus_data_r [3:0];
 reg [3 : 0] 	bus_en_r;			
 reg [15 : 0] 	bus_en_rr;	
 //end  -------- only for NUM_TURBO = 16 -----------		
+reg [3:0] 		bus2st_rdy_fsm_r;
  
 //---------------------------------------
 //start--------- Arbiter ----------------
@@ -64,6 +65,7 @@ begin
 	if (!rst_n)
 	begin
 		bus2st_rdy_fsm <= 0;
+		bus2st_rdy_fsm_r <= 0;
 		bus_en_r <= 0;
 		bus_en_rr <= 0;
 		cnt_bus_en <= 0;
@@ -134,22 +136,22 @@ begin
 		bus_en_r[2] <= (bus2st_rdy_fsm[3:2] == 2'd2) ? bus_en : 1'b0;
 		bus_en_r[3] <= (bus2st_rdy_fsm[3:2] == 2'd3) ? bus_en : 1'b0;
 
-		bus_en_rr[0] <= (bus2st_rdy_fsm[1:0] == 2'd0) ? bus_en_r[0] : 1'b0;
-		bus_en_rr[1] <= (bus2st_rdy_fsm[1:0] == 2'd1) ? bus_en_r[0] : 1'b0;
-		bus_en_rr[2] <= (bus2st_rdy_fsm[1:0] == 2'd2) ? bus_en_r[0] : 1'b0;
-		bus_en_rr[3] <= (bus2st_rdy_fsm[1:0] == 2'd3) ? bus_en_r[0] : 1'b0;
-		bus_en_rr[4] <= (bus2st_rdy_fsm[1:0] == 2'd0) ? bus_en_r[1] : 1'b0;
-		bus_en_rr[5] <= (bus2st_rdy_fsm[1:0] == 2'd1) ? bus_en_r[1] : 1'b0;
-		bus_en_rr[6] <= (bus2st_rdy_fsm[1:0] == 2'd2) ? bus_en_r[1] : 1'b0;
-		bus_en_rr[7] <= (bus2st_rdy_fsm[1:0] == 2'd3) ? bus_en_r[1] : 1'b0;
-		bus_en_rr[8] <= (bus2st_rdy_fsm[1:0] == 2'd0) ? bus_en_r[2] : 1'b0;
-		bus_en_rr[9] <= (bus2st_rdy_fsm[1:0] == 2'd1) ? bus_en_r[2] : 1'b0;
-		bus_en_rr[10] <= (bus2st_rdy_fsm[1:0] == 2'd2) ? bus_en_r[2] : 1'b0;
-		bus_en_rr[11] <= (bus2st_rdy_fsm[1:0] == 2'd3) ? bus_en_r[2] : 1'b0;
-		bus_en_rr[12] <= (bus2st_rdy_fsm[1:0] == 2'd0) ? bus_en_r[3] : 1'b0;
-		bus_en_rr[13] <= (bus2st_rdy_fsm[1:0] == 2'd1) ? bus_en_r[3] : 1'b0;
-		bus_en_rr[14] <= (bus2st_rdy_fsm[1:0] == 2'd2) ? bus_en_r[3] : 1'b0;
-		bus_en_rr[15] <= (bus2st_rdy_fsm[1:0] == 2'd3) ? bus_en_r[3] : 1'b0;
+		bus_en_rr[0] <= (bus2st_rdy_fsm_r[1:0] == 2'd0) ? bus_en_r[0] : 1'b0;
+		bus_en_rr[1] <= (bus2st_rdy_fsm_r[1:0] == 2'd1) ? bus_en_r[0] : 1'b0;
+		bus_en_rr[2] <= (bus2st_rdy_fsm_r[1:0] == 2'd2) ? bus_en_r[0] : 1'b0;
+		bus_en_rr[3] <= (bus2st_rdy_fsm_r[1:0] == 2'd3) ? bus_en_r[0] : 1'b0;
+		bus_en_rr[4] <= (bus2st_rdy_fsm_r[1:0] == 2'd0) ? bus_en_r[1] : 1'b0;
+		bus_en_rr[5] <= (bus2st_rdy_fsm_r[1:0] == 2'd1) ? bus_en_r[1] : 1'b0;
+		bus_en_rr[6] <= (bus2st_rdy_fsm_r[1:0] == 2'd2) ? bus_en_r[1] : 1'b0;
+		bus_en_rr[7] <= (bus2st_rdy_fsm_r[1:0] == 2'd3) ? bus_en_r[1] : 1'b0;
+		bus_en_rr[8] <= (bus2st_rdy_fsm_r[1:0] == 2'd0) ? bus_en_r[2] : 1'b0;
+		bus_en_rr[9] <= (bus2st_rdy_fsm_r[1:0] == 2'd1) ? bus_en_r[2] : 1'b0;
+		bus_en_rr[10] <= (bus2st_rdy_fsm_r[1:0] == 2'd2) ? bus_en_r[2] : 1'b0;
+		bus_en_rr[11] <= (bus2st_rdy_fsm_r[1:0] == 2'd3) ? bus_en_r[2] : 1'b0;
+		bus_en_rr[12] <= (bus2st_rdy_fsm_r[1:0] == 2'd0) ? bus_en_r[3] : 1'b0;
+		bus_en_rr[13] <= (bus2st_rdy_fsm_r[1:0] == 2'd1) ? bus_en_r[3] : 1'b0;
+		bus_en_rr[14] <= (bus2st_rdy_fsm_r[1:0] == 2'd2) ? bus_en_r[3] : 1'b0;
+		bus_en_rr[15] <= (bus2st_rdy_fsm_r[1:0] == 2'd3) ? bus_en_r[3] : 1'b0;
 		//end  -------- only for NUM_TURBO = 16 -----------
 
 		//---------------------------------------------
@@ -165,6 +167,8 @@ begin
 			cnt_bus_en <= (cnt_bus_en == NUM_BUS_PER_TURBO_PKT-1) ? 9'd0 : cnt_bus_en + 9'd1;
 		else
 			cnt_bus_en <= cnt_bus_en;
+
+		bus2st_rdy_fsm_r <= bus2st_rdy_fsm;
 	end
 end
 //end--------- Arbiter ---------------------
@@ -240,7 +244,7 @@ end
 genvar i;
 generate 
 for (i=0; i<4; i=i+1)
-begin: test
+begin: test0
 
 	bus2st_turbo  #(
     .BUS (534),
@@ -276,7 +280,7 @@ end
 endgenerate
 
 for (i=4; i<8; i=i+1)
-begin: test
+begin: test1
 
 	bus2st_turbo  #(
     .BUS (534),
@@ -312,7 +316,7 @@ end
 endgenerate
 
 for (i=8; i<12; i=i+1)
-begin: test
+begin: test2
 
 	bus2st_turbo  #(
     .BUS (534),
@@ -348,7 +352,7 @@ end
 endgenerate
 
 for (i=12; i<16; i=i+1)
-begin: test
+begin: test3
 
 	bus2st_turbo  #(
     .BUS (534),

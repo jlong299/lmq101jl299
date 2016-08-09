@@ -279,6 +279,7 @@ begin: test0
 end
 endgenerate
 
+generate 
 for (i=4; i<8; i=i+1)
 begin: test1
 
@@ -315,6 +316,7 @@ begin: test1
 end
 endgenerate
 
+generate 
 for (i=8; i<12; i=i+1)
 begin: test2
 
@@ -351,6 +353,7 @@ begin: test2
 end
 endgenerate
 
+generate 
 for (i=12; i<16; i=i+1)
 begin: test3
 

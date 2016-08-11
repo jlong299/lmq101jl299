@@ -45,7 +45,7 @@ reg [3:0] 		bus2st_rdy_fsm;
 reg [NUM_TURBO-1 : 0] 	bus_ready_r;			
 reg [8:0]  		cnt_bus_en;
 
-reg [BUS-1:0] 	bus_data_r [3:0];
+reg [BUS-1:0] 	bus_data_r [3:0] /* synthesis keep */;
 
 //reg [NUM_TURBO-1 : 0] 	bus_en_r;
 

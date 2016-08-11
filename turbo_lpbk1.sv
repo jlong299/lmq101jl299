@@ -627,7 +627,8 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
 
 
             // TODO:
-            if(read_fsm==2'h2 && Num_Write_rsp==re2xy_NumLines)
+            // if(read_fsm==2'h2 && Num_Write_rsp==20'd1000 ) //re2xy_NumLines)
+            if( Num_Write_rsp==20'd5200 ) //re2xy_NumLines)
             begin
               l12ab_TestCmp                      <= 1'b1;
             end

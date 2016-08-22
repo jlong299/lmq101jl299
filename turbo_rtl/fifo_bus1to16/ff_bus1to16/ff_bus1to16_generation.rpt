@@ -1,0 +1,78 @@
+Info: Starting: Create simulation model
+Info: qsys-generate /home/user/work/pj101/1608/SR-5.0.2-Beta/Base/HW/bdw_pr_pkg_822_8p16trb200M/samples/afu/nlb_400/turbo_rtl/fifo_bus1to16/ff_bus1to16.qsys --simulation=VERILOG --allow-mixed-language-simulation --output-directory=/home/user/work/pj101/1608/SR-5.0.2-Beta/Base/HW/bdw_pr_pkg_822_8p16trb200M/samples/afu/nlb_400/turbo_rtl/fifo_bus1to16/ff_bus1to16 --family="Arria 10" --part=10AX115U3F45E2SGE3
+Progress: Loading fifo_bus1to16/ff_bus1to16.qsys
+Progress: Reading input file
+Progress: Adding fifo_0 [fifo 15.1]
+Progress: Parameterizing module fifo_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+: ff_bus1to16.fifo_0: Targeting device family: Arria 10.
+: ff_bus1to16.fifo_0: Tab: 'SCFIFO Options' is unavailable while using Dual-Clock FIFO.
+: ff_bus1to16.fifo_0: 'Output register option' is unavailable while using Dual-Clock FIFO.
+: ff_bus1to16.fifo_0: SDC file will be generated to apply correct constraints. User may experience increase in fitter compilation time
+: ff_bus1to16.fifo_0: Embedded set_false_path assignment is disabled.
+Info: ff_bus1to16: "Transforming system: ff_bus1to16"
+Info: ff_bus1to16: Running transform generation_view_transform
+Info: ff_bus1to16: Running transform generation_view_transform took 0.000s
+Info: fifo_0: Running transform generation_view_transform
+Info: fifo_0: Running transform generation_view_transform took 0.000s
+Info: ff_bus1to16: Running transform merlin_avalon_transform
+Info: ff_bus1to16: Running transform merlin_avalon_transform took 0.036s
+Info: ff_bus1to16: "Naming system components in system: ff_bus1to16"
+Info: ff_bus1to16: "Processing generation queue"
+Info: ff_bus1to16: "Generating: ff_bus1to16"
+Info: ff_bus1to16: "Generating: ff_bus1to16_fifo_151_4q2xupy"
+Info: ff_bus1to16: Done "ff_bus1to16" with 2 modules, 3 files
+Info: qsys-generate succeeded.
+Info: Finished: Create simulation model
+Info: Starting: Create Modelsim Project.
+Info: sim-script-gen --spd=/home/user/work/pj101/1608/SR-5.0.2-Beta/Base/HW/bdw_pr_pkg_822_8p16trb200M/samples/afu/nlb_400/turbo_rtl/fifo_bus1to16/ff_bus1to16/ff_bus1to16.spd --output-directory=/home/user/work/pj101/1608/SR-5.0.2-Beta/Base/HW/bdw_pr_pkg_822_8p16trb200M/samples/afu/nlb_400/turbo_rtl/fifo_bus1to16/ff_bus1to16/sim/ --use-relative-paths=true
+Info: Doing: ip-make-simscript --spd=/home/user/work/pj101/1608/SR-5.0.2-Beta/Base/HW/bdw_pr_pkg_822_8p16trb200M/samples/afu/nlb_400/turbo_rtl/fifo_bus1to16/ff_bus1to16/ff_bus1to16.spd --output-directory=/home/user/work/pj101/1608/SR-5.0.2-Beta/Base/HW/bdw_pr_pkg_822_8p16trb200M/samples/afu/nlb_400/turbo_rtl/fifo_bus1to16/ff_bus1to16/sim/ --use-relative-paths=true
+Info: Generating the following file(s) for MODELSIM simulator in /home/user/work/pj101/1608/SR-5.0.2-Beta/Base/HW/bdw_pr_pkg_822_8p16trb200M/samples/afu/nlb_400/turbo_rtl/fifo_bus1to16/ff_bus1to16/sim/ directory:
+Info: 	mentor/msim_setup.tcl
+Info: Generating the following file(s) for VCS simulator in /home/user/work/pj101/1608/SR-5.0.2-Beta/Base/HW/bdw_pr_pkg_822_8p16trb200M/samples/afu/nlb_400/turbo_rtl/fifo_bus1to16/ff_bus1to16/sim/ directory:
+Info: 	synopsys/vcs/vcs_setup.sh
+Info: Generating the following file(s) for VCSMX simulator in /home/user/work/pj101/1608/SR-5.0.2-Beta/Base/HW/bdw_pr_pkg_822_8p16trb200M/samples/afu/nlb_400/turbo_rtl/fifo_bus1to16/ff_bus1to16/sim/ directory:
+Info: 	synopsys/vcsmx/synopsys_sim.setup
+Info: 	synopsys/vcsmx/vcsmx_setup.sh
+Info: Generating the following file(s) for NCSIM simulator in /home/user/work/pj101/1608/SR-5.0.2-Beta/Base/HW/bdw_pr_pkg_822_8p16trb200M/samples/afu/nlb_400/turbo_rtl/fifo_bus1to16/ff_bus1to16/sim/ directory:
+Info: 	cadence/cds.lib
+Info: 	cadence/hdl.var
+Info: 	cadence/ncsim_setup.sh
+Info: 	1 .cds.lib files in cadence/cds_libs/ directory
+Info: Generating the following file(s) for RIVIERA simulator in /home/user/work/pj101/1608/SR-5.0.2-Beta/Base/HW/bdw_pr_pkg_822_8p16trb200M/samples/afu/nlb_400/turbo_rtl/fifo_bus1to16/ff_bus1to16/sim/ directory:
+Info: 	aldec/rivierapro_setup.tcl
+Info: For information on how to simulate your IP, see the explanatory comments in the simulator-specific subdirectories under /home/user/work/pj101/1608/SR-5.0.2-Beta/Base/HW/bdw_pr_pkg_822_8p16trb200M/samples/afu/nlb_400/turbo_rtl/fifo_bus1to16/ff_bus1to16/sim/.
+Info: Finished: Create Modelsim Project.
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: qsys-generate /home/user/work/pj101/1608/SR-5.0.2-Beta/Base/HW/bdw_pr_pkg_822_8p16trb200M/samples/afu/nlb_400/turbo_rtl/fifo_bus1to16/ff_bus1to16.qsys --synthesis=VERILOG --output-directory=/home/user/work/pj101/1608/SR-5.0.2-Beta/Base/HW/bdw_pr_pkg_822_8p16trb200M/samples/afu/nlb_400/turbo_rtl/fifo_bus1to16/ff_bus1to16 --family="Arria 10" --part=10AX115U3F45E2SGE3
+Progress: Loading fifo_bus1to16/ff_bus1to16.qsys
+Progress: Reading input file
+Progress: Adding fifo_0 [fifo 15.1]
+Progress: Parameterizing module fifo_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+: ff_bus1to16.fifo_0: Targeting device family: Arria 10.
+: ff_bus1to16.fifo_0: Tab: 'SCFIFO Options' is unavailable while using Dual-Clock FIFO.
+: ff_bus1to16.fifo_0: 'Output register option' is unavailable while using Dual-Clock FIFO.
+: ff_bus1to16.fifo_0: SDC file will be generated to apply correct constraints. User may experience increase in fitter compilation time
+: ff_bus1to16.fifo_0: Embedded set_false_path assignment is disabled.
+Info: ff_bus1to16: "Transforming system: ff_bus1to16"
+Info: ff_bus1to16: Running transform generation_view_transform
+Info: ff_bus1to16: Running transform generation_view_transform took 0.000s
+Info: fifo_0: Running transform generation_view_transform
+Info: fifo_0: Running transform generation_view_transform took 0.000s
+Info: ff_bus1to16: Running transform merlin_avalon_transform
+Info: ff_bus1to16: Running transform merlin_avalon_transform took 0.017s
+Info: ff_bus1to16: "Naming system components in system: ff_bus1to16"
+Info: ff_bus1to16: "Processing generation queue"
+Info: ff_bus1to16: "Generating: ff_bus1to16"
+Info: ff_bus1to16: "Generating: ff_bus1to16_fifo_151_4q2xupy"
+Info: ff_bus1to16: Done "ff_bus1to16" with 2 modules, 3 files
+Info: qsys-generate succeeded.
+Info: Finished: Create HDL design files for synthesis

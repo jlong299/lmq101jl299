@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simPackage>
+ <file
+   path="fifo_151/sim/ff_bus1to16_fifo_151_4q2xupy.v"
+   type="VERILOG"
+   library="fifo_151" />
+ <file
+   path="fifo_151/sim/ff_bus1to16_fifo_151_4q2xupy.sdc"
+   type="SDC"
+   library="fifo_151" />
+ <file path="sim/ff_bus1to16.v" type="VERILOG" hasInlineConfiguration="true" />
+ <topLevel name="ff_bus1to16" />
+ <deviceFamily name="arria10" />
+</simPackage>

@@ -1,0 +1,19 @@
+# system info ff_bus1to16 on 2016.08.22.16:44:08
+system_info:
+name,value
+DEVICE,10AX115U3F45E2SGE3
+DEVICE_FAMILY,Arria 10
+GENERATION_ID,1471855448
+#
+#
+# Files generated for ff_bus1to16 on 2016.08.22.16:44:08
+files:
+filepath,kind,attributes,module,is_top
+sim/ff_bus1to16.v,VERILOG,CONTAINS_INLINE_CONFIGURATION,ff_bus1to16,true
+fifo_151/sim/ff_bus1to16_fifo_151_4q2xupy.v,VERILOG,,ff_bus1to16_fifo_151_4q2xupy,false
+fifo_151/sim/ff_bus1to16_fifo_151_4q2xupy.sdc,SDC,,ff_bus1to16_fifo_151_4q2xupy,false
+#
+# Map from instance-path to kind of module
+instances:
+instancePath,module
+ff_bus1to16.fifo_0,ff_bus1to16_fifo_151_4q2xupy

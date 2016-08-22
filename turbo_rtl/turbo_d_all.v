@@ -38,38 +38,57 @@ module turbo_d_all #(parameter
 
 );
 
+
 localparam NUM_TURBO = 16;
 localparam NUM_BUS_PER_TURBO_PKT=25;
 
 reg [3:0] 		bus2st_rdy_fsm;
-reg [NUM_TURBO-1 : 0] 	bus_ready_r;			
+reg [NUM_TURBO-1 : 0] 	bus_en_r, bus_ready_r;			
 reg [8:0]  		cnt_bus_en;
 
-reg [BUS-1:0] 	bus_data_r [3:0] /* synthesis keep */;
+wire [4:0]   wrusedw;
 
-//reg [NUM_TURBO-1 : 0] 	bus_en_r;
+// fifo bus data 1 to 16 , write clk_bus,  read clk_st
+ff_bus1to16 ff_bus1to16_inst (
+		.data	(bus_data),
+		.wrreq	(bus_en),
+		.rdreq	(),
+		.wrclk	(clk_bus),
+		.rdclk	(clk_st),
+		.aclr	(!rst_n),
+		.q		(),
+		.wrusedw	(wrusedw),
+		.rdempty	(),
+		.wrfull 	(),
+	);
 
-//start-------- only for NUM_TURBO = 16 -----------
-reg [3 : 0] 	bus_en_r;			
-reg [15 : 0] 	bus_en_rr;	
-//end  -------- only for NUM_TURBO = 16 -----------		
-reg [3:0] 		bus2st_rdy_fsm_r;
+// output bus_ready :  If almost full, bus_ready <= 0;
+always@(posedge clk_bus)
+begin
+	if (!rst_n)
+		bus_ready <= 0;
+	else
+	begin
+		if (wrusedw[4:3] == 2'b11)
+			bus_ready <= 1'b0;
+		else
+			bus_ready <= 1'b1;
+	end
+end
+
  
 //---------------------------------------
 //start--------- Arbiter ----------------
 //-- Description: mux/demux of "ready" and "en" signal
 //--              one root  <---> NUM_TURBO branches     
 //----------------------------------------
-always@(posedge clk_bus)
+always@(posedge clk_st)
 begin
 	if (!rst_n)
 	begin
 		bus2st_rdy_fsm <= 0;
-		bus2st_rdy_fsm_r <= 0;
 		bus_en_r <= 0;
-		bus_en_rr <= 0;
 		cnt_bus_en <= 0;
-		bus_ready <= 0;
 	end
 	else
 	begin
@@ -113,47 +132,22 @@ begin
 			bus_ready <= 0;
 		endcase
 		 
-		// bus_en_r[0] <= (bus2st_rdy_fsm == 4'd0) ? bus_en : 1'b0;
-		// bus_en_r[1] <= (bus2st_rdy_fsm == 4'd1) ? bus_en : 1'b0;
-		// bus_en_r[2] <= (bus2st_rdy_fsm == 4'd2) ? bus_en : 1'b0;
-		// bus_en_r[3] <= (bus2st_rdy_fsm == 4'd3) ? bus_en : 1'b0;
-		// bus_en_r[4] <= (bus2st_rdy_fsm == 4'd4) ? bus_en : 1'b0;
-		// bus_en_r[5] <= (bus2st_rdy_fsm == 4'd5) ? bus_en : 1'b0;
-		// bus_en_r[6] <= (bus2st_rdy_fsm == 4'd6) ? bus_en : 1'b0;
-		// bus_en_r[7] <= (bus2st_rdy_fsm == 4'd7) ? bus_en : 1'b0;
-		// bus_en_r[8] <= (bus2st_rdy_fsm == 4'd8) ? bus_en : 1'b0;
-		// bus_en_r[9] <= (bus2st_rdy_fsm == 4'd9) ? bus_en : 1'b0;
-		// bus_en_r[10] <= (bus2st_rdy_fsm == 4'd10) ? bus_en : 1'b0;
-		// bus_en_r[11] <= (bus2st_rdy_fsm == 4'd11) ? bus_en : 1'b0;
-		// bus_en_r[12] <= (bus2st_rdy_fsm == 4'd12) ? bus_en : 1'b0;
-		// bus_en_r[13] <= (bus2st_rdy_fsm == 4'd13) ? bus_en : 1'b0;
-		// bus_en_r[14] <= (bus2st_rdy_fsm == 4'd14) ? bus_en : 1'b0;
-		// bus_en_r[15] <= (bus2st_rdy_fsm == 4'd15) ? bus_en : 1'b0;
-
-		//start-------- only for NUM_TURBO = 16 -----------
-		bus_en_r[0] <= (bus2st_rdy_fsm[3:2] == 2'd0) ? bus_en : 1'b0;
-		bus_en_r[1] <= (bus2st_rdy_fsm[3:2] == 2'd1) ? bus_en : 1'b0;
-		bus_en_r[2] <= (bus2st_rdy_fsm[3:2] == 2'd2) ? bus_en : 1'b0;
-		bus_en_r[3] <= (bus2st_rdy_fsm[3:2] == 2'd3) ? bus_en : 1'b0;
-
-		bus_en_rr[0] <= (bus2st_rdy_fsm_r[1:0] == 2'd0) ? bus_en_r[0] : 1'b0;
-		bus_en_rr[1] <= (bus2st_rdy_fsm_r[1:0] == 2'd1) ? bus_en_r[0] : 1'b0;
-		bus_en_rr[2] <= (bus2st_rdy_fsm_r[1:0] == 2'd2) ? bus_en_r[0] : 1'b0;
-		bus_en_rr[3] <= (bus2st_rdy_fsm_r[1:0] == 2'd3) ? bus_en_r[0] : 1'b0;
-		bus_en_rr[4] <= (bus2st_rdy_fsm_r[1:0] == 2'd0) ? bus_en_r[1] : 1'b0;
-		bus_en_rr[5] <= (bus2st_rdy_fsm_r[1:0] == 2'd1) ? bus_en_r[1] : 1'b0;
-		bus_en_rr[6] <= (bus2st_rdy_fsm_r[1:0] == 2'd2) ? bus_en_r[1] : 1'b0;
-		bus_en_rr[7] <= (bus2st_rdy_fsm_r[1:0] == 2'd3) ? bus_en_r[1] : 1'b0;
-		bus_en_rr[8] <= (bus2st_rdy_fsm_r[1:0] == 2'd0) ? bus_en_r[2] : 1'b0;
-		bus_en_rr[9] <= (bus2st_rdy_fsm_r[1:0] == 2'd1) ? bus_en_r[2] : 1'b0;
-		bus_en_rr[10] <= (bus2st_rdy_fsm_r[1:0] == 2'd2) ? bus_en_r[2] : 1'b0;
-		bus_en_rr[11] <= (bus2st_rdy_fsm_r[1:0] == 2'd3) ? bus_en_r[2] : 1'b0;
-		bus_en_rr[12] <= (bus2st_rdy_fsm_r[1:0] == 2'd0) ? bus_en_r[3] : 1'b0;
-		bus_en_rr[13] <= (bus2st_rdy_fsm_r[1:0] == 2'd1) ? bus_en_r[3] : 1'b0;
-		bus_en_rr[14] <= (bus2st_rdy_fsm_r[1:0] == 2'd2) ? bus_en_r[3] : 1'b0;
-		bus_en_rr[15] <= (bus2st_rdy_fsm_r[1:0] == 2'd3) ? bus_en_r[3] : 1'b0;
-		//end  -------- only for NUM_TURBO = 16 -----------
-
+		bus_en_r[0] <= (bus2st_rdy_fsm == 4'd0) ? bus_en : 1'b0;
+		bus_en_r[1] <= (bus2st_rdy_fsm == 4'd1) ? bus_en : 1'b0;
+		bus_en_r[2] <= (bus2st_rdy_fsm == 4'd2) ? bus_en : 1'b0;
+		bus_en_r[3] <= (bus2st_rdy_fsm == 4'd3) ? bus_en : 1'b0;
+		bus_en_r[4] <= (bus2st_rdy_fsm == 4'd4) ? bus_en : 1'b0;
+		bus_en_r[5] <= (bus2st_rdy_fsm == 4'd5) ? bus_en : 1'b0;
+		bus_en_r[6] <= (bus2st_rdy_fsm == 4'd6) ? bus_en : 1'b0;
+		bus_en_r[7] <= (bus2st_rdy_fsm == 4'd7) ? bus_en : 1'b0;
+		bus_en_r[8] <= (bus2st_rdy_fsm == 4'd8) ? bus_en : 1'b0;
+		bus_en_r[9] <= (bus2st_rdy_fsm == 4'd9) ? bus_en : 1'b0;
+		bus_en_r[10] <= (bus2st_rdy_fsm == 4'd10) ? bus_en : 1'b0;
+		bus_en_r[11] <= (bus2st_rdy_fsm == 4'd11) ? bus_en : 1'b0;
+		bus_en_r[12] <= (bus2st_rdy_fsm == 4'd12) ? bus_en : 1'b0;
+		bus_en_r[13] <= (bus2st_rdy_fsm == 4'd13) ? bus_en : 1'b0;
+		bus_en_r[14] <= (bus2st_rdy_fsm == 4'd14) ? bus_en : 1'b0;
+		bus_en_r[15] <= (bus2st_rdy_fsm == 4'd15) ? bus_en : 1'b0;
 		//---------------------------------------------
 		//end----- Rewrite if NUM_TURBO change --------
 		//---------------------------------------------
@@ -167,8 +161,6 @@ begin
 			cnt_bus_en <= (cnt_bus_en == NUM_BUS_PER_TURBO_PKT-1) ? 9'd0 : cnt_bus_en + 9'd1;
 		else
 			cnt_bus_en <= cnt_bus_en;
-
-		bus2st_rdy_fsm_r <= bus2st_rdy_fsm;
 	end
 end
 //end--------- Arbiter ---------------------
@@ -192,59 +184,10 @@ begin
 	rst_n_q <= rst_n;
 end
 
-// genvar i;
-// generate 
-// for (i=0; i<NUM_TURBO; i=i+1)
-// begin: test
-
-// 	bus2st_turbo  #(
-//     .BUS (534),
-//     .ST_PER_BUS (512),
-//     .NUM_ST_PER_BUS (42), //  (ST_PER_BUS / ST)
-//     .ST_PER_TURBO_PKT (1028),   // 1024+4
-//     .NUM_BUS_PER_TURBO_PKT (25),
-//     .ST (12)
-//   	)
-// 	bus2st_turbo_inst(
-// 	  .rst_n            (rst_n),             
-// 	  .clk_bus         	(clk_bus),
-// 	  .bus_data			(bus_data),
-// 	  .bus_en 			(bus_en_r[i]),
-// 	  .bus_ready 		(bus_ready_r[i]),
-
-// 	  //.rst_n_out 		(rst_n_clk_st), // output , rst of clk_st domain
-
-// 	  .clk_st 			(clk_st),
-	  
-// 	  .source_valid    (trb_source_valid[i]   ),   // source.source_valid
-// 	  .source_ready    (trb_source_ready[i]   ),   //       .source_ready
-// 	  //.source_error    (   ),   //       .source_error
-// 	  .source_sop      (trb_source_sop[i]     ),   //       .source_sop
-// 	  .source_eop      (trb_source_eop[i]     ),   //       .source_eop
-// 	  //.crc_pass        (    ),   //       .crc_pass
-// 	  //.crc_type        (    ),   //       .crc_type
-// 	  //.source_iter     (    ),   //       .source_iter
-// 	  //.source_blk_size (	),   //       .source_blk_size
-// 	  .source_data_s   (trb_source_data_s[i]  )    //       .source_data_s
-// 	);
-// end
-// endgenerate
-
-
-//start--------- only for NUM_TURBO = 16 ---------------
-always@(posedge clk_bus)
-begin
-	bus_data_r[0] <= bus_data;
-	bus_data_r[1] <= bus_data;
-	bus_data_r[2] <= bus_data;
-	bus_data_r[3] <= bus_data;
-end
-
-
 genvar i;
 generate 
-for (i=0; i<4; i=i+1)
-begin: test0
+for (i=0; i<NUM_TURBO; i=i+1)
+begin: test
 
 	bus2st_turbo  #(
     .BUS (534),
@@ -256,9 +199,9 @@ begin: test0
   	)
 	bus2st_turbo_inst(
 	  .rst_n            (rst_n),             
-	  .clk_bus         	(clk_bus),
-	  .bus_data			(bus_data_r[0]),
-	  .bus_en 			(bus_en_rr[i]),
+	  .clk_bus         	(clk_st),
+	  .bus_data			(bus_data),
+	  .bus_en 			(bus_en_r[i]),
 	  .bus_ready 		(bus_ready_r[i]),
 
 	  //.rst_n_out 		(rst_n_clk_st), // output , rst of clk_st domain
@@ -278,119 +221,6 @@ begin: test0
 	);
 end
 endgenerate
-
-generate 
-for (i=4; i<8; i=i+1)
-begin: test1
-
-	bus2st_turbo  #(
-    .BUS (534),
-    .ST_PER_BUS (512),
-    .NUM_ST_PER_BUS (42), //  (ST_PER_BUS / ST)
-    .ST_PER_TURBO_PKT (1028),   // 1024+4
-    .NUM_BUS_PER_TURBO_PKT (25),
-    .ST (12)
-  	)
-	bus2st_turbo_inst(
-	  .rst_n            (rst_n),             
-	  .clk_bus         	(clk_bus),
-	  .bus_data			(bus_data_r[1]),
-	  .bus_en 			(bus_en_rr[i]),
-	  .bus_ready 		(bus_ready_r[i]),
-
-	  //.rst_n_out 		(rst_n_clk_st), // output , rst of clk_st domain
-
-	  .clk_st 			(clk_st),
-	  
-	  .source_valid    (trb_source_valid[i]   ),   // source.source_valid
-	  .source_ready    (trb_source_ready[i]   ),   //       .source_ready
-	  //.source_error    (   ),   //       .source_error
-	  .source_sop      (trb_source_sop[i]     ),   //       .source_sop
-	  .source_eop      (trb_source_eop[i]     ),   //       .source_eop
-	  //.crc_pass        (    ),   //       .crc_pass
-	  //.crc_type        (    ),   //       .crc_type
-	  //.source_iter     (    ),   //       .source_iter
-	  //.source_blk_size (	),   //       .source_blk_size
-	  .source_data_s   (trb_source_data_s[i]  )    //       .source_data_s
-	);
-end
-endgenerate
-
-generate 
-for (i=8; i<12; i=i+1)
-begin: test2
-
-	bus2st_turbo  #(
-    .BUS (534),
-    .ST_PER_BUS (512),
-    .NUM_ST_PER_BUS (42), //  (ST_PER_BUS / ST)
-    .ST_PER_TURBO_PKT (1028),   // 1024+4
-    .NUM_BUS_PER_TURBO_PKT (25),
-    .ST (12)
-  	)
-	bus2st_turbo_inst(
-	  .rst_n            (rst_n),             
-	  .clk_bus         	(clk_bus),
-	  .bus_data			(bus_data_r[2]),
-	  .bus_en 			(bus_en_rr[i]),
-	  .bus_ready 		(bus_ready_r[i]),
-
-	  //.rst_n_out 		(rst_n_clk_st), // output , rst of clk_st domain
-
-	  .clk_st 			(clk_st),
-	  
-	  .source_valid    (trb_source_valid[i]   ),   // source.source_valid
-	  .source_ready    (trb_source_ready[i]   ),   //       .source_ready
-	  //.source_error    (   ),   //       .source_error
-	  .source_sop      (trb_source_sop[i]     ),   //       .source_sop
-	  .source_eop      (trb_source_eop[i]     ),   //       .source_eop
-	  //.crc_pass        (    ),   //       .crc_pass
-	  //.crc_type        (    ),   //       .crc_type
-	  //.source_iter     (    ),   //       .source_iter
-	  //.source_blk_size (	),   //       .source_blk_size
-	  .source_data_s   (trb_source_data_s[i]  )    //       .source_data_s
-	);
-end
-endgenerate
-
-generate 
-for (i=12; i<16; i=i+1)
-begin: test3
-
-	bus2st_turbo  #(
-    .BUS (534),
-    .ST_PER_BUS (512),
-    .NUM_ST_PER_BUS (42), //  (ST_PER_BUS / ST)
-    .ST_PER_TURBO_PKT (1028),   // 1024+4
-    .NUM_BUS_PER_TURBO_PKT (25),
-    .ST (12)
-  	)
-	bus2st_turbo_inst(
-	  .rst_n            (rst_n),             
-	  .clk_bus         	(clk_bus),
-	  .bus_data			(bus_data_r[3]),
-	  .bus_en 			(bus_en_rr[i]),
-	  .bus_ready 		(bus_ready_r[i]),
-
-	  //.rst_n_out 		(rst_n_clk_st), // output , rst of clk_st domain
-
-	  .clk_st 			(clk_st),
-	  
-	  .source_valid    (trb_source_valid[i]   ),   // source.source_valid
-	  .source_ready    (trb_source_ready[i]   ),   //       .source_ready
-	  //.source_error    (   ),   //       .source_error
-	  .source_sop      (trb_source_sop[i]     ),   //       .source_sop
-	  .source_eop      (trb_source_eop[i]     ),   //       .source_eop
-	  //.crc_pass        (    ),   //       .crc_pass
-	  //.crc_type        (    ),   //       .crc_type
-	  //.source_iter     (    ),   //       .source_iter
-	  //.source_blk_size (	),   //       .source_blk_size
-	  .source_data_s   (trb_source_data_s[i]  )    //       .source_data_s
-	);
-end
-endgenerate
-//end  --------- only for NUM_TURBO = 16 ---------------
-
 //end-------- bus2st & turbo ----------------
 
 

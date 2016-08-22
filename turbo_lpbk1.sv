@@ -737,7 +737,7 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
     
     .clk_bus    (Clk_400),   
     .bus_data   (wrreq_mem_out_q),
-    .bus_en     (ram_rdValid_qq),
+    .bus_en     (ram_rdValid_qqq),  // seems wrreq_mem_out_q is sync with ram_rdValid_qqq (need to make sure)
     .bus_ready  (bus2st_ready),
 
     .clk_st     (uClk_usrDiv2),

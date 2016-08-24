@@ -42,23 +42,22 @@ module turbo_d_all #(parameter
 localparam NUM_TURBO = 16;
 localparam NUM_BUS_PER_TURBO_PKT=25;
 
-reg [3:0] 		bus2st_rdy_fsm;
-reg [NUM_TURBO-1 : 0] 	bus_en_r, bus_ready_r;			
-reg [8:0]  		cnt_bus_en;
-
-wire [4:0]   wrusedw;
+wire [4:0]   		wrusedw;
+//reg 				rdreq;
+wire 				rdempty;
+wire [BUS-1 : 0] 	bus_data_clk_st;
 
 // fifo bus data 1 to 16 , write clk_bus,  read clk_st
 ff_bus1to16 ff_bus1to16_inst (
 		.data	(bus_data),
 		.wrreq	(bus_en),
-		.rdreq	(),
+		.rdreq	(bus_en_clk_st),
 		.wrclk	(clk_bus),
 		.rdclk	(clk_st),
 		.aclr	(!rst_n),
-		.q		(),
+		.q		(bus_data_clk_st),
 		.wrusedw	(wrusedw),
-		.rdempty	(),
+		.rdempty	(rdempty),
 		.wrfull 	(),
 	);
 
@@ -76,7 +75,40 @@ begin
 	end
 end
 
- 
+//---------------------- STRUCTURE ------------------------------------
+//                         -------
+//  bus_data, bus_en -->  | FIFO |  --> bus_data_clk_st, bus_en_clk_st_r
+//  bus_ready        <--  |      |  <-- bus_ready_clk_st
+//                        --------
+//------------------------------------------------------------------------
+
+reg [3:0] 		bus2st_rdy_fsm;
+reg 			bus_en_clk_st, bus_ready_clk_st;
+reg [NUM_TURBO-1 : 0] 	bus_en_clk_st_r, bus_ready_clk_st_r;			
+reg [8:0]  		cnt_bus_en_clk_st;
+reg 			gap_rdreq;
+
+//start--------  bus_en_clk_st (FIFO rdreq) ------------------------
+//       gap_rdreq : Insert gap between bus_en_clk_st,  at least 1/2 duty cycle (why: rdempty, bus_ready_clk_st, ...)
+reg [1:0] 		cnt_gap_rdreq;
+always@(posedge clk_st)
+begin
+	if (!rst_n_clk_st)
+	begin
+		bus_en_clk_st 	<= 0;
+		gap_rdreq 		<= 0;
+		cnt_gap_rdreq  	<= 0;
+	end
+	else
+	begin
+		bus_en_clk_st <= (!rdempty) & (bus_ready_clk_st) & (gap_rdreq);
+		cnt_gap_rdreq <= (2'b11) ? 2'b00 : cnt_gap_rdreq + 2'b01; 
+		gap_rdreq <= (cnt_gap_rdreq == 2'b11); 
+	end
+end
+//end  --------  bus_en_clk_st (FIFO rdreq) -------------
+
+
 //---------------------------------------
 //start--------- Arbiter ----------------
 //-- Description: mux/demux of "ready" and "en" signal
@@ -84,11 +116,11 @@ end
 //----------------------------------------
 always@(posedge clk_st)
 begin
-	if (!rst_n)
+	if (!rst_n_clk_st)
 	begin
 		bus2st_rdy_fsm <= 0;
-		bus_en_r <= 0;
-		cnt_bus_en <= 0;
+		bus_en_clk_st_r <= 0;
+		cnt_bus_en_clk_st <= 0;
 	end
 	else
 	begin
@@ -97,70 +129,70 @@ begin
 		//-----------------------------------------------
 		case (bus2st_rdy_fsm)
 		4'd0:
-			bus_ready <= bus_ready_r[0];
+			bus_ready_clk_st <= bus_ready_clk_st_r[0];
 		4'd1:
-			bus_ready <= bus_ready_r[1];
+			bus_ready_clk_st <= bus_ready_clk_st_r[1];
 		4'd2:
-			bus_ready <= bus_ready_r[2];
+			bus_ready_clk_st <= bus_ready_clk_st_r[2];
 		4'd3:
-			bus_ready <= bus_ready_r[3];
+			bus_ready_clk_st <= bus_ready_clk_st_r[3];
 		4'd4:
-			bus_ready <= bus_ready_r[4];
+			bus_ready_clk_st <= bus_ready_clk_st_r[4];
 		4'd5:
-			bus_ready <= bus_ready_r[5];
+			bus_ready_clk_st <= bus_ready_clk_st_r[5];
 		4'd6:
-			bus_ready <= bus_ready_r[6];
+			bus_ready_clk_st <= bus_ready_clk_st_r[6];
 		4'd7:
-			bus_ready <= bus_ready_r[7];
+			bus_ready_clk_st <= bus_ready_clk_st_r[7];
 		4'd8:
-			bus_ready <= bus_ready_r[8];
+			bus_ready_clk_st <= bus_ready_clk_st_r[8];
 		4'd9:
-			bus_ready <= bus_ready_r[9];
+			bus_ready_clk_st <= bus_ready_clk_st_r[9];
 		4'd10:
-			bus_ready <= bus_ready_r[10];
+			bus_ready_clk_st <= bus_ready_clk_st_r[10];
 		4'd11:
-			bus_ready <= bus_ready_r[11];
+			bus_ready_clk_st <= bus_ready_clk_st_r[11];
 		4'd12:
-			bus_ready <= bus_ready_r[12];
+			bus_ready_clk_st <= bus_ready_clk_st_r[12];
 		4'd13:
-			bus_ready <= bus_ready_r[13];
+			bus_ready_clk_st <= bus_ready_clk_st_r[13];
 		4'd14:
-			bus_ready <= bus_ready_r[14];
+			bus_ready_clk_st <= bus_ready_clk_st_r[14];
 		4'd15:
-			bus_ready <= bus_ready_r[15];
+			bus_ready_clk_st <= bus_ready_clk_st_r[15];
 		default:
-			bus_ready <= 0;
+			bus_ready_clk_st <= 0;
 		endcase
 		 
-		bus_en_r[0] <= (bus2st_rdy_fsm == 4'd0) ? bus_en : 1'b0;
-		bus_en_r[1] <= (bus2st_rdy_fsm == 4'd1) ? bus_en : 1'b0;
-		bus_en_r[2] <= (bus2st_rdy_fsm == 4'd2) ? bus_en : 1'b0;
-		bus_en_r[3] <= (bus2st_rdy_fsm == 4'd3) ? bus_en : 1'b0;
-		bus_en_r[4] <= (bus2st_rdy_fsm == 4'd4) ? bus_en : 1'b0;
-		bus_en_r[5] <= (bus2st_rdy_fsm == 4'd5) ? bus_en : 1'b0;
-		bus_en_r[6] <= (bus2st_rdy_fsm == 4'd6) ? bus_en : 1'b0;
-		bus_en_r[7] <= (bus2st_rdy_fsm == 4'd7) ? bus_en : 1'b0;
-		bus_en_r[8] <= (bus2st_rdy_fsm == 4'd8) ? bus_en : 1'b0;
-		bus_en_r[9] <= (bus2st_rdy_fsm == 4'd9) ? bus_en : 1'b0;
-		bus_en_r[10] <= (bus2st_rdy_fsm == 4'd10) ? bus_en : 1'b0;
-		bus_en_r[11] <= (bus2st_rdy_fsm == 4'd11) ? bus_en : 1'b0;
-		bus_en_r[12] <= (bus2st_rdy_fsm == 4'd12) ? bus_en : 1'b0;
-		bus_en_r[13] <= (bus2st_rdy_fsm == 4'd13) ? bus_en : 1'b0;
-		bus_en_r[14] <= (bus2st_rdy_fsm == 4'd14) ? bus_en : 1'b0;
-		bus_en_r[15] <= (bus2st_rdy_fsm == 4'd15) ? bus_en : 1'b0;
+		bus_en_clk_st_r[0] <= (bus2st_rdy_fsm == 4'd0) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[1] <= (bus2st_rdy_fsm == 4'd1) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[2] <= (bus2st_rdy_fsm == 4'd2) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[3] <= (bus2st_rdy_fsm == 4'd3) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[4] <= (bus2st_rdy_fsm == 4'd4) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[5] <= (bus2st_rdy_fsm == 4'd5) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[6] <= (bus2st_rdy_fsm == 4'd6) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[7] <= (bus2st_rdy_fsm == 4'd7) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[8] <= (bus2st_rdy_fsm == 4'd8) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[9] <= (bus2st_rdy_fsm == 4'd9) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[10] <= (bus2st_rdy_fsm == 4'd10) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[11] <= (bus2st_rdy_fsm == 4'd11) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[12] <= (bus2st_rdy_fsm == 4'd12) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[13] <= (bus2st_rdy_fsm == 4'd13) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[14] <= (bus2st_rdy_fsm == 4'd14) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[15] <= (bus2st_rdy_fsm == 4'd15) ? bus_en_clk_st : 1'b0;
 		//---------------------------------------------
 		//end----- Rewrite if NUM_TURBO change --------
 		//---------------------------------------------
 
-		if (  cnt_bus_en == NUM_BUS_PER_TURBO_PKT-1  && bus_en == 1'b1 )
+		if (  cnt_bus_en_clk_st == NUM_BUS_PER_TURBO_PKT-1  && bus_en_clk_st == 1'b1 )
 			bus2st_rdy_fsm <= ( bus2st_rdy_fsm == NUM_TURBO-1) ? 4'd0 : bus2st_rdy_fsm + 4'd1;
 		else
 			bus2st_rdy_fsm <= bus2st_rdy_fsm;
 
-		if (bus_en)
-			cnt_bus_en <= (cnt_bus_en == NUM_BUS_PER_TURBO_PKT-1) ? 9'd0 : cnt_bus_en + 9'd1;
+		if (bus_en_clk_st)
+			cnt_bus_en_clk_st <= (cnt_bus_en_clk_st == NUM_BUS_PER_TURBO_PKT-1) ? 9'd0 : cnt_bus_en_clk_st + 9'd1;
 		else
-			cnt_bus_en <= cnt_bus_en;
+			cnt_bus_en_clk_st <= cnt_bus_en_clk_st;
 	end
 end
 //end--------- Arbiter ---------------------
@@ -198,11 +230,11 @@ begin: test
     .ST (12)
   	)
 	bus2st_turbo_inst(
-	  .rst_n            (rst_n),             
+	  .rst_n            (rst_n_clk_st),             
 	  .clk_bus         	(clk_st),
-	  .bus_data			(bus_data),
-	  .bus_en 			(bus_en_r[i]),
-	  .bus_ready 		(bus_ready_r[i]),
+	  .bus_data			(bus_data_clk_st),
+	  .bus_en 			(bus_en_clk_st_r[i]),
+	  .bus_ready 		(bus_ready_clk_st_r[i]),
 
 	  //.rst_n_out 		(rst_n_clk_st), // output , rst of clk_st domain
 

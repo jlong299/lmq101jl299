@@ -39,7 +39,7 @@ module turbo_d_all #(parameter
 );
 
 
-localparam NUM_TURBO = 16;
+localparam NUM_TURBO = 2;
 localparam NUM_BUS_PER_TURBO_PKT=25;
 
 wire [4:0]   		wrusedw;
@@ -114,7 +114,6 @@ end
 //-- Description: mux/demux of "ready" and "en" signal
 //--              one root  <---> NUM_TURBO branches     
 //----------------------------------------
-genvar j;
 always@(posedge clk_st)
 begin
 	if (!rst_n_clk_st)
@@ -125,54 +124,7 @@ begin
 	end
 	else
 	begin
-		//-----------------------------------------------
-		//start----- Rewrite if NUM_TURBO change --------
-		//-----------------------------------------------
-		case (bus2st_rdy_fsm)
-		generate
-		for (j=0; j<NUM_TURBO; j=j+1)
-		begin: t0
-		4'dj:
-			bus_ready_clk_st <= bus_ready_clk_st_r[j];
-		end
-		endgenerate
 
-		// 4'd0:
-		// 	bus_ready_clk_st <= bus_ready_clk_st_r[0];
-		// 4'd1:
-		// 	bus_ready_clk_st <= bus_ready_clk_st_r[1];
-		// 4'd2:
-		// 	bus_ready_clk_st <= bus_ready_clk_st_r[2];
-		// 4'd3:
-		// 	bus_ready_clk_st <= bus_ready_clk_st_r[3];
-		// 4'd4:
-		// 	bus_ready_clk_st <= bus_ready_clk_st_r[4];
-		// 4'd5:
-		// 	bus_ready_clk_st <= bus_ready_clk_st_r[5];
-		// 4'd6:
-		// 	bus_ready_clk_st <= bus_ready_clk_st_r[6];
-		// 4'd7:
-		// 	bus_ready_clk_st <= bus_ready_clk_st_r[7];
-		// 4'd8:
-		// 	bus_ready_clk_st <= bus_ready_clk_st_r[8];
-		// 4'd9:
-		// 	bus_ready_clk_st <= bus_ready_clk_st_r[9];
-		// 4'd10:
-		// 	bus_ready_clk_st <= bus_ready_clk_st_r[10];
-		// 4'd11:
-		// 	bus_ready_clk_st <= bus_ready_clk_st_r[11];
-		// 4'd12:
-		// 	bus_ready_clk_st <= bus_ready_clk_st_r[12];
-		// 4'd13:
-		// 	bus_ready_clk_st <= bus_ready_clk_st_r[13];
-		// 4'd14:
-		// 	bus_ready_clk_st <= bus_ready_clk_st_r[14];
-		// 4'd15:
-		// 	bus_ready_clk_st <= bus_ready_clk_st_r[15];
-		default:
-			bus_ready_clk_st <= 0;
-		endcase
-		 
 		bus_en_clk_st_r[0] <= (bus2st_rdy_fsm == 4'd0) ? bus_en_clk_st : 1'b0;
 		bus_en_clk_st_r[1] <= (bus2st_rdy_fsm == 4'd1) ? bus_en_clk_st : 1'b0;
 		bus_en_clk_st_r[2] <= (bus2st_rdy_fsm == 4'd2) ? bus_en_clk_st : 1'b0;
@@ -189,9 +141,6 @@ begin
 		bus_en_clk_st_r[13] <= (bus2st_rdy_fsm == 4'd13) ? bus_en_clk_st : 1'b0;
 		bus_en_clk_st_r[14] <= (bus2st_rdy_fsm == 4'd14) ? bus_en_clk_st : 1'b0;
 		bus_en_clk_st_r[15] <= (bus2st_rdy_fsm == 4'd15) ? bus_en_clk_st : 1'b0;
-		//---------------------------------------------
-		//end----- Rewrite if NUM_TURBO change --------
-		//---------------------------------------------
 
 		if (  cnt_bus_en_clk_st == NUM_BUS_PER_TURBO_PKT-1  && bus_en_clk_st == 1'b1 )
 			bus2st_rdy_fsm <= ( bus2st_rdy_fsm == NUM_TURBO-1) ? 4'd0 : bus2st_rdy_fsm + 4'd1;
@@ -204,7 +153,117 @@ begin
 			cnt_bus_en_clk_st <= cnt_bus_en_clk_st;
 	end
 end
-//end--------- Arbiter ---------------------
+
+//-----------------------------------------------
+//start----- generate case NUM_TURBO  --------
+//-----------------------------------------------
+generate
+if ( NUM_TURBO == 1 )
+begin: t0
+
+always@(posedge clk_st)
+begin
+	if (!rst_n_clk_st)
+	begin
+		bus_ready_clk_st <= 0;
+	end
+	else
+	begin
+		case (bus2st_rdy_fsm)
+		4'd0:
+			bus_ready_clk_st <= bus_ready_clk_st_r[0];
+		default:
+			bus_ready_clk_st <= 0;
+		endcase
+		
+	end
+end
+
+end
+
+else if ( NUM_TURBO == 2 )
+begin: t0
+
+always@(posedge clk_st)
+begin
+	if (!rst_n_clk_st)
+	begin
+		bus_ready_clk_st <= 0;
+	end
+	else
+	begin
+		case (bus2st_rdy_fsm)
+		4'd0:
+			bus_ready_clk_st <= bus_ready_clk_st_r[0];
+		4'd1:
+			bus_ready_clk_st <= bus_ready_clk_st_r[1];
+		default:
+			bus_ready_clk_st <= 0;
+		endcase
+		
+	end
+end
+
+end
+
+else //( NUM_TURBO == 16 )
+begin: t0
+
+always@(posedge clk_st)
+begin
+	if (!rst_n_clk_st)
+	begin
+		bus_ready_clk_st <= 0;
+	end
+	else
+	begin
+		case (bus2st_rdy_fsm)
+		4'd0:
+			bus_ready_clk_st <= bus_ready_clk_st_r[0];
+		4'd1:
+			bus_ready_clk_st <= bus_ready_clk_st_r[1];
+		4'd2:
+			bus_ready_clk_st <= bus_ready_clk_st_r[2];
+		4'd3:
+			bus_ready_clk_st <= bus_ready_clk_st_r[3];
+		4'd4:
+			bus_ready_clk_st <= bus_ready_clk_st_r[4];
+		4'd5:
+			bus_ready_clk_st <= bus_ready_clk_st_r[5];
+		4'd6:
+			bus_ready_clk_st <= bus_ready_clk_st_r[6];
+		4'd7:
+			bus_ready_clk_st <= bus_ready_clk_st_r[7];
+		4'd8:
+			bus_ready_clk_st <= bus_ready_clk_st_r[8];
+		4'd9:
+			bus_ready_clk_st <= bus_ready_clk_st_r[9];
+		4'd10:
+			bus_ready_clk_st <= bus_ready_clk_st_r[10];
+		4'd11:
+			bus_ready_clk_st <= bus_ready_clk_st_r[11];
+		4'd12:
+			bus_ready_clk_st <= bus_ready_clk_st_r[12];
+		4'd13:
+			bus_ready_clk_st <= bus_ready_clk_st_r[13];
+		4'd14:
+			bus_ready_clk_st <= bus_ready_clk_st_r[14];
+		4'd15:
+			bus_ready_clk_st <= bus_ready_clk_st_r[15];
+		default:
+			bus_ready_clk_st <= 0;
+		endcase
+		
+	end
+end
+
+end
+endgenerate
+//-----------------------------------------------
+//end  ----- generate case NUM_TURBO  --------
+//-----------------------------------------------
+
+//end  --------- Arbiter ---------------------
 //------------------------------------------
 
 

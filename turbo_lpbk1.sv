@@ -694,38 +694,7 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
   
   reg     st_out_ready;
 
-  localparam NUM_TURBO = 1;
-
-  generate
-  if ( NUM_TURBO == 16 )
-  begin : u1
-
-  turbo_d_all_num1 #( 
-    .BUS (534),
-    .ST (8) 
-    )
-  turbo_d_all_num1_inst
-  (
-    .rst_n      (test_Resetb),  
-    
-    .clk_bus    (Clk_400),   
-    .bus_data   (wrreq_mem_out_q),
-    .bus_en     (ram_rdValid_qq),
-    .bus_ready  (bus2st_ready),
-
-    .clk_st     (uClk_usrDiv2),
-    .st_ready   (trb_source_ready),
-    .st_data    (trb_source_data_s),
-    .st_valid   (trb_source_valid),
-    .st_sop     (trb_source_sop),
-    .st_eop     (trb_source_eop)
-
-  );
-
-  end
-
-  else
-  begin : u1
+  //localparam NUM_TURBO = 16;
 
   turbo_d_all #(  // NUM_TURBO == 16
     .BUS (534),
@@ -749,8 +718,6 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
 
   );
 
-  end
-  endgenerate
 
   //-------- counter for signaltap --------------
   reg [15 : 0] cnt_bus_en /* synthesis keep */ ;

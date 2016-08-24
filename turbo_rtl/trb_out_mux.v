@@ -180,7 +180,7 @@ end
 
 
 //-----------------------------------------------
-//start----- Rewrite if NUM_TURBO change --------
+//start----- generate case NUM_TURBO  --------
 //-----------------------------------------------
 
 generate 
@@ -252,10 +252,11 @@ begin
 end
 
 end
+endgenerate
 
 
 //---------------------------------------------
-//end----- Rewrite if NUM_TURBO change --------
+//end  ----- generate case NUM_TURBO  --------
 //---------------------------------------------
 
 reg [3:0] st_out_fsm_q;
@@ -263,6 +264,68 @@ always@(posedge clk)
 begin
 	st_out_fsm_q <= st_out_fsm;
 end
+
+
+generate
+if ( NUM_TURBO == 1 )
+begin: u2
+
+always@(*)
+begin
+	case (st_out_fsm_q)
+	4'd0:
+	begin
+		st_data_out <= st_data_q[0];
+		st_valid_out <= st_valid_q[0];
+		st_sop_out <= st_sop_q[0];
+		st_eop_out <= st_eop_q[0];
+	end
+	default:
+	begin
+		st_data_out <= 0;
+		st_valid_out <= 0;
+		st_sop_out <= 0;
+		st_eop_out <= 0;
+	end
+	endcase
+end
+
+end
+
+else if ( NUM_TURBO == 2 )
+begin: u2
+
+always@(*)
+begin
+	case (st_out_fsm_q)
+	4'd0:
+	begin
+		st_data_out <= st_data_q[0];
+		st_valid_out <= st_valid_q[0];
+		st_sop_out <= st_sop_q[0];
+		st_eop_out <= st_eop_q[0];
+	end
+	4'd1:
+	begin
+		st_data_out <= st_data_q[1];
+		st_valid_out <= st_valid_q[1];
+		st_sop_out <= st_sop_q[1];
+		st_eop_out <= st_eop_q[1];
+	end
+		default:
+	begin
+		st_data_out <= 0;
+		st_valid_out <= 0;
+		st_sop_out <= 0;
+		st_eop_out <= 0;
+	end
+	endcase
+end
+
+end
+
+else  //( NUM_TURBO == 16 )
+begin: u2
 
 always@(*)
 begin
@@ -388,6 +451,9 @@ begin
 	end
 	endcase
 end
+
+end
+endgenerate
 
 
 endmodule

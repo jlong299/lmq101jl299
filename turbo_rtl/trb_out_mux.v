@@ -182,6 +182,47 @@ end
 //-----------------------------------------------
 //start----- Rewrite if NUM_TURBO change --------
 //-----------------------------------------------
+
+generate 
+if ( NUM_TURBO == 1)
+begin : u1
+
+always@(posedge clk)
+begin
+	if (!rst_n)
+	begin
+		read_one_frame_done <= 0;
+	end
+	else
+	begin
+		read_one_frame_done <= 	( cnt_rden[0] == ST_LEN );
+	end
+end
+
+end
+
+else if ( NUM_TURBO == 2 )
+begin : u1
+
+always@(posedge clk)
+begin
+	if (!rst_n)
+	begin
+		read_one_frame_done <= 0;
+	end
+	else
+	begin
+		read_one_frame_done <= 	( cnt_rden[0] == ST_LEN ) |
+								( cnt_rden[1] == ST_LEN )
+								;
+	end
+end
+
+end
+
+else  // ( NUM_TURBO == 16 )
+begin : u1
+
 always@(posedge clk)
 begin
 	if (!rst_n)
@@ -209,6 +250,13 @@ begin
 								;
 	end
 end
+
+end
+
+
+//---------------------------------------------
+//end----- Rewrite if NUM_TURBO change --------
+//---------------------------------------------
 
 reg [3:0] st_out_fsm_q;
 always@(posedge clk)		
@@ -340,8 +388,6 @@ begin
 	end
 	endcase
 end
-//---------------------------------------------
-//end----- Rewrite if NUM_TURBO change --------
-//---------------------------------------------
+
 
 endmodule

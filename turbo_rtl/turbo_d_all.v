@@ -114,6 +114,7 @@ end
 //-- Description: mux/demux of "ready" and "en" signal
 //--              one root  <---> NUM_TURBO branches     
 //----------------------------------------
+genvar j;
 always@(posedge clk_st)
 begin
 	if (!rst_n_clk_st)
@@ -128,38 +129,46 @@ begin
 		//start----- Rewrite if NUM_TURBO change --------
 		//-----------------------------------------------
 		case (bus2st_rdy_fsm)
-		4'd0:
-			bus_ready_clk_st <= bus_ready_clk_st_r[0];
-		4'd1:
-			bus_ready_clk_st <= bus_ready_clk_st_r[1];
-		4'd2:
-			bus_ready_clk_st <= bus_ready_clk_st_r[2];
-		4'd3:
-			bus_ready_clk_st <= bus_ready_clk_st_r[3];
-		4'd4:
-			bus_ready_clk_st <= bus_ready_clk_st_r[4];
-		4'd5:
-			bus_ready_clk_st <= bus_ready_clk_st_r[5];
-		4'd6:
-			bus_ready_clk_st <= bus_ready_clk_st_r[6];
-		4'd7:
-			bus_ready_clk_st <= bus_ready_clk_st_r[7];
-		4'd8:
-			bus_ready_clk_st <= bus_ready_clk_st_r[8];
-		4'd9:
-			bus_ready_clk_st <= bus_ready_clk_st_r[9];
-		4'd10:
-			bus_ready_clk_st <= bus_ready_clk_st_r[10];
-		4'd11:
-			bus_ready_clk_st <= bus_ready_clk_st_r[11];
-		4'd12:
-			bus_ready_clk_st <= bus_ready_clk_st_r[12];
-		4'd13:
-			bus_ready_clk_st <= bus_ready_clk_st_r[13];
-		4'd14:
-			bus_ready_clk_st <= bus_ready_clk_st_r[14];
-		4'd15:
-			bus_ready_clk_st <= bus_ready_clk_st_r[15];
+		generate
+		for (j=0; j<NUM_TURBO; j=j+1)
+		begin: t0
+		4'dj:
+			bus_ready_clk_st <= bus_ready_clk_st_r[j];
+		end
+		endgenerate
+
+		// 4'd0:
+		// 	bus_ready_clk_st <= bus_ready_clk_st_r[0];
+		// 4'd1:
+		// 	bus_ready_clk_st <= bus_ready_clk_st_r[1];
+		// 4'd2:
+		// 	bus_ready_clk_st <= bus_ready_clk_st_r[2];
+		// 4'd3:
+		// 	bus_ready_clk_st <= bus_ready_clk_st_r[3];
+		// 4'd4:
+		// 	bus_ready_clk_st <= bus_ready_clk_st_r[4];
+		// 4'd5:
+		// 	bus_ready_clk_st <= bus_ready_clk_st_r[5];
+		// 4'd6:
+		// 	bus_ready_clk_st <= bus_ready_clk_st_r[6];
+		// 4'd7:
+		// 	bus_ready_clk_st <= bus_ready_clk_st_r[7];
+		// 4'd8:
+		// 	bus_ready_clk_st <= bus_ready_clk_st_r[8];
+		// 4'd9:
+		// 	bus_ready_clk_st <= bus_ready_clk_st_r[9];
+		// 4'd10:
+		// 	bus_ready_clk_st <= bus_ready_clk_st_r[10];
+		// 4'd11:
+		// 	bus_ready_clk_st <= bus_ready_clk_st_r[11];
+		// 4'd12:
+		// 	bus_ready_clk_st <= bus_ready_clk_st_r[12];
+		// 4'd13:
+		// 	bus_ready_clk_st <= bus_ready_clk_st_r[13];
+		// 4'd14:
+		// 	bus_ready_clk_st <= bus_ready_clk_st_r[14];
+		// 4'd15:
+		// 	bus_ready_clk_st <= bus_ready_clk_st_r[15];
 		default:
 			bus_ready_clk_st <= 0;
 		endcase
@@ -253,6 +262,7 @@ begin: test
 	);
 end
 endgenerate
+
 //end-------- bus2st & turbo ----------------
 
 

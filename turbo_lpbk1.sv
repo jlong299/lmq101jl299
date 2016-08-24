@@ -697,7 +697,7 @@ module turbo_lpbk1 #(parameter PEND_THRESH=1, ADDR_LMT=20, MDATA=14)
   localparam NUM_TURBO = 1;
 
   generate
-  if ( NUM_TURBO == 1 )
+  if ( NUM_TURBO == 16 )
   begin : u1
 
   turbo_d_all_num1 #( 

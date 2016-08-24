@@ -240,7 +240,7 @@ endgenerate
 
 
 //start--------- trb_out_mux ----------------
-trb_out_mux #( .NUM_TURBO (NUM_TURBO) )
+trb_out_mux_num1 #( .NUM_TURBO (NUM_TURBO) )
 trb_out_mux_inst
 (
 	.rst_n 			(rst_n_clk_st), //!!! to be connected

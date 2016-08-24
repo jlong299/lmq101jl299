@@ -58,7 +58,7 @@ ff_bus1to16 ff_bus1to16_inst (
 		.q		(bus_data_clk_st),
 		.wrusedw	(wrusedw),
 		.rdempty	(rdempty),
-		.wrfull 	(),
+		.wrfull 	()
 	);
 
 // output bus_ready :  If almost full, bus_ready <= 0;
@@ -119,29 +119,10 @@ begin
 	if (!rst_n_clk_st)
 	begin
 		bus2st_rdy_fsm <= 0;
-		bus_en_clk_st_r <= 0;
 		cnt_bus_en_clk_st <= 0;
 	end
 	else
 	begin
-
-		bus_en_clk_st_r[0] <= (bus2st_rdy_fsm == 4'd0) ? bus_en_clk_st : 1'b0;
-		bus_en_clk_st_r[1] <= (bus2st_rdy_fsm == 4'd1) ? bus_en_clk_st : 1'b0;
-		bus_en_clk_st_r[2] <= (bus2st_rdy_fsm == 4'd2) ? bus_en_clk_st : 1'b0;
-		bus_en_clk_st_r[3] <= (bus2st_rdy_fsm == 4'd3) ? bus_en_clk_st : 1'b0;
-		bus_en_clk_st_r[4] <= (bus2st_rdy_fsm == 4'd4) ? bus_en_clk_st : 1'b0;
-		bus_en_clk_st_r[5] <= (bus2st_rdy_fsm == 4'd5) ? bus_en_clk_st : 1'b0;
-		bus_en_clk_st_r[6] <= (bus2st_rdy_fsm == 4'd6) ? bus_en_clk_st : 1'b0;
-		bus_en_clk_st_r[7] <= (bus2st_rdy_fsm == 4'd7) ? bus_en_clk_st : 1'b0;
-		bus_en_clk_st_r[8] <= (bus2st_rdy_fsm == 4'd8) ? bus_en_clk_st : 1'b0;
-		bus_en_clk_st_r[9] <= (bus2st_rdy_fsm == 4'd9) ? bus_en_clk_st : 1'b0;
-		bus_en_clk_st_r[10] <= (bus2st_rdy_fsm == 4'd10) ? bus_en_clk_st : 1'b0;
-		bus_en_clk_st_r[11] <= (bus2st_rdy_fsm == 4'd11) ? bus_en_clk_st : 1'b0;
-		bus_en_clk_st_r[12] <= (bus2st_rdy_fsm == 4'd12) ? bus_en_clk_st : 1'b0;
-		bus_en_clk_st_r[13] <= (bus2st_rdy_fsm == 4'd13) ? bus_en_clk_st : 1'b0;
-		bus_en_clk_st_r[14] <= (bus2st_rdy_fsm == 4'd14) ? bus_en_clk_st : 1'b0;
-		bus_en_clk_st_r[15] <= (bus2st_rdy_fsm == 4'd15) ? bus_en_clk_st : 1'b0;
-
 		if (  cnt_bus_en_clk_st == NUM_BUS_PER_TURBO_PKT-1  && bus_en_clk_st == 1'b1 )
 			bus2st_rdy_fsm <= ( bus2st_rdy_fsm == NUM_TURBO-1) ? 4'd0 : bus2st_rdy_fsm + 4'd1;
 		else
@@ -166,6 +147,7 @@ begin
 	if (!rst_n_clk_st)
 	begin
 		bus_ready_clk_st <= 0;
+		bus_en_clk_st_r <= 0;
 	end
 	else
 	begin
@@ -175,6 +157,8 @@ begin
 		default:
 			bus_ready_clk_st <= 0;
 		endcase
+
+		bus_en_clk_st_r[0] <= (bus2st_rdy_fsm == 4'd0) ? bus_en_clk_st : 1'b0;
 		
 	end
 end
@@ -189,6 +173,7 @@ begin
 	if (!rst_n_clk_st)
 	begin
 		bus_ready_clk_st <= 0;
+		bus_en_clk_st_r <= 0;
 	end
 	else
 	begin
@@ -200,6 +185,9 @@ begin
 		default:
 			bus_ready_clk_st <= 0;
 		endcase
+
+		bus_en_clk_st_r[0] <= (bus2st_rdy_fsm == 4'd0) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[1] <= (bus2st_rdy_fsm == 4'd1) ? bus_en_clk_st : 1'b0;
 		
 	end
 end
@@ -214,6 +202,7 @@ begin
 	if (!rst_n_clk_st)
 	begin
 		bus_ready_clk_st <= 0;
+		bus_en_clk_st_r <= 0;
 	end
 	else
 	begin
@@ -253,6 +242,23 @@ begin
 		default:
 			bus_ready_clk_st <= 0;
 		endcase
+
+		bus_en_clk_st_r[0] <= (bus2st_rdy_fsm == 4'd0) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[1] <= (bus2st_rdy_fsm == 4'd1) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[2] <= (bus2st_rdy_fsm == 4'd2) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[3] <= (bus2st_rdy_fsm == 4'd3) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[4] <= (bus2st_rdy_fsm == 4'd4) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[5] <= (bus2st_rdy_fsm == 4'd5) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[6] <= (bus2st_rdy_fsm == 4'd6) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[7] <= (bus2st_rdy_fsm == 4'd7) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[8] <= (bus2st_rdy_fsm == 4'd8) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[9] <= (bus2st_rdy_fsm == 4'd9) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[10] <= (bus2st_rdy_fsm == 4'd10) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[11] <= (bus2st_rdy_fsm == 4'd11) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[12] <= (bus2st_rdy_fsm == 4'd12) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[13] <= (bus2st_rdy_fsm == 4'd13) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[14] <= (bus2st_rdy_fsm == 4'd14) ? bus_en_clk_st : 1'b0;
+		bus_en_clk_st_r[15] <= (bus2st_rdy_fsm == 4'd15) ? bus_en_clk_st : 1'b0;
 		
 	end
 end

@@ -42,10 +42,32 @@ module turbo_d_all #(parameter
 localparam NUM_TURBO = 2;
 localparam NUM_BUS_PER_TURBO_PKT=25;
 
+reg  rst_n_clk_st;
+reg  rst_n_q, rst_n_qq;
+always@(posedge clk_st)
+begin
+	rst_n_clk_st <= rst_n_qq;
+	rst_n_qq <= rst_n_q;
+	rst_n_q <= rst_n;
+end
+
 wire [4:0]   		wrusedw;
 //reg 				rdreq;
 wire 				rdempty;
 wire [BUS-1 : 0] 	bus_data_clk_st;
+
+reg [3:0] 		bus2st_rdy_fsm;
+reg 			bus_en_clk_st, bus_ready_clk_st;
+reg [NUM_TURBO-1 : 0] 	bus_en_clk_st_r, bus_ready_clk_st_r;			
+reg [8:0]  		cnt_bus_en_clk_st;
+reg 			gap_rdreq;
+reg [1:0] 		cnt_gap_rdreq;
+
+reg [NUM_TURBO-1 : 0]		trb_source_valid;
+reg [NUM_TURBO-1 : 0]		trb_source_ready;
+reg [NUM_TURBO-1 : 0]		trb_source_sop;
+reg [NUM_TURBO-1 : 0]		trb_source_eop;
+reg [7:0] 		trb_source_data_s [NUM_TURBO-1 :0] ;
 
 // fifo bus data 1 to 16 , write clk_bus,  read clk_st
 ff_bus1to16 ff_bus1to16_inst (
@@ -82,15 +104,9 @@ end
 //                        --------
 //------------------------------------------------------------------------
 
-reg [3:0] 		bus2st_rdy_fsm;
-reg 			bus_en_clk_st, bus_ready_clk_st;
-reg [NUM_TURBO-1 : 0] 	bus_en_clk_st_r, bus_ready_clk_st_r;			
-reg [8:0]  		cnt_bus_en_clk_st;
-reg 			gap_rdreq;
 
 //start--------  bus_en_clk_st (FIFO rdreq) ------------------------
 //       gap_rdreq : Insert gap between bus_en_clk_st,  at least 1/2 duty cycle (why: rdempty, bus_ready_clk_st, ...)
-reg [1:0] 		cnt_gap_rdreq;
 always@(posedge clk_st)
 begin
 	if (!rst_n_clk_st)
@@ -102,7 +118,7 @@ begin
 	else
 	begin
 		bus_en_clk_st <= (!rdempty) & (bus_ready_clk_st) & (gap_rdreq);
-		cnt_gap_rdreq <= (2'b11) ? 2'b00 : cnt_gap_rdreq + 2'b01; 
+		cnt_gap_rdreq <= (cnt_gap_rdreq == 2'b11) ? 2'b00 : cnt_gap_rdreq + 2'b01; 
 		gap_rdreq <= (cnt_gap_rdreq == 2'b11); 
 	end
 end
@@ -274,21 +290,6 @@ endgenerate
 
 
 //start-------- bus2st & turbo ----------------
-reg [NUM_TURBO-1 : 0]		trb_source_valid;
-reg [NUM_TURBO-1 : 0]		trb_source_ready;
-reg [NUM_TURBO-1 : 0]		trb_source_sop;
-reg [NUM_TURBO-1 : 0]		trb_source_eop;
-reg [7:0] 		trb_source_data_s [NUM_TURBO-1 :0] ;
-reg  		rst_n_clk_st;
-
-
-reg  rst_n_q, rst_n_qq;
-always@(posedge clk_st)
-begin
-	rst_n_clk_st <= rst_n_qq;
-	rst_n_qq <= rst_n_q;
-	rst_n_q <= rst_n;
-end
 
 genvar i;
 generate 

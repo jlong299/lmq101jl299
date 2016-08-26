@@ -13,8 +13,11 @@
 //  We need NUM_BUS_PER_TURBO_PKT buses to form one turbo packet.
 //
 //  When st_ready from TurboDecoder ==1,  st_data can go out.
+//  --------------------
+//  2016.08.26
+//  bus2st_sync :  clk_bus  &  clk_st are the same
 
-module bus2st #(parameter
+module bus2st_sync #(parameter
 		BUS=534,
 		ST_PER_BUS=512,
 		NUM_ST_PER_BUS=42, //  (ST_PER_BUS / ST)
@@ -98,13 +101,15 @@ logic [6:0] 		bus_mem_rdaddr;
 
 
 //start-----------   clk_st --> clk_bus  ----------------
-logic  mem_rd_complt_r1, mem_rd_complt_r0, mem_rd_complt_clk_st;
-always@(posedge clk_bus)
-begin
-	mem_rd_complt_clk_bus <= mem_rd_complt_r1;
-	mem_rd_complt_r1 <= mem_rd_complt_r0;
-	mem_rd_complt_r0 <= mem_rd_complt_clk_st;
-end
+// logic  mem_rd_complt_r1, mem_rd_complt_r0, mem_rd_complt_clk_st;
+// always@(posedge clk_bus)
+// begin
+// 	mem_rd_complt_clk_bus <= mem_rd_complt_r1;
+// 	mem_rd_complt_r1 <= mem_rd_complt_r0;
+// 	mem_rd_complt_r0 <= mem_rd_complt_clk_st;
+// end
+reg 	mem_rd_complt_clk_st;
+assign 	mem_rd_complt_clk_bus = mem_rd_complt_clk_st;
 //end-----------   clk_st --> clk_bus  ----------------
 
 
@@ -184,13 +189,15 @@ end
 
 
 //start-----------   clk_bus --> clk_st  ----------------
-logic mem_full_trig_clk_st, mem_full_trig_r1, mem_full_trig_r0;
-always@(posedge clk_st)
-begin
-	mem_full_trig_clk_st <= mem_full_trig_r1;
-	mem_full_trig_r1 <= mem_full_trig_r0;
-	mem_full_trig_r0 <= mem_full_trigger;
-end
+// logic mem_full_trig_clk_st, mem_full_trig_r1, mem_full_trig_r0;
+// always@(posedge clk_st)
+// begin
+// 	mem_full_trig_clk_st <= mem_full_trig_r1;
+// 	mem_full_trig_r1 <= mem_full_trig_r0;
+// 	mem_full_trig_r0 <= mem_full_trigger;
+// end
+logic 	mem_full_trig_clk_st;
+assign 	mem_full_trig_clk_st = mem_full_trigger;
 
 logic rst_n_st_r0, rst_n_st_r1, rst_n_st;
 always@(posedge clk_st)

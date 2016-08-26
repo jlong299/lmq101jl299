@@ -66,7 +66,7 @@ wire [12:0]  trb_sink_blk_size;
 wire   [7:0] trb_source_data_s /* synthesis keep */ ;
 
 
-  bus2st #(
+  bus2st_sync #(
     .BUS (BUS),
     .ST_PER_BUS (ST_PER_BUS),
     .NUM_ST_PER_BUS (NUM_ST_PER_BUS), //  (ST_PER_BUS / ST)

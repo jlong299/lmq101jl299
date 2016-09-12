@@ -13,363 +13,344 @@
 //  We need NUM_BUS_PER_TURBO_PKT buses to form one turbo packet.
 //
 //  When st_ready from TurboDecoder ==1,  st_data can go out.
+//
+//  ---------------------------------------------------------------------------
+//  Version 1.0
+//  Description : begin to support variable length of AFU frame.  (AFU:Accelerator Func Unit)
+//  Main change : clk_bus = clk_st 
+//  2016-09-08
+//  ---------------------------------------------------------------------------
+//           bus  -->  FIFO  -->  st(stream)
+//  ---------------------------------------------------------------------------
+
+
+//  --------------------------- REFERENCE -------------------------------------------
+//                  extracts from  pj101 Turbo Dec Acc v1.0 (md format)
+//                            2016.9.9
+
+//    ## New version (v1.0) data structure
+//    ### Composition of one CL v1.0.1
+//    One CL consists of header part and payload part. Header occupies the highest 8 bits and payload occupies the lower 504 bits.
+//    > Header  (8) +  Payload (504)
+//
+//    Header is composed by flag part and length part.
+//    > Header = flag (2) + length (6)
+//
+//    Flag 
+//    - 10 : start of one AFU frame
+//    - 00 : body of one AFU frame
+//    - 01 : end of one AFU frame
+//    - 11 : start and end of one AFU frame 
+//
+//    Length
+//    - Unsigned number indicates the valid bytes of payload (from the lowest).  
+//
+//    >  AFU means Accelerate Function Unit which is turbo decoder in our case 
+//
+//    For example, if one CL is CL[511:0]. Then the header part is CL[511:504], payload part is CL[503:0].  If CL[511:504] == 8'b01000011, that means this CL is the end of one AFU frame, and  the lowest 7 bytes of payload is valid. Which means CL[7:0], CL[15:8], CL[23:16]. (the lowest the first)
+//
+//    In order to achieve flexibility, the length of header and payload could be set by changing some parameters in source code. 
+//    > Header (8k) + Payload (512-8k)
+//
+//    ### bus2st 
+//    Module description :  Change bus (CL) to st (stream).
+//    > In our case,  bus = CL
+//    The main steps of bus2st are:
+//    - 1) Set bus_ready=1, wait for the first bus of one AFU frame (flag==10). When it arrives, extract payload part and store it into FIFO, extract header part and start counter.
+//    - 2) When the last bus of one AFU frame arrives(flag==01), store payload part into FIFO, and stop receiving.  Get the frame length from counter.
+//    - 3) When st_ready==1,  output st format data from FIFO according to the frame length.
+//    - 4) Go back to 1), flush the FIFO.
+//
+//    Step 3) of above is a little complicated, because the width of b us may not be an integer times of width of st.  An example of step 3) design can found in my evernote "pj101 v1.0 bus2st | st out stage"
+//
+//    FSM of bus2st code implementation is as follows.
+//
+//    ![Alt text](./1473321919098.png)
+//
+//    ## Further discussion
+//    ### Side-band signal
+//    For certain applications, side-band signal may be  present to store some information of AFU frame, like serial number. In these cases, side-band signal handling unit acts like a supplementary part of AFU. 
+//    Currently we do not need side-band signal in turbo acc program.
+//  -----------------------------------------------------------------------------
+
+
+
+
+//-----------------------------------------------------
+
+
+//              Abort  this version !!!!!
+//              2016/09/12
+
+
+//------------------------------------------------------
+
+
+
 
 module bus2st #(parameter
-		BUS=534,
-		ST_PER_BUS=512,
-		NUM_ST_PER_BUS=42, //  (ST_PER_BUS / ST)
-		ST_PER_TURBO_PKT=1028,   // 1024+4
-		NUM_BUS_PER_TURBO_PKT=25,
-		ST=12
-
+		BUS =512,  // 512 bits
+		BUS_HEAD =8,  // 8 bits
+		BUS_PAYLOAD =504, // 504 bits
+		ST =24, // 24 bits   // BUS_PAYLOAD must > ST*3 
+		w_NumOfBUS_in_AFUFrm =11,  // width of maximum Number of buses in one AFU frame
+		w_NumOfByte_in_AFUFrm =16,  // width of maximum Number of bytes in one AFU frame
+		w_NumOfST_in_AFUFrm =16  // width of maximum Number of STs in one AFU frame
 	)
 	(
-	input 					rst_n,  // clk_bus Asynchronous reset active low
+	input 					rst_n,  // clk Asynchronous reset active low
 	
-	input 					clk_bus,    // Clock 400MHz
+	input 					clk,    
 	input [BUS-1:0]			bus_data,
-	input					bus_en,
+	input					bus_en,  // pls make sure bus_en= 0 when bus_ready == 0
 	output	reg				bus_ready,
-	//output					bus_almost_ready,
 
-	input					clk_st,  // clk turbo decoder
 	input					st_ready,
 	output	reg [ST-1:0] 	st_data,
 	output	reg				st_valid,
 	output	reg				st_sop,
 	output	reg				st_eop,
-	output	reg				st_error,
-
-	output	reg				mem_rd_complt_clk_bus
+	output  reg [w_NumOfST_in_AFUFrm -1 : 0]	st_len
 	
 );
 
+reg 	rst_r, rst_sync;
+reg 	rdreq;
+wire [BUS_PAYLOAD-1 : 0] 	q;
 
-localparam RAM_DIN 		= 256;
-localparam RAM_DOUT 	= 256;
+reg [1:0]	fsm;
 
-logic [2*RAM_DOUT-1 : 0] 	bus_mem_out;
-logic [6:0] 		bus_mem_wraddr;
-logic 				bus_mem_rden;
-logic [6:0] 		bus_mem_rdaddr;
+wire 		end_AFU_frm;
+reg [w_NumOfBUS_in_AFUFrm -1 : 0] 	NumOfBUS_in_AFUFrm;
+reg [w_NumOfByte_in_AFUFrm -1 : 0] 	NumOfByte_in_AFUFrm;
 
-////start------------  1 turbo packet RAM -------------------------
-//// half 0
-//// ram for one Turbo Packet   (due to InputWidth = 256, so need 2 rams)
-//bus2st_1TrbPkt_ram TrbPkt_ram_half0 (
-//	.data 			(bus_data[BUS-1 : BUS-RAM_DIN]),	//input	[255:0]  	data;
-//	.rdaddress		(bus_mem_rdaddr),	//input	[6:0]  		rdaddress;
-//	.rdclock		(clk_st),	//input	  			rdclock;
-//	.rden 			(bus_mem_rden),
-//	.wraddress		(bus_mem_wraddr),	//input	[6:0]  		wraddress;
-//	.wrclock		(clk_bus),	//input	  			wrclock;
-//	.wren			(bus_en),	//input	  			wren;
-//	.q				(bus_mem_out[2*RAM_DOUT-1 : RAM_DOUT]) 	//output [255:0]  	q;
-//	);
-//// half 1
-//// ram for one Turbo Packet   (due to InputWidth = 256, so need 2 rams)
-//bus2st_1TrbPkt_ram TrbPkt_ram_half1 (
-//	.data 			(bus_data[BUS-RAM_DIN-1 : BUS-2*RAM_DIN]),	//input	[255:0]  	data;
-//	.rdaddress		(bus_mem_rdaddr),	//input	[6:0]  		rdaddress;
-//	.rdclock		(clk_st),	//input	  			rdclock;
-//	.rden 			(bus_mem_rden),
-//	.wraddress		(bus_mem_wraddr),	//input	[6:0]  		wraddress;
-//	.wrclock		(clk_bus),	//input	  			wrclock;
-//	.wren			(bus_en),	//input	  			wren;
-//	.q				(bus_mem_out[RAM_DOUT-1 : 0]) 	//output [255:0]  	q;
-//	);
-	
-	bus2st_1TrbPkt_ram TrbPkt_ram_half1 (
-	.data 			(bus_data[BUS-1 : BUS-2*RAM_DIN]),	//input	[255:0]  	data;
-	.rdaddress		(bus_mem_rdaddr),	//input	[6:0]  		rdaddress;
-	.rdclock		(clk_st),	//input	  			rdclock;
-	.rden 			(bus_mem_rden),
-	.wraddress		(bus_mem_wraddr),	//input	[6:0]  		wraddress;
-	.wrclock		(clk_bus),	//input	  			wrclock;
-	.wren			(bus_en),	//input	  			wren;
-	.q				(bus_mem_out[2*RAM_DOUT-1 : 0]) 	//output [255:0]  	q;
+reg 		st_out_finish;
+reg [BUS_PAYLOAD-1 : 0] 	q_r;
+reg 		rdreq_r, rdreq_rr;
+reg [1:0] 	fsm_r, fsm_rr;
+reg [w_NumOfBUS_in_AFUFrm -1 : 0] 	NumOfBUS_remain_FIFO;
+reg [9:0]		NumOfBits_remain_bus;
+
+//---------  reset sync ------------
+always@(posedge clk)
+begin
+	rst_sync <= rst_r;
+	rst_r <= rst_n;
+end
+
+
+//start---------- PART1 :  fifo  &  FSM ------------
+ff_bus2st
+ff_bus2st_inst(
+		.data   (bus_data[BUS_PAYLOAD-1 : 0] ),
+		.wrreq  (bus_en),
+		.rdreq  (rdreq),
+		.clock  (clk),
+		.sclr   (!rst_sync | st_out_finish ),
+		.q      (q    ),
+		.full   ( ),
+		.empty  ( )
 	);
-		//------------------------
-		// (output reg mode)
-		// rden 	0  1  0  0
-		// q    	x  x  x  d1
-		//------------------------
-//end------------  1 turbo packet RAM -------------------------
 
 
-//start-----------   clk_st --> clk_bus  ----------------
-logic  mem_rd_complt_r1, mem_rd_complt_r0, mem_rd_complt_clk_st;
-always@(posedge clk_bus)
+//-------  FSM  ---------
+always@(posedge clk)
 begin
-	mem_rd_complt_clk_bus <= mem_rd_complt_r1;
-	mem_rd_complt_r1 <= mem_rd_complt_r0;
-	mem_rd_complt_r0 <= mem_rd_complt_clk_st;
-end
-//end-----------   clk_st --> clk_bus  ----------------
-
-
-//start-------------  bus logic ( clk_bus domain)------------
-logic bus_fsm;
-logic [7:0] cnt_bus_fsm;
-logic 	mem_full_trigger;
-
-always@(*)
+if (!rst_sync)
 begin
-	bus_ready <= (bus_fsm == 1'h0) && (cnt_bus_fsm != NUM_BUS_PER_TURBO_PKT);
-end
-
-always@(posedge clk_bus)
-begin
-//start--------------  FSM  --------------------
-if (!rst_n)
-begin
-	bus_fsm <= 0;
-	cnt_bus_fsm <= 0;
-	bus_mem_wraddr <= 0;
-	//bus_almost_ready <= 0;
-	mem_full_trigger <= 0;
+	fsm <= 0;
+	bus_ready <= 0;
 end
 else
 begin
-
 	case (bus_fsm)
-	1'h0:
+	2'd0: // s_wait
 	begin
 		if (bus_en)
+			fsm <= 2'd1;
+		else
+			fsm <= 2'd0;
+		bus_ready <= 1'b1;
+	end
+	2'd1: // s_bus_in
+	begin
+		if (end_AFU_frm)
 		begin
-			cnt_bus_fsm <= cnt_bus_fsm + 8'h1;
-			bus_mem_wraddr <= bus_mem_wraddr + 7'h1;
-		end
-
-		if ( cnt_bus_fsm == NUM_BUS_PER_TURBO_PKT)
-			bus_fsm <= 1'h1;
-		mem_full_trigger <= 0;
-
-		//if ( cnt_bus_fsm >= NUM_BUS_PER_TURBO_PKT-1)
-			//bus_almost_ready <= 1'b0;
-		//else
-			//bus_almost_ready <= 1'b1;
-	end
-	1'h1:
-	begin
-		if ( mem_rd_complt_clk_bus ) 
-			bus_fsm <= 1'h0;
-		bus_mem_wraddr <= 0;
-		cnt_bus_fsm <= 0;
-		//bus_almost_ready <= 0;
-		mem_full_trigger <= 1'b1;
-	end
-
-	default: 
-	begin
-		bus_fsm <= bus_fsm;
-		bus_mem_wraddr <= 0;
-		cnt_bus_fsm <= 0;
-		//bus_almost_ready <= 0;
-	end
-	endcase
-end
-//end--------------  FSM  --------------------
-end
-
-	//----------------------------------------
-	//		in case NUM_BUS_PER_TURBO_PKT=25
-	// en   		: 	1 	0 	0 	1
-	// cnt_bus_fsm 	:	23 	24 	24 	24 	25
-	// bus_almost_ready:  	1 	0 	0 	0
-	// bus_ready    :  		1 	1 	1 	0
-	//-----------------------------------
-
-//end-------------  bus logic ( clk_bus domain)------------
-
-
-//start-----------   clk_bus --> clk_st  ----------------
-logic mem_full_trig_clk_st, mem_full_trig_r1, mem_full_trig_r0;
-always@(posedge clk_st)
-begin
-	mem_full_trig_clk_st <= mem_full_trig_r1;
-	mem_full_trig_r1 <= mem_full_trig_r0;
-	mem_full_trig_r0 <= mem_full_trigger;
-end
-
-logic rst_n_st_r0, rst_n_st_r1, rst_n_st;
-always@(posedge clk_st)
-begin
-	rst_n_st <= rst_n_st_r1;
-	rst_n_st_r1 <= rst_n_st_r0;
-	rst_n_st_r0 <= rst_n;
-end
-//end-----------   clk_bus --> clk_st  ----------------
-
-
-//start---------  mem out logic (clk_st domain) ----------
-logic [1:0] memout_fsm;
-logic [10:0] 	cnt_memout_fsm;
-logic [3:0] 	cnt_memout_fsm_3;
-
-always@(posedge clk_st)
-begin
-if (!rst_n_st)
-begin
-	memout_fsm <= 0;
-	bus_mem_rdaddr <= 0;
-	bus_mem_rden <= 0;
-	cnt_memout_fsm <= 0;
-	cnt_memout_fsm_3 <= 0;
-	mem_rd_complt_clk_st <= 0;
-end
-else
-begin
-
-	//start------------- FSM  ----------------
-	case(memout_fsm)
-	2'h0:
-	begin
-		if (mem_full_trig_clk_st) //trig : trigger
-			memout_fsm <= 2'h1;
-
-		bus_mem_rdaddr <= 0;
-		bus_mem_rden <= 0;
-		cnt_memout_fsm <= 0;
-		cnt_memout_fsm_3 <= 0;
-		mem_rd_complt_clk_st <= 1'b0;
-	end
-	2'h1:
-	begin
-		if (st_ready)
-		begin
-			memout_fsm <= 2'h2;
-			bus_mem_rden <= 1'h1;
-		end
-		bus_mem_rdaddr <= 0;
-		cnt_memout_fsm <= 0;
-		cnt_memout_fsm_3 <= 0;
-		mem_rd_complt_clk_st <= 1'b0;
-	end
-	2'h2:
-	begin
-		cnt_memout_fsm <= (cnt_memout_fsm==NUM_ST_PER_BUS-1) ? 11'd0 : cnt_memout_fsm+11'd1;
-		if ( cnt_memout_fsm == NUM_ST_PER_BUS-1)
-		begin
-			bus_mem_rdaddr <= bus_mem_rdaddr + 7'h1;
-			bus_mem_rden <= 1'b1;
+			fsm <= 2'd2;
+			bus_ready <= 1'b0;
 		end
 		else
 		begin
-			bus_mem_rdaddr <= bus_mem_rdaddr;
-			bus_mem_rden <= 1'b0;
-		end 
-
-		if (bus_mem_rdaddr == NUM_BUS_PER_TURBO_PKT-1) 
-		begin
-			memout_fsm <= 2'h3;
+			fsm <= 2'd1;
+			bus_ready <= 1'b1;
 		end
-		cnt_memout_fsm_3 <= 0;
-		mem_rd_complt_clk_st <= 1'b0;
 	end
-	2'h3:
+	2'd2: // s_bus_end
 	begin
-		mem_rd_complt_clk_st <= 1'b1;
-		cnt_memout_fsm_3 <= (cnt_memout_fsm_3 == 4'd11) ?  4'd0 : cnt_memout_fsm_3+4'd1;
-		if ( cnt_memout_fsm_3 == 4'd11)
-		begin
-			memout_fsm <= 2'h0;
-		end
-
-		cnt_memout_fsm <= 0;
-		bus_mem_rdaddr <= 0;
-		bus_mem_rden <= 0;
+		if (st_rdy)
+			fsm <= 2'd3;
+		else
+			fsm <= 2'd2;
+		bus_ready <= 1'b0;
+	end
+	2'd3: // s_st_out
+	begin
+		if (st_out_finish)
+			fsm <= 2'd0;
+		else
+			fsm <= 2'd3;
+		bus_ready <= 1'b0;
 	end
 	default: 
 	begin
-		memout_fsm <= memout_fsm;
-		cnt_memout_fsm <= 0;
-		cnt_memout_fsm_3 <= 0;
-		bus_mem_rdaddr <= 0;
-		bus_mem_rden <= 0;
-		mem_rd_complt_clk_st <= 1'b0;
-	end 
+		fsm <= 2'd0;
+		bus_ready <= 1'b0;
+	end
 	endcase
-	//end-------------  FSM  ----------------
 end
 end
-//end---------  mem out logic (clk_st domain) ----------
+//end  ---------- PART1 :  fifo  &  FSM ------------
 
 
-//start---------  st out logic ----------------------
-logic [13:0] 	cnt_st_TrbPkt;
-logic [ST_PER_BUS-1:0]  	bus_mem_out_cp;
-logic [1:0]  memout_fsm_q;
-logic 		 bus_mem_rden_q, bus_mem_rden_qq;
 
-always@(posedge clk_st)
+//start---------- PART2 :  Bus In  ------------------ 
+always@(*)
 begin
-if (!rst_n_st)
-begin
-	bus_mem_out_cp <= 0;
-	cnt_st_TrbPkt <= 0;
-	st_sop <= 0;
-	st_eop <= 0;
-	st_error <= 0;
-	st_valid <= 0;
-	st_data <= 0;
-	memout_fsm_q <= 0;
-	bus_mem_rden_q <= 0;
-	bus_mem_rden_qq <= 0;
-
+	end_AFU_frm = bus_en & (bus_data[BUS_HEAD-2]==1'b1)
 end
-else
-begin
-	memout_fsm_q <= memout_fsm;
-	bus_mem_rden_q <= bus_mem_rden;
-	bus_mem_rden_qq <= bus_mem_rden_q;
 
-	if ( bus_mem_rden_qq || (memout_fsm == 2'h1) )
-		bus_mem_out_cp <= bus_mem_out;
-	else
+always@(posedge clk)
+begin
+	if (!rst_sync)
 	begin
-		bus_mem_out_cp[ST_PER_BUS-1-ST : 0] <= bus_mem_out_cp[ST_PER_BUS-1 : ST];
-		bus_mem_out_cp[ST_PER_BUS-1 : ST_PER_BUS-ST] <= 0;
+		NumOfBUS_in_AFUFrm <= 0;
+		NumOfByte_in_AFUFrm <= 0;
 	end
 
-	st_data <= bus_mem_out_cp[ST-1 : 0];
-
-	if (memout_fsm == 2'h2 && memout_fsm_q == 2'h1)	
-			cnt_st_TrbPkt <= 14'h1;
-	else
-		if ( cnt_st_TrbPkt==0 || cnt_st_TrbPkt==ST_PER_TURBO_PKT+8)
-			cnt_st_TrbPkt <= 0;
-		else
-			cnt_st_TrbPkt <= cnt_st_TrbPkt + 14'h1;
-
-	st_sop <= (cnt_st_TrbPkt==14'h3) ? 1'b1 : 0;
-	st_eop <= (cnt_st_TrbPkt==ST_PER_TURBO_PKT+2) ? 1'b1 : 0;
-	st_error <= 0;
-	if ( cnt_st_TrbPkt==14'h3 )
-		st_valid <= 1'b1;
-	else if ( cnt_st_TrbPkt==ST_PER_TURBO_PKT+3 ) 
-		st_valid <= 1'b0;
-	else
-		st_valid <= st_valid;
-end
-end
-
-//end---------  st out logic ----------------------
-
-reg [7:0] cnt_st_sop /* synthesis keep */;
-always@(posedge clk_st)
-begin
-	if (!rst_n_st)
-		cnt_st_sop <= 0;
 	else
 	begin
-		if (st_sop)
-			cnt_st_sop <= (cnt_st_sop == 8'hff) ? 8'd0 : cnt_st_sop + 8'd1;
+		if (st_out_finish)
+			NumOfBUS_in_AFUFrm <= 0;
+		else if (bus_en)
+			NumOfBUS_in_AFUFrm <= NumOfBUS_in_AFUFrm + w_NumOfBUS_in_AFUFrm'd1;
 		else
-			cnt_st_sop <= cnt_st_sop;
+			NumOfBUS_in_AFUFrm <= NumOfBUS_in_AFUFrm;
+
+		if (st_out_finish)
+			NumOfByte_in_AFUFrm <= 0;
+		else if (bus_en)
+			NumOfByte_in_AFUFrm <= NumOfByte_in_AFUFrm + bus_data[BUS_HEAD-3 : BUS_HEAD-8];
+		else
+			NumOfByte_in_AFUFrm <= NumOfByte_in_AFUFrm;
 	end
 end
+//end  ---------- PART2 :  Bus In  ------------------ 
 
 
+//start---------- PART3.1 :  st out  ------------------
+always@(posedge clk)
+begin
+	if (!rst_sync)
+	begin
+		rdreq_r <= 0;
+		rdreq_rr <= 0;
+		q_r <= 0;
+		fsm_r <= 0;
+		fsm_rr <= 0;
+		NumOfBUS_remain_FIFO <= 0;
+		NumOfBits_remain_bus <= 0;
+		st_out_finish <= 0;
+	end
+
+	else
+	begin
+		rdreq_r  <= rdreq;
+		rdreq_rr <= rdreq_r;
+		fsm_r   <= fsm;
+		fsm_rr 	<= fsm_r;
+
+		if (rdreq_r)
+			q_r <= { q[ST-1 : 0] , q[BUS_PAYLOAD-1 : ST] };
+		else
+			q_r <= { q_r[ST-1 : 0] , q_r[BUS_PAYLOAD-1 : ST] };
+
+		if (fsm == 2'd2)
+			NumOfBUS_remain_FIFO <= NumOfBUS_in_AFUFrm;
+		else if(rdreq)
+			NumOfBUS_remain_FIFO <= NumOfBUS_remain_FIFO - w_NumOfBUS_in_AFUFrm'd1;
+		else
+			NumOfBUS_remain_FIFO <= NumOfBUS_remain_FIFO;
+
+		if (fsm_rr != 2'd3 )
+			NumOfBits_remain_bus <= 0;
+		else if (rdreq_r)
+			NumOfBits_remain_bus <= NumOfBits_remain_bus + BUS_PAYLOAD[9:0] - ST[9:0];
+		else
+			NumOfBits_remain_bus <= NumOfBits_remain_bus - ST[9:0];
+
+		if (fsm != 2'd3  || NumOfBUS_remain_FIFO == 0 ) 
+			rdreq <= 0;
+		else if ( fsm == 2'd3 &&  NumOfBits_remain_bus < 3*(ST[9:0]) )
+			rdreq <= 1'b1 & (!rdreq_r) & (!rdreq_rr)
+		else
+			rdreq <= 0;
+
+		//!!! Wrong!  if (fsm == 2'd3 && NumOfBUS_remain_FIFO == 0 && NumOfBits_remain_bus < 2*(ST[9:0]) )
+			st_out_finish <= 1'b1 & (!rdreq_r);
+		else
+			st_out_finish <= 1'b0;
+	end
+end
+//end  ---------- PART3.1 :  st out  ------------------
+
+
+//start---------- PART3.2 :  st out  --  st_data description ------------------
+//!!!!!!  This is a universal version which accommodates all ST values, 
+//!!!!!!  but may cause worse timing result.
+always@(posedge clk)
+begin
+	if (!rst_sync)
+	begin
+		st_data <= 0;
+	end
+	else
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+assign st_eop = st_out_finish;
+
+
+//start---------- PART3.3 :  st out  --  st_len description ------------------
+//!!!!!!  This part only supports certain ST values. 
+//!!!!!!  If you need new ST value support, modify the "case" part.
+always@(posedge clk)
+begin
+	if (!rst_sync)
+	begin
+		st_len <= 0;
+	end
+	else
+	begin
+		if (fsm == 2'd2)
+			case (ST)
+			24 : 	st_len <= NumOfByte_in_AFUFrm/3;
+			12 : 	st_len <= (2*NumOfByte_in_AFUFrm)/3;
+			default :  blabla
+		else
+			st_len <= st_len;
+	end
+end
 
 endmodule

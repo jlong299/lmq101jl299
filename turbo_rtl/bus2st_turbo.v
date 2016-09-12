@@ -15,7 +15,8 @@
 //  When st_ready from TurboDecoder ==1,  st_data can go out.
 
 module bus2st_turbo #(parameter
-		BUS=534,
+		BUS=512,
+    !!
 		ST_PER_BUS=512,
 		NUM_ST_PER_BUS=42, //  (ST_PER_BUS / ST)
 		ST_PER_TURBO_PKT=1028,   // 1024+4

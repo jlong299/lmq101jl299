@@ -17,7 +17,7 @@
 // Only work when fix turbo length = 1024
 
 module turbo_d_all #(parameter 
-	BUS=534,
+	BUS=512,
 	ST=8 
 	)
 (
@@ -297,7 +297,8 @@ for (i=0; i<NUM_TURBO; i=i+1)
 begin: test
 
 	bus2st_turbo  #(
-    .BUS (534),
+    .BUS (512),
+    !!
     .ST_PER_BUS (512),
     .NUM_ST_PER_BUS (42), //  (ST_PER_BUS / ST)
     .ST_PER_TURBO_PKT (1028),   // 1024+4

@@ -15,86 +15,31 @@
 //  When st_ready from TurboDecoder ==1,  st_data can go out.
 //
 //  ---------------------------------------------------------------------------
-//  Version 1.0
+//  Version 1.1
 //  Description : begin to support variable length of AFU frame.  (AFU:Accelerator Func Unit)
 //  Main change : clk_bus = clk_st 
-//  2016-09-08
+//  2016-09-12
 //  ---------------------------------------------------------------------------
 //           bus  -->  FIFO  -->  st(stream)
 //  ---------------------------------------------------------------------------
 
 
 //  --------------------------- REFERENCE -------------------------------------------
-//                  extracts from  pj101 Turbo Dec Acc v1.0 (md format)
-//                            2016.9.9
-
-//    ## New version (v1.0) data structure
-//    ### Composition of one CL v1.0.1
-//    One CL consists of header part and payload part. Header occupies the highest 8 bits and payload occupies the lower 504 bits.
-//    > Header  (8) +  Payload (504)
-//
-//    Header is composed by flag part and length part.
-//    > Header = flag (2) + length (6)
-//
-//    Flag 
-//    - 10 : start of one AFU frame
-//    - 00 : body of one AFU frame
-//    - 01 : end of one AFU frame
-//    - 11 : start and end of one AFU frame 
-//
-//    Length
-//    - Unsigned number indicates the valid bytes of payload (from the lowest).  
-//
-//    >  AFU means Accelerate Function Unit which is turbo decoder in our case 
-//
-//    For example, if one CL is CL[511:0]. Then the header part is CL[511:504], payload part is CL[503:0].  If CL[511:504] == 8'b01000011, that means this CL is the end of one AFU frame, and  the lowest 7 bytes of payload is valid. Which means CL[7:0], CL[15:8], CL[23:16]. (the lowest the first)
-//
-//    In order to achieve flexibility, the length of header and payload could be set by changing some parameters in source code. 
-//    > Header (8k) + Payload (512-8k)
-//
-//    ### bus2st 
-//    Module description :  Change bus (CL) to st (stream).
-//    > In our case,  bus = CL
-//    The main steps of bus2st are:
-//    - 1) Set bus_ready=1, wait for the first bus of one AFU frame (flag==10). When it arrives, extract payload part and store it into FIFO, extract header part and start counter.
-//    - 2) When the last bus of one AFU frame arrives(flag==01), store payload part into FIFO, and stop receiving.  Get the frame length from counter.
-//    - 3) When st_ready==1,  output st format data from FIFO according to the frame length.
-//    - 4) Go back to 1), flush the FIFO.
-//
-//    Step 3) of above is a little complicated, because the width of b us may not be an integer times of width of st.  An example of step 3) design can found in my evernote "pj101 v1.0 bus2st | st out stage"
-//
-//    FSM of bus2st code implementation is as follows.
-//
-//    ![Alt text](./1473321919098.png)
-//
-//    ## Further discussion
-//    ### Side-band signal
-//    For certain applications, side-band signal may be  present to store some information of AFU frame, like serial number. In these cases, side-band signal handling unit acts like a supplementary part of AFU. 
-//    Currently we do not need side-band signal in turbo acc program.
+//                  extracts from     (md format)
+//                            2016.9.
 //  -----------------------------------------------------------------------------
 
-
-
-
-//-----------------------------------------------------
-
-
-//              Abort  this version !!!!!
-//              2016/09/12
-
-
-//------------------------------------------------------
 
 
 
 
 module bus2st #(parameter
 		BUS =512,  // 512 bits
-		BUS_HEAD =8,  // 8 bits
-		BUS_PAYLOAD =504, // 504 bits
-		ST =24, // 24 bits   // BUS_PAYLOAD must > ST*3 
+		BUS_HEAD =16,  // 16 bits
+		BUS_PAYLOAD =496, // 496 bits
+		ST =24, // 24 bits  // There must be at least 2 ST in one bus except the last one. 
+		w_NumofST_in_Bus = 9,	// width of maximum Number of STs in one bus
 		w_NumOfBUS_in_AFUFrm =11,  // width of maximum Number of buses in one AFU frame
-		w_NumOfByte_in_AFUFrm =16,  // width of maximum Number of bytes in one AFU frame
 		w_NumOfST_in_AFUFrm =16  // width of maximum Number of STs in one AFU frame
 	)
 	(
@@ -116,20 +61,19 @@ module bus2st #(parameter
 
 reg 	rst_r, rst_sync;
 reg 	rdreq;
-wire [BUS_PAYLOAD-1 : 0] 	q;
+wire [BUS-1 : 0] 	q;
 
 reg [1:0]	fsm;
 
 wire 		end_AFU_frm;
 reg [w_NumOfBUS_in_AFUFrm -1 : 0] 	NumOfBUS_in_AFUFrm;
-reg [w_NumOfByte_in_AFUFrm -1 : 0] 	NumOfByte_in_AFUFrm;
 
 reg 		st_out_finish;
 reg [BUS_PAYLOAD-1 : 0] 	q_r;
 reg 		rdreq_r, rdreq_rr;
 reg [1:0] 	fsm_r, fsm_rr;
 reg [w_NumOfBUS_in_AFUFrm -1 : 0] 	NumOfBUS_remain_FIFO;
-reg [9:0]		NumOfBits_remain_bus;
+//reg [9:0]		NumOfBits_remain_bus;
 
 //---------  reset sync ------------
 always@(posedge clk)
@@ -142,7 +86,7 @@ end
 //start---------- PART1 :  fifo  &  FSM ------------
 ff_bus2st
 ff_bus2st_inst(
-		.data   (bus_data[BUS_PAYLOAD-1 : 0] ),
+		.data   (bus_data),
 		.wrreq  (bus_en),
 		.rdreq  (rdreq),
 		.clock  (clk),
@@ -224,7 +168,6 @@ begin
 	if (!rst_sync)
 	begin
 		NumOfBUS_in_AFUFrm <= 0;
-		NumOfByte_in_AFUFrm <= 0;
 	end
 
 	else
@@ -235,13 +178,6 @@ begin
 			NumOfBUS_in_AFUFrm <= NumOfBUS_in_AFUFrm + w_NumOfBUS_in_AFUFrm'd1;
 		else
 			NumOfBUS_in_AFUFrm <= NumOfBUS_in_AFUFrm;
-
-		if (st_out_finish)
-			NumOfByte_in_AFUFrm <= 0;
-		else if (bus_en)
-			NumOfByte_in_AFUFrm <= NumOfByte_in_AFUFrm + bus_data[BUS_HEAD-3 : BUS_HEAD-8];
-		else
-			NumOfByte_in_AFUFrm <= NumOfByte_in_AFUFrm;
 	end
 end
 //end  ---------- PART2 :  Bus In  ------------------ 

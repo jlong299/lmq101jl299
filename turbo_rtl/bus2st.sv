@@ -107,7 +107,7 @@ begin
 end
 else
 begin
-	case (bus_fsm)
+	case (fsm)
 	2'd0: // s_wait
 	begin
 		if (bus_en)

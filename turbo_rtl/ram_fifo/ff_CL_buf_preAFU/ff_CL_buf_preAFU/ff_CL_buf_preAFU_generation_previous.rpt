@@ -1,0 +1,74 @@
+Info: Starting: Create simulation model
+Info: qsys-generate C:\work\pj101\1607\nlb_400\lmq101jl299\turbo_rtl\ram_fifo\ff_CL_buf_preAFU\ff_CL_buf_preAFU.qsys --simulation=VERILOG --allow-mixed-language-simulation --output-directory=C:\work\pj101\1607\nlb_400\lmq101jl299\turbo_rtl\ram_fifo\ff_CL_buf_preAFU\ff_CL_buf_preAFU --family="Arria 10" --part=10AX115U3F45E2SGE3
+Progress: Loading ff_CL_buf_preAFU/ff_CL_buf_preAFU.qsys
+Progress: Reading input file
+Progress: Adding fifo_0 [fifo 15.1]
+Progress: Parameterizing module fifo_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+: ff_CL_buf_preAFU.fifo_0: Targeting device family: Arria 10.
+: ff_CL_buf_preAFU.fifo_0: Tab: 'DCFIFO 1' is unavailable while using Single-Clock FIFO.
+: ff_CL_buf_preAFU.fifo_0: Tab: 'DCFIFO 2' is unavailable while using Single-Clock FIFO.
+Info: ff_CL_buf_preAFU: "Transforming system: ff_CL_buf_preAFU"
+Info: ff_CL_buf_preAFU: Running transform generation_view_transform
+Info: ff_CL_buf_preAFU: Running transform generation_view_transform took 0.000s
+Info: fifo_0: Running transform generation_view_transform
+Info: fifo_0: Running transform generation_view_transform took 0.000s
+Info: ff_CL_buf_preAFU: Running transform merlin_avalon_transform
+Info: ff_CL_buf_preAFU: Running transform merlin_avalon_transform took 0.053s
+Info: ff_CL_buf_preAFU: "Naming system components in system: ff_CL_buf_preAFU"
+Info: ff_CL_buf_preAFU: "Processing generation queue"
+Info: ff_CL_buf_preAFU: "Generating: ff_CL_buf_preAFU"
+Info: ff_CL_buf_preAFU: "Generating: ff_CL_buf_preAFU_fifo_151_3jgnlwq"
+Info: ff_CL_buf_preAFU: Done "ff_CL_buf_preAFU" with 2 modules, 2 files
+Info: qsys-generate succeeded.
+Info: Finished: Create simulation model
+Info: Starting: Create Modelsim Project.
+Info: sim-script-gen --spd=C:\work\pj101\1607\nlb_400\lmq101jl299\turbo_rtl\ram_fifo\ff_CL_buf_preAFU\ff_CL_buf_preAFU\ff_CL_buf_preAFU.spd --output-directory=C:/work/pj101/1607/nlb_400/lmq101jl299/turbo_rtl/ram_fifo/ff_CL_buf_preAFU/ff_CL_buf_preAFU/sim/ --use-relative-paths=true
+Info: Doing: ip-make-simscript --spd=C:\work\pj101\1607\nlb_400\lmq101jl299\turbo_rtl\ram_fifo\ff_CL_buf_preAFU\ff_CL_buf_preAFU\ff_CL_buf_preAFU.spd --output-directory=C:/work/pj101/1607/nlb_400/lmq101jl299/turbo_rtl/ram_fifo/ff_CL_buf_preAFU/ff_CL_buf_preAFU/sim/ --use-relative-paths=true
+Info: Generating the following file(s) for MODELSIM simulator in C:/work/pj101/1607/nlb_400/lmq101jl299/turbo_rtl/ram_fifo/ff_CL_buf_preAFU/ff_CL_buf_preAFU/sim/ directory:
+Info: 	mentor/msim_setup.tcl
+Info: Generating the following file(s) for VCS simulator in C:/work/pj101/1607/nlb_400/lmq101jl299/turbo_rtl/ram_fifo/ff_CL_buf_preAFU/ff_CL_buf_preAFU/sim/ directory:
+Info: 	synopsys/vcs/vcs_setup.sh
+Info: Generating the following file(s) for VCSMX simulator in C:/work/pj101/1607/nlb_400/lmq101jl299/turbo_rtl/ram_fifo/ff_CL_buf_preAFU/ff_CL_buf_preAFU/sim/ directory:
+Info: 	synopsys/vcsmx/synopsys_sim.setup
+Info: 	synopsys/vcsmx/vcsmx_setup.sh
+Info: Generating the following file(s) for NCSIM simulator in C:/work/pj101/1607/nlb_400/lmq101jl299/turbo_rtl/ram_fifo/ff_CL_buf_preAFU/ff_CL_buf_preAFU/sim/ directory:
+Info: 	cadence/cds.lib
+Info: 	cadence/hdl.var
+Info: 	cadence/ncsim_setup.sh
+Info: 	1 .cds.lib files in cadence/cds_libs/ directory
+Info: Generating the following file(s) for RIVIERA simulator in C:/work/pj101/1607/nlb_400/lmq101jl299/turbo_rtl/ram_fifo/ff_CL_buf_preAFU/ff_CL_buf_preAFU/sim/ directory:
+Info: 	aldec/rivierapro_setup.tcl
+Info: For information on how to simulate your IP, see the explanatory comments in the simulator-specific subdirectories under C:/work/pj101/1607/nlb_400/lmq101jl299/turbo_rtl/ram_fifo/ff_CL_buf_preAFU/ff_CL_buf_preAFU/sim/.
+Info: Finished: Create Modelsim Project.
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: qsys-generate C:\work\pj101\1607\nlb_400\lmq101jl299\turbo_rtl\ram_fifo\ff_CL_buf_preAFU\ff_CL_buf_preAFU.qsys --synthesis=VERILOG --output-directory=C:\work\pj101\1607\nlb_400\lmq101jl299\turbo_rtl\ram_fifo\ff_CL_buf_preAFU\ff_CL_buf_preAFU --family="Arria 10" --part=10AX115U3F45E2SGE3
+Progress: Loading ff_CL_buf_preAFU/ff_CL_buf_preAFU.qsys
+Progress: Reading input file
+Progress: Adding fifo_0 [fifo 15.1]
+Progress: Parameterizing module fifo_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+: ff_CL_buf_preAFU.fifo_0: Targeting device family: Arria 10.
+: ff_CL_buf_preAFU.fifo_0: Tab: 'DCFIFO 1' is unavailable while using Single-Clock FIFO.
+: ff_CL_buf_preAFU.fifo_0: Tab: 'DCFIFO 2' is unavailable while using Single-Clock FIFO.
+Info: ff_CL_buf_preAFU: "Transforming system: ff_CL_buf_preAFU"
+Info: ff_CL_buf_preAFU: Running transform generation_view_transform
+Info: ff_CL_buf_preAFU: Running transform generation_view_transform took 0.000s
+Info: fifo_0: Running transform generation_view_transform
+Info: fifo_0: Running transform generation_view_transform took 0.000s
+Info: ff_CL_buf_preAFU: Running transform merlin_avalon_transform
+Info: ff_CL_buf_preAFU: Running transform merlin_avalon_transform took 0.007s
+Info: ff_CL_buf_preAFU: "Naming system components in system: ff_CL_buf_preAFU"
+Info: ff_CL_buf_preAFU: "Processing generation queue"
+Info: ff_CL_buf_preAFU: "Generating: ff_CL_buf_preAFU"
+Info: ff_CL_buf_preAFU: "Generating: ff_CL_buf_preAFU_fifo_151_3jgnlwq"
+Info: ff_CL_buf_preAFU: Done "ff_CL_buf_preAFU" with 2 modules, 3 files
+Info: qsys-generate succeeded.
+Info: Finished: Create HDL design files for synthesis

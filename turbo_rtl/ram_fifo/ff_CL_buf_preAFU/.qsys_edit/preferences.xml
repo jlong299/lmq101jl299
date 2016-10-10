@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<preferences>
+ <debug showDebugMenu="0" />
+ <systemtable filter="All Interfaces">
+  <columns>
+   <connections preferredWidth="31" />
+   <irq preferredWidth="34" />
+  </columns>
+ </systemtable>
+ <library expandedCategories="Library,Project" />
+ <window width="1413" height="898" x="209" y="125" />
+ <generation
+   path=""
+   block_symbol_file="0"
+   simulation="VERILOG"
+   mixed_lang_simulation="1" />
+</preferences>

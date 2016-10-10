@@ -113,7 +113,7 @@ begin
 	end
 	else
 	begin
-		end_of_AFUfrm <= (fsm==2'd1) & (source_valid) & (source_data[CL-4]==1'b1);
+		end_of_AFUfrm <= (fsm==2'd1) & (source_valid) & (source_data[CL-6]==1'b1);
 	end
 end
 
@@ -129,7 +129,7 @@ begin
 		if (fsm==2'd2)	
 			sb_len_t <= 0;
 		else
-			sb_len_t <= (source_valid) ? (sb_len_t + source_data[CL-5 : CL-16]) : sb_len_t ;
+			sb_len_t <= (source_valid) ? (sb_len_t + source_data[CL-7 : CL-16]) : sb_len_t ;
 
 		sb_len <= (end_of_AFUfrm) ? sb_len_t : sb_len ;
 	end

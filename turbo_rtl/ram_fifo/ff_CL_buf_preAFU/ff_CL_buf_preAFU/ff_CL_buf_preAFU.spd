@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simPackage>
+ <file
+   path="fifo_151/sim/ff_CL_buf_preAFU_fifo_151_56ipsny.v"
+   type="VERILOG"
+   library="ff_CL_buf_preAFU_fifo_151" />
+ <file
+   path="sim/ff_CL_buf_preAFU.v"
+   type="VERILOG"
+   hasInlineConfiguration="true" />
+ <topLevel name="ff_CL_buf_preAFU" />
+ <deviceFamily name="arria10" />
+</simPackage>

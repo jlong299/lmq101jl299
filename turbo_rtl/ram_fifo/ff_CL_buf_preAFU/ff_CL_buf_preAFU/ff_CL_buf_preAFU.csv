@@ -1,0 +1,18 @@
+# system info ff_CL_buf_preAFU on 2016.10.09.14:01:40
+system_info:
+name,value
+DEVICE,10AX115U3F45E2SGE3
+DEVICE_FAMILY,Arria 10
+GENERATION_ID,1475992900
+#
+#
+# Files generated for ff_CL_buf_preAFU on 2016.10.09.14:01:40
+files:
+filepath,kind,attributes,module,is_top
+sim/ff_CL_buf_preAFU.v,VERILOG,CONTAINS_INLINE_CONFIGURATION,ff_CL_buf_preAFU,true
+fifo_151/sim/ff_CL_buf_preAFU_fifo_151_56ipsny.v,VERILOG,,ff_CL_buf_preAFU_fifo_151_56ipsny,false
+#
+# Map from instance-path to kind of module
+instances:
+instancePath,module
+ff_CL_buf_preAFU.fifo_0,ff_CL_buf_preAFU_fifo_151_56ipsny

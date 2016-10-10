@@ -45,6 +45,8 @@ module CL_buf_preAFU #(parameter  // CL : cache line
 );
 
 reg 	rst_n_r, rst_n_sync;
+wire 	ff_wrreq;
+wire [CL-1:0] 	ff_data;
 //---------  reset sync ------------
 always@(posedge clk)
 begin

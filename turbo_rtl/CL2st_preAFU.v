@@ -21,6 +21,7 @@
 //
 //  ---------------------------------------------------------------------------- 
 
+
 module CL2st_preAFU #(parameter  // CL : cache line
 		CL =512,  // 512 bits
 		CL_HEAD =16,  // 16 bits
@@ -34,7 +35,7 @@ module CL2st_preAFU #(parameter  // CL : cache line
 	input 					clk,    
 
 	input					ff_rd_ready, 	// fifo has got one AFU frame, ready to source
-	output 					ff_rdreq, 		// fifo rdreq
+	output reg				ff_rdreq, 		// fifo rdreq
 	input	 [CL-1:0] 		ff_q,  			// fifo out 
 	output reg				ff_rd_finish,   // fifo rd finished (fifo_empty == 1)
 
@@ -47,9 +48,10 @@ module CL2st_preAFU #(parameter  // CL : cache line
 	);
 
 reg [1:0] 	fsm, fsm_r, fsm_rr;
-reg [CL-1] 	ff_q_r;
+reg [CL-1:0] 	ff_q_r;
 reg [3:0] 	cnt_fsm_s3;
 reg 		ff_rdreq_r;
+
 
 reg [w_len_CLHead-1 : 0] 	NumOfST_remain;
 
@@ -136,7 +138,7 @@ begin
 		ff_rdreq = 1'b1;
 	else if (ff_q[CL-1-5]==1'b1) // end CL of one AFU frame
 		ff_rdreq = 1'b0;
-	else if (ff_q[CL-CL_HEAD+w_len_CLHead-1 : CL-CL_HEAD] == w_len_CLHead'd1 || NumOfST_remain == w_len_CLHead'd1) // trigger next rdreq
+	else if (ff_q[CL-CL_HEAD+w_len_CLHead-1 : CL-CL_HEAD] == 1'd1 || NumOfST_remain == 1'd1) // trigger next rdreq
 		ff_rdreq = 1'b1;
 	else
 		ff_rdreq = 1'b0;
@@ -153,23 +155,24 @@ begin
 		source_sop <= 0;
 		source_eop <= 0;
 		source_valid <= 0;
+		ff_rd_finish <= 0;
 	end
 	else
 	begin
 		if (ff_rdreq_r)
-			NumOfST_remain <= ff_q[CL-CL_HEAD+w_len_CLHead-1 : CL-CL_HEAD] - w_len_CLHead'd1;
+			NumOfST_remain <= ff_q[CL-CL_HEAD+w_len_CLHead-1 : CL-CL_HEAD] - 1'd1;
 		else
-			NumOfST_remain <= NumOfST_remain - w_len_CLHead'd1;
+			NumOfST_remain <= NumOfST_remain - 1'd1;
 
 		if (ff_rdreq_r)
 			ff_q_r <= ff_q;
 		else
-			ff_q_r <= {ST{1'b0}, ff_q_r[CL_PAYLOAD-1 : ST]};
+			ff_q_r <= {{ST{1'b0}}, ff_q_r[CL_PAYLOAD-1 : ST]};
 
 		source_sop <= (fsm_r==2'd2 && fsm_rr==2'd1) ? 1'b1 : 1'b0;
 
-		if (fsm==2'd2 && ff_q[CL-1-5]==1'b1)
-			if (ff_q[CL-CL_HEAD+w_len_CLHead-1 : CL-CL_HEAD] == w_len_CLHead'd1 || NumOfST_remain == w_len_CLHead'd1)
+		if (fsm==2'd2 && ff_q[CL-1-5]==1'b1 && fsm_r==2'd2)
+			if ((ff_q[CL-CL_HEAD+w_len_CLHead-1 : CL-CL_HEAD] == 1'd1 || NumOfST_remain == 1'd1) & (!source_eop))
 				source_eop <= 1'b1;
 			else
 				source_eop <= 1'b0;
@@ -183,11 +186,9 @@ begin
 		else
 			source_valid <= source_valid;
 
+		ff_rd_finish <= source_eop;
+
 	end
 end
 
-
-
-
-
-
+endmodule

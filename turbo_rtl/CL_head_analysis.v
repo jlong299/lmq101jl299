@@ -6,6 +6,9 @@
 //------------------------------------------------------------------
 //  Version 1.2
 //------------------------------------------------------------------
+// Notes : 
+//  sink_ready is combinational logic
+//------------------------------------------------------------------
 
 
 module CL_head_analysis #(parameter  // CL : cache line
@@ -19,7 +22,7 @@ module CL_head_analysis #(parameter  // CL : cache line
 	input 					rst_n_sync,  // clk Asynchronous reset active low
 	input 					clk,    
 
-	output	reg				sink_ready,
+	output 	reg			sink_ready,
 	input [CL-1:0]			sink_data,
 	input					sink_valid, 
 
@@ -49,8 +52,8 @@ begin
 if (!rst_n_sync)
 begin
 	fsm <= 0;
-	sink_ready <= 0;
 	ff_rd_ready <= 0;
+	sink_ready <= 0;
 end
 else
 begin
@@ -61,22 +64,22 @@ begin
 			fsm <= 2'd1;
 		else
 			fsm <= 2'd0;
-		sink_ready <= 1'b1;
 		ff_rd_ready <= 1'b0;
+		sink_ready <= 1'b1;
 	end
 	2'd1: // s_data_in
 	begin
 		if (end_of_AFUfrm)
 		begin
 			fsm <= 2'd2;
-			sink_ready <= 1'b0;
 			ff_rd_ready <= 1'b1;
+			sink_ready <= 1'b0;
 		end
 		else
 		begin
 			fsm <= 2'd1;
-			sink_ready <= 1'b1;
 			ff_rd_ready <= 1'b0;
+			sink_ready <= 1'b1;
 		end
 	end
 	2'd2: // s_data_end
@@ -96,8 +99,8 @@ begin
 	default: 
 	begin
 		fsm <= 2'd0;
-		sink_ready <= 1'b0;
 		ff_rd_ready <= 1'b0;
+		sink_ready <= 1'b1;
 	end
 	endcase
 end
@@ -105,17 +108,30 @@ end
 //end------- FSM ------------
 
 
-always@(posedge clk)
+// always@(posedge clk)
+// begin
+// 	if (!rst_n_sync)
+// 	begin
+// 		end_of_AFUfrm <= 0;
+// 	end
+// 	else
+// 	begin
+// 		end_of_AFUfrm <= (fsm==2'd1) & (source_valid) & (source_data[CL-6]==1'b1);
+// 	end
+// end
+
+always@(*)
 begin
-	if (!rst_n_sync)
-	begin
-		end_of_AFUfrm <= 0;
-	end
-	else
-	begin
-		end_of_AFUfrm <= (fsm==2'd1) & (source_valid) & (source_data[CL-6]==1'b1);
-	end
+		end_of_AFUfrm = (fsm==2'd1) & (source_valid) & (source_data[CL-6]==1'b1);
 end
+
+// always@(*)
+// begin
+// 	if ((fsm==2'd2) || ((fsm==2'd1) && (source_valid) && (source_data[CL-6]==1'b1)))
+// 		sink_ready = 1'b0;
+// 	else
+// 		sink_ready = 1'b1;
+// end
 
 always@(posedge clk)
 begin

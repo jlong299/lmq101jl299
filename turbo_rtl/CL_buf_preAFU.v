@@ -25,7 +25,7 @@ module CL_buf_preAFU #(parameter  // CL : cache line
 		w_NumOfST_in_AFUFrm =16  // width of maximum Number of STs in one AFU frame
 	)
 	(
-	// left side
+	// left side   
 	input 					rst_n,  // clk Asynchronous reset active low
 	input 					clk,    
 

@@ -107,31 +107,10 @@ end
 end
 //end------- FSM ------------
 
-
-// always@(posedge clk)
-// begin
-// 	if (!rst_n_sync)
-// 	begin
-// 		end_of_AFUfrm <= 0;
-// 	end
-// 	else
-// 	begin
-// 		end_of_AFUfrm <= (fsm==2'd1) & (source_valid) & (source_data[CL-6]==1'b1);
-// 	end
-// end
-
 always@(*)
 begin
 		end_of_AFUfrm = (fsm==2'd1) & (source_valid) & (source_data[CL-6]==1'b1);
 end
-
-// always@(*)
-// begin
-// 	if ((fsm==2'd2) || ((fsm==2'd1) && (source_valid) && (source_data[CL-6]==1'b1)))
-// 		sink_ready = 1'b0;
-// 	else
-// 		sink_ready = 1'b1;
-// end
 
 always@(posedge clk)
 begin

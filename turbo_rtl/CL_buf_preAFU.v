@@ -75,6 +75,7 @@ inst_CL_head_analysis (
 	);
 
 //start---------- PART2 :  CL buffer instantiated as fifo ------------
+// Depth : 256
 ff_CL_buf_preAFU
 inst_ff_CL_buf_preAFU(
 		.data   (ff_data),
